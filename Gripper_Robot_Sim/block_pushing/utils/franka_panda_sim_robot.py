@@ -248,7 +248,7 @@ class GripperArmSimRobot:
         self.set_target_joint_positions(target_joint_positions)
 
 
-    def set_target_joint_positions(self, target_joint_positions):
+    def set_the_fingers_open(self):
         print("Opening fingers...and wait")
         self._pybullet_client.setJointMotorControlArray(      # Using POSITION_CONTROL
             bodyUniqueId=self.gripperarm,
@@ -259,7 +259,9 @@ class GripperArmSimRobot:
             positionGains=[0.4, 0.4],     # Optional: reduce control stiffness
             velocityGains=[1.0, 1.0],    
         )
-        time.sleep(5)
+        
+    def set_target_joint_positions(self, target_joint_positions):
+
         print("Moving to the new pose...")
         self._pybullet_client.setJointMotorControlArray(
             self.gripperarm, # Khodamm
