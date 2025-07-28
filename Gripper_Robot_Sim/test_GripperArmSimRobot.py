@@ -150,8 +150,7 @@ position = robot.forward_kinematics().translation_left
 print("End-effector position:", position)
 
 
-time.sleep(3)
-time.sleep(3)
+
 
 # # Apply joint position control directly
 # print("\n[TEST] set_target_joint_positions")
