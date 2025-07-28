@@ -24,7 +24,7 @@ import time
 from typing import Any, Dict, List, Optional, Tuple
 
 from absl import logging
-from diffusion_policy.env.block_pushing.utils.pose3d import Pose3d
+from block_pushing.utils.pose3d import Pose3d
 import numpy as np
 from scipy.spatial import transform
 import six

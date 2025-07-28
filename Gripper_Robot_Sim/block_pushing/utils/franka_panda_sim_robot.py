@@ -14,8 +14,8 @@
 # limitations under the License.
 
 """XArm Robot Kinematics."""
-from diffusion_policy.env.block_pushing.utils import utils_pybullet
-from diffusion_policy.env.block_pushing.utils.pose3d_gripper import Pose3d_gripper
+from block_pushing.utils import utils_pybullet
+from block_pushing.utils.pose3d_gripper import Pose3d_gripper
 import numpy as np
 from scipy.spatial import transform
 import pybullet
@@ -248,6 +248,15 @@ class GripperArmSimRobot:
 
 
     def set_target_joint_positions(self, target_joint_positions):
+        self._pybullet_client.setJointMotorControlArray(      # Using POSITION_CONTROL
+            bodyUniqueId=self.gripperarm,
+            jointIndices=[9,10],
+            controlMode=pybullet.POSITION_CONTROL,
+            targetPositions=[10, 10],
+            forces=[100, 100],            # Apply up to 100N of torque
+            positionGains=[0.4, 0.4],     # Optional: reduce control stiffness
+            velocityGains=[1.0, 1.0],    
+        )
         self._pybullet_client.setJointMotorControlArray(
             self.gripperarm, # Khodamm
             self._joint_indices,
