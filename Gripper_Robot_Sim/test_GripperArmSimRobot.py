@@ -52,7 +52,7 @@ p.createConstraint(
     childLinkIndex=-1,                 # -1 means the base link of the child
     jointType=p.JOINT_FIXED,
     jointAxis=[0, 0, 0],
-    parentFramePosition=[0, 0.1, 0.1],   # Position of zone relative to workspace
+    parentFramePosition=[0, 0, 0.02],   # Position of zone relative to workspace
     childFramePosition=[0, 0, 0],      # Position of zone relative to its own origin
 )
 blue_cube = p.loadURDF("blue_cube.urdf",[0.2, 0, 0.0]  , useFixedBase = False )
