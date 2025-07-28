@@ -104,7 +104,8 @@ robot.set_the_fingers_open_close(opening_width)
 for _ in range(50):
     p.stepSimulation()
     time.sleep(1 / 240.0)
-robot.set_target_effector_pose(new_pose)
+force = 5
+robot.set_target_effector_pose(new_pose,force)
 for _ in range(100):
     p.stepSimulation()
     time.sleep(1 / 240.0)
@@ -124,7 +125,8 @@ new_pose = Pose3d_gripper(translation_left=new_translation_left,
                           rotation_left=pose.rotation_left, 
                           rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
 ik_solution = robot.inverse_kinematics(new_pose)
-robot.set_target_effector_pose(new_pose)
+force = 1 #lowering the speed to prevent the block from falling
+robot.set_target_effector_pose(new_pose,force)
 for _ in range(100):
     p.stepSimulation()
     time.sleep(1 / 240.0)

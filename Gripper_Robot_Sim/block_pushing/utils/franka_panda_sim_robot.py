@@ -243,9 +243,9 @@ class GripperArmSimRobot:
             )
         )
 
-    def set_target_effector_pose(self, new_pose):  # Khodam
+    def set_target_effector_pose(self, new_pose,force):  # Khodam
         target_joint_positions = self.inverse_kinematics(new_pose)  # khodam
-        self.set_target_joint_positions(target_joint_positions)
+        self.set_target_joint_positions(target_joint_positions,force)
 
 
     def set_the_fingers_open_close(self,opening_width):
@@ -263,7 +263,7 @@ class GripperArmSimRobot:
         )
 
         
-    def set_target_joint_positions(self, target_joint_positions):
+    def set_target_joint_positions(self, target_joint_positions,force):
 
         print("Moving to the new pose...")
         self._pybullet_client.setJointMotorControlArray(
@@ -271,7 +271,7 @@ class GripperArmSimRobot:
             self._joint_indices,
             pybullet.POSITION_CONTROL,
             targetPositions=target_joint_positions,
-            forces=[5 * 240.0] * len(self._joint_indices),
+            forces=[force * 240.0] * len(self._joint_indices),
         )
 
     def set_target_joint_velocities(self, target_joint_velocities):
