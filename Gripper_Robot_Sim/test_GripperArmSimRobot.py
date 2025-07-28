@@ -32,7 +32,7 @@ from scipy.spatial.transform import Rotation
 client = p.connect(p.GUI)
 p.setGravity(0, 0, -9.81)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
-p.loadURDF("plane.urdf")
+p.loadURDF("plane.urdf",[0, 0, -0.001])
 
 p.resetDebugVisualizerCamera(
     cameraDistance=1,
