@@ -116,7 +116,7 @@ for _ in range(50):
     time.sleep(1 / 240.0)
     
     
-    
+
 # moving the block to another place
 target_center = np.array([0.4, -0.3, 0.01 + 0.15])
 offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
