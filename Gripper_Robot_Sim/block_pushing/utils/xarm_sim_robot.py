@@ -14,8 +14,8 @@
 # limitations under the License.
 
 """XArm Robot Kinematics."""
-from diffusion_policy.env.block_pushing.utils import utils_pybullet
-from diffusion_policy.env.block_pushing.utils.pose3d import Pose3d
+from block_pushing.utils import utils_pybullet
+from block_pushing.utils.pose3d import Pose3d
 import numpy as np
 from scipy.spatial import transform
 import pybullet
