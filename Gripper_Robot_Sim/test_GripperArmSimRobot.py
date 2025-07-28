@@ -120,7 +120,7 @@ robot.set_the_fingers_open_close(opening_width)
 for _ in range(50):
     p.stepSimulation()
     time.sleep(1 / 240.0)
-force = 5
+force = 3
 robot.set_target_effector_pose(new_pose,force)
 for _ in range(100):
     p.stepSimulation()
@@ -154,7 +154,7 @@ time.sleep(3)
 
 
 # moving the block to another place
-target_center = np.array([0.35, 0, 0.2])
+target_center = np.array([0.35, 0, 0.15])
 offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
 new_translation_left = target_center - offset
 new_translation_right = target_center + offset
