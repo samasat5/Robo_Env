@@ -115,6 +115,8 @@ for _ in range(50):
     p.stepSimulation()
     time.sleep(1 / 240.0)
     
+    
+    
 # moving the block to another place
 target_center = np.array([0.4, 0.2, 0.01 + 0.15])
 offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
@@ -148,7 +150,8 @@ position = robot.forward_kinematics().translation_left
 print("End-effector position:", position)
 
 
-time.sleep(5)
+time.sleep(3)
+time.sleep(3)
 
 # # Apply joint position control directly
 # print("\n[TEST] set_target_joint_positions")
