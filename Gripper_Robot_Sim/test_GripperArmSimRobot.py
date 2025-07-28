@@ -42,8 +42,8 @@ p.resetDebugVisualizerCamera(
 )
 
 block = p.loadURDF("block2.urdf",[0.2, 0.5, 0.01]  , useFixedBase = False ) # size="0.04 0.04 0.04
-workspace = p.loadURDF("workspace.urdf",[0.35, 0, 0.0]  , useFixedBase = False )
-zone = p.loadURDF("zone.urdf",[0, 0, 0.1]  , useFixedBase = False ) # scale="0.006 0.006 0.00005" : the size is 0.006 x 20 = 0.12, origin "-0.01 0 0.02"
+workspace = p.loadURDF("workspace.urdf",[0.35, 0, 0.0]  , useFixedBase = True )
+zone = p.loadURDF("zone.urdf",[2, 3, 0.1]  , useFixedBase = False ) # scale="0.006 0.006 0.00005" : the size is 0.006 x 20 = 0.12, origin "-0.01 0 0.02"
 # Fixing the zone on the workspace
 p.createConstraint(   
     parentBodyUniqueId=workspace,
