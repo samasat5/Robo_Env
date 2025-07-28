@@ -42,6 +42,7 @@ p.resetDebugVisualizerCamera(
 )
 
 block = p.loadURDF("block2.urdf",[0.2, 0.5, 0.01]  , useFixedBase = False )
+workspace = p.loadURDF("block2.urdf",[0.35, 0, 0.0]  , useFixedBase = False )
 
 # Create robot with end effector
 robot = GripperArmSimRobot(pybullet_client=p)
