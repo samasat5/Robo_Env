@@ -248,6 +248,7 @@ class GripperArmSimRobot:
 
 
     def set_target_joint_positions(self, target_joint_positions):
+        print("initiaiing")
         self._pybullet_client.setJointMotorControlArray(      # Using POSITION_CONTROL
             bodyUniqueId=self.gripperarm,
             jointIndices=[9,10],
