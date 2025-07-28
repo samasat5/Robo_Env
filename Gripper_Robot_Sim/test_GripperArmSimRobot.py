@@ -132,9 +132,26 @@ for _ in range(50):
     time.sleep(1 / 240.0) 
     
     
+    
+    
+# moving the block upward so that it does colide
+target_center = np.array([0.35, 0, 0.3])
+offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
+new_translation_left = target_center - offset
+new_translation_right = target_center + offset
+new_pose = Pose3d_gripper(translation_left=new_translation_left,
+                          translation_right=new_translation_right,
+                          rotation_left=pose.rotation_left, 
+                          rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
+ik_solution = robot.inverse_kinematics(new_pose)
+force = 0.1 #lowering the speed to prevent the block from falling
+robot.set_target_effector_pose(new_pose,force)
+for _ in range(100):
+    p.stepSimulation()
+    time.sleep(1 / 240.0)
 
 # moving the block to another place
-target_center = np.array([0.35, 0, 0.1])
+target_center = np.array([0.35, 0, 0.003])
 offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
 new_translation_left = target_center - offset
 new_translation_right = target_center + offset
