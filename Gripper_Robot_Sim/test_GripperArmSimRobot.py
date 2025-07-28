@@ -43,7 +43,7 @@ p.resetDebugVisualizerCamera(
 
 block = p.loadURDF("block2.urdf",[0.2, 0.5, 0.01]  , useFixedBase = False ) # size="0.04 0.04 0.04
 workspace = p.loadURDF("workspace.urdf",[0.35, 0, 0.0]  , useFixedBase = True )
-zone = p.loadURDF("zone.urdf",[2, 3, 0.1]  , useFixedBase = False ) # scale="0.006 0.006 0.00005" : the size is 0.006 x 20 = 0.12, origin "-0.01 0 0.02"
+zone = p.loadURDF("zone.urdf",[0.4, 0.4, 0.1]  , useFixedBase = False ) # scale="0.006 0.006 0.00005" : the size is 0.006 x 20 = 0.12, origin "-0.01 0 0.02"
 # Fixing the zone on the workspace
 p.createConstraint(   
     parentBodyUniqueId=workspace,
@@ -52,7 +52,7 @@ p.createConstraint(
     childLinkIndex=-1,                 # -1 means the base link of the child
     jointType=p.JOINT_FIXED,
     jointAxis=[0, 0, 0],
-    parentFramePosition=[0, 0, 0.1],   # Position of zone relative to workspace
+    parentFramePosition=[0, 0.1, 0.1],   # Position of zone relative to workspace
     childFramePosition=[0, 0, 0],      # Position of zone relative to its own origin
 )
 blue_cube = p.loadURDF("blue_cube.urdf",[0.2, 0, 0.0]  , useFixedBase = False )
