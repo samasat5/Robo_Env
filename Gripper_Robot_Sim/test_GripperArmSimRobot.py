@@ -82,7 +82,6 @@ print("\n[TEST] inverse_kinematics")
 # new_translation_right = pose.translation_right + np.array([0, 0, -1])  
 target_center = np.array([0.2, 0.5, 0.01 + 0.015])
 offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
-
 new_translation_left = target_center - offset
 new_translation_right = target_center + offset
  
@@ -94,7 +93,10 @@ ik_solution = robot.inverse_kinematics(new_pose) #Solve Inverse Kinematics to fi
 print("IK Joint Angles (target_joint_positions):", ik_solution)
 
 
-# Apply pose via IK
+
+
+
+# Apply pose via IK (going toward the block and grasping it)
 print("\n[TEST] set_target_effector_pose")
 size_of_the_block = 0.04
 opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
@@ -102,6 +104,17 @@ robot.set_target_effector_pose(new_pose,opening_width)
 for _ in range(100):
     p.stepSimulation()
     time.sleep(1 / 240.0)
+    
+# moving the block to another place
+target_center = np.array([0.2, 0.5, 0.01 + 0.015])
+offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
+new_translation_left = target_center - offset
+new_translation_right = target_center + offset
+new_pose = Pose3d_gripper(translation_left=new_translation_left,
+                          translation_right=new_translation_right,
+                          rotation_left=pose.rotation_left, 
+                          rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
+ik_solution = robot.inverse_kinematics(new_pose)
 
 print("___________________testing if the location of end effector==the point it want to go_____________")
 left_finger_pos, _ = p.getLinkState(robot.gripperarm, robot.left_finger)[:2]
@@ -120,22 +133,22 @@ print("End-effector position:", position)
 
 time.sleep(5)
 
-# Apply joint position control directly
-print("\n[TEST] set_target_joint_positions")
-offset_positions = robot.get_joint_positions() + np.deg2rad([90]*9)  # gives initial joint (what joints? joint_indices ! which are rev and peris joints so not all the joints) angles +...  # [5, 5, 5, 5,.., 5, 5] degrees → radians:
-# offset_positions = robot.initial_joint_positions + np.deg2rad([0, 90, 0, 0, 0, 0,0,0,0])
-robot.set_target_joint_positions(offset_positions)
-for _ in range(100):
-    p.stepSimulation()
-    time.sleep(1 / 240.0)
+# # Apply joint position control directly
+# print("\n[TEST] set_target_joint_positions")
+# offset_positions = robot.get_joint_positions() + np.deg2rad([90]*9)  # gives initial joint (what joints? joint_indices ! which are rev and peris joints so not all the joints) angles +...  # [5, 5, 5, 5,.., 5, 5] degrees → radians:
+# # offset_positions = robot.initial_joint_positions + np.deg2rad([0, 90, 0, 0, 0, 0,0,0,0])
+# robot.set_target_joint_positions(offset_positions)
+# for _ in range(100):
+#     p.stepSimulation()
+#     time.sleep(1 / 240.0)
 
-# Apply joint velocity control
-print("\n[TEST] set_target_joint_velocities")
-zero_velocity = np.zeros(9) # array([0., 0., 0., 0., 0., 0.])   # we need to stop the movement becasue after the rotation order, it'll continue rotating forever (like a motor with no brake) — unless you later call:
-robot.set_target_joint_velocities(zero_velocity)
-for _ in range(100):
-    p.stepSimulation()
-    time.sleep(1 / 240.0)
+# # Apply joint velocity control
+# print("\n[TEST] set_target_joint_velocities")
+# zero_velocity = np.zeros(9) # array([0., 0., 0., 0., 0., 0.])   # we need to stop the movement becasue after the rotation order, it'll continue rotating forever (like a motor with no brake) — unless you later call:
+# robot.set_target_joint_velocities(zero_velocity)
+# for _ in range(100):
+#     p.stepSimulation()
+#     time.sleep(1 / 240.0)
 
 time.sleep(5)
 
