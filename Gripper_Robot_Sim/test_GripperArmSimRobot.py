@@ -135,7 +135,7 @@ for _ in range(50):
 time.sleep(3)
     
 # moving the block upward so that it does colide
-target_center = np.array([0.2, 0.5, 0.05])
+target_center = np.array([0.2, 0.5, 0.1])
 offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
 new_translation_left = target_center - offset
 new_translation_right = target_center + offset
