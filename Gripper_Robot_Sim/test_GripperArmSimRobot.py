@@ -131,6 +131,7 @@ for _ in range(100):
     p.stepSimulation()
     time.sleep(1 / 240.0)
     
+
     
 print("___________________testing if the location of end effector==the point it want to go_____________")
 left_finger_pos, _ = p.getLinkState(robot.gripperarm, robot.left_finger)[:2]
