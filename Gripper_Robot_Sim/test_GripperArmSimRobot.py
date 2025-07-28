@@ -134,7 +134,7 @@ for _ in range(50):
     
 
 # moving the block to another place
-target_center = np.array([0.35, 0, 0.0])
+target_center = np.array([0.35, 0, 0.1])
 offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
 new_translation_left = target_center - offset
 new_translation_right = target_center + offset
