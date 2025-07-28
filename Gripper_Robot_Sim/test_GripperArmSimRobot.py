@@ -55,8 +55,8 @@ p.createConstraint(
     parentFramePosition=[0, 0, 0.02],   # Position of zone relative to workspace
     childFramePosition=[0, 0, 0],      # Position of zone relative to its own origin
 )
-blue_cube = p.loadURDF("blue_cube.urdf",[0.2, 0, 0.0]  , useFixedBase = False )
-red_moon = p.loadURDF("red_moon.urdf",[0.4, 0, 0.0]  , useFixedBase = False )
+# blue_cube = p.loadURDF("blue_cube.urdf",[0.2, 0, 0.0]  , useFixedBase = False )
+# red_moon = p.loadURDF("red_moon.urdf",[0.4, 0, 0.0]  , useFixedBase = False )
 
 
 
@@ -135,7 +135,7 @@ for _ in range(50):
     
     
 # moving the block upward so that it does colide
-target_center = np.array(0.2, 0.5, 0.03)
+target_center = np.array([0.2, 0.5, 0.03])
 offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
 new_translation_left = target_center - offset
 new_translation_right = target_center + offset
