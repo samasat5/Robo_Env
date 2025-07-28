@@ -20,6 +20,7 @@ import numpy as np
 from scipy.spatial import transform
 import pybullet
 import pdb
+import time
 
 XARM_URDF_PATH = (
     "third_party/bullet/examples/pybullet/gym/pybullet_data/" "xarm/xarm6_robot.urdf"
@@ -248,16 +249,18 @@ class GripperArmSimRobot:
 
 
     def set_target_joint_positions(self, target_joint_positions):
-        print("initiaiing")
+        print("Opening fingers...and wait")
         self._pybullet_client.setJointMotorControlArray(      # Using POSITION_CONTROL
             bodyUniqueId=self.gripperarm,
-            jointIndices=[9,10],
+            jointIndices=[self.left_finger, self.right_finger],
             controlMode=pybullet.POSITION_CONTROL,
             targetPositions=[10, 10],
             forces=[100, 100],            # Apply up to 100N of torque
             positionGains=[0.4, 0.4],     # Optional: reduce control stiffness
             velocityGains=[1.0, 1.0],    
         )
+        time.sleep(5)
+        print("Moving to the new pose...")
         self._pybullet_client.setJointMotorControlArray(
             self.gripperarm, # Khodamm
             self._joint_indices,
