@@ -118,22 +118,24 @@ print("End-effector position:", position)
 
 time.sleep(5)
 
-# Apply joint position control directly
-print("\n[TEST] set_target_joint_positions")
-offset_positions = robot.get_joint_positions() + np.deg2rad([90]*9)  # gives initial joint (what joints? joint_indices ! which are rev and peris joints so not all the joints) angles +...  # [5, 5, 5, 5,.., 5, 5] degrees → radians:
-# offset_positions = robot.initial_joint_positions + np.deg2rad([0, 90, 0, 0, 0, 0,0,0,0])
-robot.set_target_joint_positions(offset_positions)
-for _ in range(100):
-    p.stepSimulation()
-    time.sleep(1 / 240.0)
+# # Apply joint position control directly
+# print("\n[TEST] set_target_joint_positions")
+# offset_positions = robot.get_joint_positions() + np.deg2rad([90]*9)  # gives initial joint (what joints? joint_indices ! which are rev and peris joints so not all the joints) angles +...  # [5, 5, 5, 5,.., 5, 5] degrees → radians:
+# # offset_positions = robot.initial_joint_positions + np.deg2rad([0, 90, 0, 0, 0, 0,0,0,0])
+# robot.set_target_joint_positions(offset_positions)
+# for _ in range(100):
+#     p.stepSimulation()
+#     time.sleep(1 / 240.0)
 
-# Apply joint velocity control
-print("\n[TEST] set_target_joint_velocities")
-zero_velocity = np.zeros(9) # array([0., 0., 0., 0., 0., 0.])   # we need to stop the movement becasue after the rotation order, it'll continue rotating forever (like a motor with no brake) — unless you later call:
-robot.set_target_joint_velocities(zero_velocity)
-for _ in range(100):
-    p.stepSimulation()
-    time.sleep(1 / 240.0)
+# # Apply joint velocity control
+# print("\n[TEST] set_target_joint_velocities")
+# zero_velocity = np.zeros(9) # array([0., 0., 0., 0., 0., 0.])   # we need to stop the movement becasue after the rotation order, it'll continue rotating forever (like a motor with no brake) — unless you later call:
+# robot.set_target_joint_velocities(zero_velocity)
+# for _ in range(100):
+#     p.stepSimulation()
+#     time.sleep(1 / 240.0)
+
+time.sleep(5)
 
 # # 12. Set transparency
 # print("\n[TEST] set_alpha_transparency")
