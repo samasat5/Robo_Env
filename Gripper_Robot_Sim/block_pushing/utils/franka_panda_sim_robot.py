@@ -246,6 +246,7 @@ class GripperArmSimRobot:
     def set_target_effector_pose(self, new_pose):  # Khodam
         target_joint_positions = self.inverse_kinematics(new_pose)  # khodam
         self.set_target_joint_positions(target_joint_positions)
+        self.set_the_fingers_open()
 
 
     def set_the_fingers_open(self):
