@@ -243,8 +243,8 @@ class GripperArmSimRobot:
             )
         )
 
-    def set_target_effector_pose(self, new_pose):  # Khodam
-        self.set_the_fingers_open()
+    def set_target_effector_pose(self, new_pose,opening_width):  # Khodam
+        self.set_the_fingers_open(opening_width)
         for _ in range(50):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
@@ -252,13 +252,15 @@ class GripperArmSimRobot:
         self.set_target_joint_positions(target_joint_positions)
 
 
-    def set_the_fingers_open(self):
+    def set_the_fingers_open(self,opening_width):
         print("Opening fingers...and wait")
+        half_opening = opening_width / 2.0
+        
         self._pybullet_client.setJointMotorControlArray(      # Using POSITION_CONTROL
             bodyUniqueId=self.gripperarm,
             jointIndices=[self.left_finger, self.right_finger],
             controlMode=pybullet.POSITION_CONTROL,
-            targetPositions=[10, 10],
+            targetPositions=[half_opening, half_opening],
             forces=[100, 100],            # Apply up to 100N of torque
             positionGains=[0.4, 0.4],     # Optional: reduce control stiffness
             velocityGains=[1.0, 1.0],    
