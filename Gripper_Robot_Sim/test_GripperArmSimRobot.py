@@ -100,25 +100,29 @@ print("IK Joint Angles (target_joint_positions):", ik_solution)
 print("\n[TEST] set_target_effector_pose")
 size_of_the_block = 0.04
 opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
-robot.set_target_effector_pose(new_pose,opening_width)
+robot.set_the_fingers_open_close(opening_width)
+for _ in range(50):
+    p.stepSimulation()
+    time.sleep(1 / 240.0)
+robot.set_target_effector_pose(new_pose)
 for _ in range(100):
     p.stepSimulation()
     time.sleep(1 / 240.0)
     
-# moving the block to another place
-target_center = np.array([0.4, 0.2, 0.01 + 0.15])
-offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
-new_translation_left = target_center - offset
-new_translation_right = target_center + offset
-new_pose = Pose3d_gripper(translation_left=new_translation_left,
-                          translation_right=new_translation_right,
-                          rotation_left=pose.rotation_left, 
-                          rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
-ik_solution = robot.inverse_kinematics(new_pose)
-robot.set_target_effector_pose(new_pose,opening_width)
-for _ in range(100):
-    p.stepSimulation()
-    time.sleep(1 / 240.0)
+# # moving the block to another place
+# target_center = np.array([0.4, 0.2, 0.01 + 0.15])
+# offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
+# new_translation_left = target_center - offset
+# new_translation_right = target_center + offset
+# new_pose = Pose3d_gripper(translation_left=new_translation_left,
+#                           translation_right=new_translation_right,
+#                           rotation_left=pose.rotation_left, 
+#                           rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
+# ik_solution = robot.inverse_kinematics(new_pose)
+# robot.set_target_effector_pose(new_pose,opening_width)
+# for _ in range(100):
+#     p.stepSimulation()
+#     time.sleep(1 / 240.0)
     
     
 print("___________________testing if the location of end effector==the point it want to go_____________")
