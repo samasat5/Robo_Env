@@ -115,7 +115,12 @@ new_pose = Pose3d_gripper(translation_left=new_translation_left,
                           rotation_left=pose.rotation_left, 
                           rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
 ik_solution = robot.inverse_kinematics(new_pose)
-
+robot.set_target_effector_pose(new_pose,opening_width)
+for _ in range(100):
+    p.stepSimulation()
+    time.sleep(1 / 240.0)
+    
+    
 print("___________________testing if the location of end effector==the point it want to go_____________")
 left_finger_pos, _ = p.getLinkState(robot.gripperarm, robot.left_finger)[:2]
 right_finger_pos, _ = p.getLinkState(robot.gripperarm, robot.right_finger)[:2]
