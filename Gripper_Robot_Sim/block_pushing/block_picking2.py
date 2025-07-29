@@ -1,0 +1,126 @@
+
+import collections
+import enum
+import math
+import time
+from typing import Dict, List, Optional, Tuple, Union
+
+import gym
+from gym import spaces
+from gym.envs import registration
+from block_pushing.utils import utils_pybullet
+from block_pushing.utils import franka_panda_sim_robot
+# from block_pushing.utils import xarm_sim_robot
+# from block_pushing.utils.pose3d import Pose3d
+from block_pushing.utils.pose3d import Pose3d_gripper
+from block_pushing.utils.utils_pybullet import ObjState
+from block_pushing.utils.utils_pybullet import XarmState
+import numpy as np
+from scipy.spatial import transform
+import pybullet
+import pybullet_utils.bullet_client as bullet_client
+
+import matplotlib.pyplot as plt
+
+BLOCK_URDF_PATH = "third_party/py/envs/assets/block.urdf"
+PLANE_URDF_PATH = "third_party/bullet/examples/pybullet/gym/pybullet_data/" "plane.urdf"
+WORKSPACE_URDF_PATH = "third_party/py/envs/assets/workspace.urdf"
+ZONE_URDF_PATH = "third_party/py/envs/assets/zone.urdf"
+INSERT_URDF_PATH = "third_party/py/envs/assets/insert.urdf"
+
+EFFECTOR_HEIGHT = 0.06
+EFFECTOR_DOWN_ROTATION = transform.Rotation.from_rotvec([0, math.pi, 0])
+
+WORKSPACE_BOUNDS = np.array(((0.15, -0.5), (0.7, 0.5)))
+
+# Min/max bounds calculated from oracle data using:
+# ibc/environments/board2d_dataset_statistics.ipynb
+# to calculate [mean - 3 * std, mean + 3 * std] using the oracle data.
+# pylint: disable=line-too-long
+ACTION_MIN = np.array([-0.02547718, -0.02090043], np.float32)
+ACTION_MAX = np.array([0.02869084, 0.04272365], np.float32)
+EFFECTOR_TARGET_TRANSLATION_MIN = np.array(
+    [0.1774151772260666, -0.6287994794547558], np.float32
+)
+EFFECTOR_TARGET_TRANSLATION_MAX = np.array(
+    [0.5654461532831192, 0.5441607423126698], np.float32
+)
+EFFECTOR_TARGET_TO_BLOCK_TRANSLATION_MIN = np.array(
+    [-0.07369826920330524, -0.11395704373717308], np.float32
+)
+EFFECTOR_TARGET_TO_BLOCK_TRANSLATION_MAX = np.array(
+    [0.10131562314927578, 0.19391131028532982], np.float32
+)
+EFFECTOR_TARGET_TO_TARGET_TRANSLATION_MIN = np.array(
+    [-0.17813862301409245, -0.3309651017189026], np.float32
+)
+EFFECTOR_TARGET_TO_TARGET_TRANSLATION_MAX = np.array(
+    [0.23726161383092403, 0.8404090404510498], np.float32
+)
+BLOCK_ORIENTATION_COS_SIN_MIN = np.array(
+    [-2.0649861991405487, -0.6154364347457886], np.float32
+)
+BLOCK_ORIENTATION_COS_SIN_MAX = np.array(
+    [1.6590178310871124, 1.8811014890670776], np.float32
+)
+TARGET_ORIENTATION_COS_SIN_MIN = np.array(
+    [-1.0761439241468906, -0.8846937336493284], np.float32
+)
+TARGET_ORIENTATION_COS_SIN_MAX = np.array(
+    [-0.8344330154359341, 0.8786859593819827], np.float32
+)
+
+# Hardcoded Pose joints to make sure we don't have surprises from using the
+# IK solver on reset. The joint poses correspond to the Pose with:
+#   rotation = rotation3.Rotation3.from_axis_angle([0, 1, 0], math.pi)
+#   translation = np.array([0.3, -0.4, 0.07])
+INITIAL_JOINT_POSITIONS = np.array(
+    [
+        -0.9254632489674508,
+        0.6990770671568564,
+        -1.106629064060494,
+        0.0006653351931553931,
+        0.3987969742311386,
+        -4.063402065624296,
+    ]
+)
+
+DEFAULT_CAMERA_POSE = (1.0, 0, 0.75)
+DEFAULT_CAMERA_ORIENTATION = (np.pi / 4, np.pi, -np.pi / 2)
+IMAGE_WIDTH = 320
+IMAGE_HEIGHT = 240
+CAMERA_INTRINSICS = (
+    0.803 * IMAGE_WIDTH,  # fx
+    0,
+    IMAGE_WIDTH / 2.0,  # cx
+    0,
+    0.803 * IMAGE_WIDTH,  # fy
+    IMAGE_HEIGHT / 2.0,  # cy
+    0,
+    0,
+    1,
+)
+
+# "Realistic" visuals.
+X_MIN_REAL = 0.15
+X_MAX_REAL = 0.6
+Y_MIN_REAL = -0.3048
+Y_MAX_REAL = 0.3048
+WORKSPACE_BOUNDS_REAL = np.array(((X_MIN_REAL, Y_MIN_REAL), (X_MAX_REAL, Y_MAX_REAL)))
+WORKSPACE_URDF_PATH_REAL = "third_party/py/ibc/environments/assets/workspace_real.urdf"
+CAMERA_POSE_REAL = (0.75, 0, 0.5)
+CAMERA_ORIENTATION_REAL = (np.pi / 5, np.pi, -np.pi / 2)
+
+IMAGE_WIDTH_REAL = 320
+IMAGE_HEIGHT_REAL = 180
+CAMERA_INTRINSICS_REAL = (
+    0.803 * IMAGE_WIDTH_REAL,  # fx
+    0,
+    IMAGE_WIDTH_REAL / 2.0,  # cx
+    0,
+    0.803 * IMAGE_WIDTH_REAL,  # fy
+    IMAGE_HEIGHT_REAL / 2.0,  # cy
+    0,
+    0,
+    1,
+)
