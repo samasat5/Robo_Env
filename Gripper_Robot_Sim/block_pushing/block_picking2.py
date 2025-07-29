@@ -320,9 +320,6 @@ class BlockPick(gym.Env):
         state = self._compute_state()
         self._previous_state = state
 
-        if self._task == BlockTaskVariant.REACH:  ##?
-            self._compute_reach_target(state)
-
         self._init_goal_distance = self._compute_goal_distance(state)
         init_goal_eps = 1e-7
         assert self._init_goal_distance > init_goal_eps
