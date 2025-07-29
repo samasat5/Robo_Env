@@ -234,8 +234,7 @@ class BlockPick(gym.Env):
         assert isinstance(self._pybullet_client, bullet_client.BulletClient)
         self._control_frequency = control_frequency
         self._step_frequency = (
-            1 / self._pybullet_client.getPhysicsEngineParameters()["fixedTimeStep"]
-        )
+            1 / self._pybullet_client.getPhysicsEngineParameters()["fixedTimeStep"])
 
         self._last_loop_time = None
         self._last_loop_frame_sleep_time = None
