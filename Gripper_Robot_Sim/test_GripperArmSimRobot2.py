@@ -131,7 +131,7 @@ from scipy.spatial.transform import Rotation
 
 
 import pybullet
-from block_picking2 import BlockPick  # adjust import path
+from block_pushing.block_pushing2 import BlockPick  # adjust import path
 import numpy as np
 
 # 1. Instantiate the environment
