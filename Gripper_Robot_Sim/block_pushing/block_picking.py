@@ -434,12 +434,7 @@ class BlockPush(gym.Env):
 
     def _compute_goal_distance(self, state):
         goal_translation = self.get_goal_translation()
-        if self._task != BlockTaskVariant.REACH:
-            goal_distance = np.linalg.norm(
-                state["block_translation"] - goal_translation[0:2]
-            )
-        else:
-            goal_distance = np.linalg.norm(
+        goal_distance = np.linalg.norm(
                 state["effector_translation"] - goal_translation[0:2]
             )
         return goal_distance
