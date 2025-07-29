@@ -162,7 +162,20 @@ class BlockPick(gym.Env):
             self._camera_instrinsics = CAMERA_INTRINSICS_REAL
             self._workspace_urdf_path = WORKSPACE_URDF_PATH_REAL
             
-            
+
+        self._rng = np.random.RandomState(seed=seed)
+        self._block_ids = None
+        self._previous_state = None
+        self._robot = None
+        self._workspace_uid = None
+        self._target_id = None
+        self._target_pose = None
+        self._target_effector_pose = None
+        self._pybullet_client = None
+        self.reach_target_translation = None
+        self._setup_pybullet_scene()
+        self._saved_state = None
+
         self.action_space = spaces.Box(low=-0.1, high=0.1, shape=(2,))  # x, y
         self.observation_space = self._create_observation_space(image_size)
 
@@ -196,9 +209,9 @@ class BlockPick(gym.Env):
             self._workspace_urdf_path,
             basePosition=[0.35, 0, 0.0],)
 
-        self._robot = franka_panda_sim_robot.GripperArmSimRobot(  # Khodam
+        self._robot = franka_panda_sim_robot.GripperArmSimRobot(  
             self._pybullet_client,
-            initial_joint_positions=INITIAL_JOINT_POSITIONS, #Khodam
+            initial_joint_positions=INITIAL_JOINT_POSITIONS, 
             color="white" if self._visuals_mode == "real" else "default",)
 
 
