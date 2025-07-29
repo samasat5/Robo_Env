@@ -366,9 +366,7 @@ class BlockPick(gym.Env):
 
     def _compute_state(self):
         effector_pose = self._robot.forward_kinematics()
-        block_position_and_orientation = (
-            self._pybullet_client.getBasePositionAndOrientation(self._block_ids[0])
-        )
+        block_position_and_orientation = (self._pybullet_client.getBasePositionAndOrientation(self._block_ids[0]))
         block_pose = Pose3d_gripper(
             rotation=transform.Rotation.from_quat(block_position_and_orientation[1]),
             translation=block_position_and_orientation[0],
