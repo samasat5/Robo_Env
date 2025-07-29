@@ -266,8 +266,8 @@ class BlockPick(gym.Env):
             translation_left = center_translation + np.array([0.0, -finger_offset, 0.0])
             translation_right = center_translation + np.array([0.0, finger_offset, 0.0])
             
-            
             starting_pose = Pose3d_gripper(rotation_left,rotation_right, translation_left,translation_right)
+            
             self._set_robot_target_effector_pose(starting_pose)
 
             # Reset block pose.
