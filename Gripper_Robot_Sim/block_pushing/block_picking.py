@@ -131,11 +131,9 @@ CAMERA_INTRINSICS_REAL = (
 # pylint: enable=line-too-long
 
 
-def build_env_name(task, shared_memory, use_image_obs, use_normalized_env=False):
+def build_env_name(shared_memory, use_image_obs, use_normalized_env=False):
     """Construct the env name from parameters."""
-    if isinstance(task, str):
-        task = BlockTaskVariant[task]
-    env_name = "Block" + task.value
+    env_name = "Block" 
 
     if use_image_obs:
         env_name = env_name + "Rgb"
@@ -147,14 +145,6 @@ def build_env_name(task, shared_memory, use_image_obs, use_normalized_env=False)
     env_name = env_name + "-v0"
 
     return env_name
-
-
-class BlockTaskVariant(enum.Enum):
-    REACH = "Reach"
-    REACH_NORMALIZED = "ReachNormalized"
-    PUSH = "Push"
-    PUSH_NORMALIZED = "PushNormalized"
-    INSERT = "Insert"
 
 
 def sleep_spin(sleep_time_sec):
