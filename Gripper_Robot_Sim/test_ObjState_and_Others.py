@@ -3,7 +3,7 @@ import pybullet_data
 import time
 from typing import Tuple, Any
 
-from block_pushing.utils.utils_pybullet import ObjState
+from block_pushing.utils.utils_pybullet import ObjState,XarmState
 
 # === First, Setup PyBullet ===
 physics_client = p.connect(p.DIRECT)
@@ -31,6 +31,7 @@ for _ in range(100):
 # === 1. Save state ===
 state = ObjState.get_bullet_state(p, obj_id)
 inf = ObjState._get_joint_info(p, obj_id, 9)
+state = XarmState.get_bullet_state(client, obj_id, target_pose, goal_translation)
 print("info:", inf)
 print("[Saved State]")
 # ObjState(
