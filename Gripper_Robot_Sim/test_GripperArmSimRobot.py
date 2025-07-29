@@ -77,8 +77,7 @@ for _ in range(100):
 time.sleep(2)
 
 
-rotation = transform.Rotation.from_rotvec([0, math.pi, 0])
-translation = np.array([0.3, -0.4, self.effector_height])
+
 
 # Get joint positions, velocities, torques
 print("\n[TEST] get_joints_measured")
