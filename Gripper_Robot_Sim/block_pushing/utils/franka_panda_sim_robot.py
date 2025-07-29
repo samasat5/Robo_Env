@@ -164,12 +164,6 @@ class GripperArmSimRobot:
         joint_torques = np.array([state[3] for state in joint_states])
         return joint_positions, joint_velocities, joint_torques
 
-    def get_joint_positions(self):                  # Khodam
-        joint_states = self._pybullet_client.getJointStates(
-            self.gripperarm, self._joint_indices
-        )
-        joint_positions = np.array([state[0] for state in joint_states])
-        return joint_positions
 
     def forward_kinematics(self):
         """Forward kinematics."""

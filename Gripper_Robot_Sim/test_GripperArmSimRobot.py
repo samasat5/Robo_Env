@@ -86,9 +86,7 @@ print("Positions:", positions)
 print("Velocities:", velocities)
 print("Torques:", torques)
 
-# Get joint positions separately
-print("\n[TEST] get_joint_positions")
-print("Joint Positions:", robot.get_joint_positions())
+
 
 # Test FK
 print("\n[TEST] forward_kinematics")## uses getLinkState
