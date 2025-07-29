@@ -29,7 +29,7 @@ from scipy.spatial.transform import Rotation
 
 
 
-client = p.connect(p.GUI)
+client = p.connect(p.DIRECT)
 p.setGravity(0, 0, -9.81)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
 p.loadURDF("plane.urdf",[0, 0, -0.001])
@@ -94,7 +94,7 @@ pose = robot.forward_kinematics()  # computes the current 3D pose (position + or
 print("FK pose translation left:", pose.translation_left) # x,y,z
 print("FK pose rotation left (quat):", pose.rotation_left.as_quat()) #quaternion [x, y, z, w]
 
-print(robot._get_current_translation_orientation())
+print("robot current state",robot._get_current_translation_orientation())
 
 # test Inverse Kinematics
 print("\n[TEST] inverse_kinematics")
@@ -135,6 +135,9 @@ for _ in range(50):
     p.stepSimulation()
     time.sleep(1 / 240.0) 
     
+
+print("robot current state",robot._get_current_translation_orientation())
+
     
 time.sleep(3)
     
