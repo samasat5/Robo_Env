@@ -143,7 +143,6 @@ def build_env_name(shared_memory, use_image_obs, use_normalized_env=False):
         env_name = "Shared" + env_name
 
     env_name = env_name + "-v0"
-
     return env_name
 
 
