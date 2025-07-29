@@ -232,7 +232,7 @@ class BlockPick(gym.Env):
         self._saved_state = None
 
         assert isinstance(self._pybullet_client, bullet_client.BulletClient)
-        self._control_frequency = control_frequency
+        self._control_frequency = control_frequency   # If control_frequency = 10.0, the robot receives an action every 0.1 seconds
         self._step_frequency = (
             1 / self._pybullet_client.getPhysicsEngineParameters()["fixedTimeStep"])
 
