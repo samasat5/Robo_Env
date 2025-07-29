@@ -6,12 +6,22 @@ from typing import Tuple, Any
 from block_pushing.utils.utils_pybullet import ObjState
 
 # === First, Setup PyBullet ===
-physics_client = p.connect(p.GUI)
+physics_client = p.connect(p.DIRECT)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
 p.setGravity(0, 0, -9.8)
 
-# === Load a sample object (KUKA robot or any URDF) ===
-obj_id = p.loadURDF("r2d2.urdf", [0, 0, 0.1])
+p.loadURDF("plane.urdf",[0, 0, -0.001])
+
+p.resetDebugVisualizerCamera(
+    cameraDistance=1,
+    cameraYaw=100,
+    cameraPitch=-30,
+    cameraTargetPosition=[0, 0, 0.1],
+)
+
+obj_id = p.loadURDF("block2.urdf",[0.2, 0.5, 0.01]  , useFixedBase = False ) # size="0.04 0.04 0.04
+
+
 
 # === Step a few frames ===
 for _ in range(100):
@@ -24,30 +34,30 @@ print("[Saved State]")
 print("Base pose:", state.base_pose)
 print("Joint positions:", [js[0] for js in state.joint_state])
 
-# === 2. Apply random velocity (modify the object) ===
-p.resetBaseVelocity(obj_id, linearVelocity=[1, 0, 0], angularVelocity=[0, 0, 0])
-for _ in range(50):
-    p.stepSimulation()
-    time.sleep(1 / 240)
+# # === 2. Apply random velocity (modify the object) ===
+# p.resetBaseVelocity(obj_id, linearVelocity=[1, 0, 0], angularVelocity=[0, 0, 0])
+# for _ in range(50):
+#     p.stepSimulation()
+#     time.sleep(1 / 240)
 
-# === 3. Restore state ===
-state.set_bullet_state(p, obj_id)
+# # === 3. Restore state ===
+# state.set_bullet_state(p, obj_id)
 
-# === 4. Check restored state ===
-restored_pose = p.getBasePositionAndOrientation(obj_id)
-print("\n[Restored State]")
-print("Restored pose:", restored_pose)
-print("Should match saved pose:", state.base_pose)
+# # === 4. Check restored state ===
+# restored_pose = p.getBasePositionAndOrientation(obj_id)
+# print("\n[Restored State]")
+# print("Restored pose:", restored_pose)
+# print("Should match saved pose:", state.base_pose)
 
-# === 5. Test Serialization ===
-serialized = state.serialize()
-print("\nSerialized:", serialized.keys())
+# # === 5. Test Serialization ===
+# serialized = state.serialize()
+# print("\nSerialized:", serialized.keys())
 
-# === 6. Test Deserialization ===
-deserialized = ObjState.deserialize(serialized)
-assert deserialized.base_pose == state.base_pose
+# # === 6. Test Deserialization ===
+# deserialized = ObjState.deserialize(serialized)
+# assert deserialized.base_pose == state.base_pose
 
-print("\n[Deserialization works ✅]")
+# print("\n[Deserialization works ✅]")
 
-# Optional: Disconnect when done
-# p.disconnect()
+# # Optional: Disconnect when done
+# # p.disconnect()
