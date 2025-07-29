@@ -196,6 +196,7 @@ class BlockPick(gym.Env):
 
 
     def _setup_workspace_and_robot(self):
+        
         self._pybullet_client.resetSimulation()
         self._pybullet_client.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
         self._pybullet_client.setPhysicsEngineParameter(enableFileCaching=0)
@@ -214,7 +215,25 @@ class BlockPick(gym.Env):
             initial_joint_positions=INITIAL_JOINT_POSITIONS, 
             color="white" if self._visuals_mode == "real" else "default",)
 
+    def _setup_pybullet_scene(self):
+        self._pybullet_client = bullet_client.BulletClient(self._connection_mode)
 
+        # Temporarily disable rendering to speed up loading URDFs.
+        pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RENDERING, 0)
+
+        self._setup_workspace_and_robot()
+
+        self._target_id = utils_pybullet.load_urdf(
+            self._pybullet_client, ZONE_URDF_PATH, useFixedBase=True)
+        
+        self._block_ids = [
+            utils_pybullet.load_urdf(
+                self._pybullet_client, BLOCK_URDF_PATH, useFixedBase=False)]
+
+        # Re-enable rendering.
+        pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RENDERING, 1)
+
+        self.step_simulation_to_stabilize()
             
     def _setup_pybullet(self):
         # Connect to pybullet (DIRECT or GUI)
