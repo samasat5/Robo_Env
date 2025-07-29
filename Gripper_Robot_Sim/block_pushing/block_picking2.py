@@ -300,8 +300,11 @@ class BlockPick(gym.Env):
                 target_translation,
                 target_orientation_quat,
             ) = self._pybullet_client.getBasePositionAndOrientation(self._target_id)
-            target_rotation = transform.Rotation.from_quat(target_orientation_quat)
-            target_translation = np.array(target_translation)
+            
+            target_rotation_left = transform.Rotation.from_quat(target_orientation_quat)
+            target_rotation_right = transform.Rotation.from_quat(target_orientation_quat)
+            target_translation_left = np.array(target_translation)
+            target_translation_right = np.array(target_translation)
 
         self._target_pose = Pose3d(
             rotation=target_rotation, translation=target_translation
