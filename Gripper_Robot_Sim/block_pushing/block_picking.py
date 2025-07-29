@@ -333,10 +333,8 @@ class BlockPush(gym.Env):
 
         self._setup_workspace_and_robot()
 
-        if self._task == BlockTaskVariant.INSERT:
-            target_urdf_path = INSERT_URDF_PATH
-        else:
-            target_urdf_path = ZONE_URDF_PATH
+
+        target_urdf_path = ZONE_URDF_PATH #Khodm
 
         self._target_id = utils_pybullet.load_urdf(
             self._pybullet_client, target_urdf_path, useFixedBase=True
