@@ -161,6 +161,10 @@ class BlockPick(gym.Env):
             self._image_size = image_size
             self._camera_instrinsics = CAMERA_INTRINSICS_REAL
             self._workspace_urdf_path = WORKSPACE_URDF_PATH_REAL
+            
+            
+        self.action_space = spaces.Box(low=-0.1, high=0.1, shape=(2,))  # x, y
+        self.observation_space = self._create_observation_space(image_size)
     
     def _setup_pybullet(self):
         # Connect to pybullet (DIRECT or GUI)
