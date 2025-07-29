@@ -193,9 +193,14 @@ class BlockPick(gym.Env):
         # been updated at this state, but the assets are now loaded.
         self.save_state()
         self.reset()
+        
+        
+    def step_Simulation_func(self, nsteps=100):
+        for _ in range(nsteps):
+            self._pybullet_client.stepSimulation()
 
 
-    def _setup_pybullet_scene(self):
+    def _setup_the_scene(self):
         
         self._pybullet_client.resetSimulation()
         self._pybullet_client.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
@@ -225,7 +230,7 @@ class BlockPick(gym.Env):
         # Re-enable rendering.
         pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RENDERING, 1)
 
-        self.step_simulation_to_stabilize()
+        self.step_Simulation_func(nsteps=100)
 
 
         
