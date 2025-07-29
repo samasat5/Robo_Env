@@ -134,14 +134,12 @@ CAMERA_INTRINSICS_REAL = (
 def build_env_name(shared_memory, use_image_obs, use_normalized_env=False):
     """Construct the env name from parameters."""
     env_name = "Block"  #Khodam
-
     if use_image_obs:
         env_name = env_name + "Rgb"
     if use_normalized_env:
         env_name = env_name + "Normalized"
     if shared_memory:
         env_name = "Shared" + env_name
-
     env_name = env_name + "-v0"
     return env_name
 
