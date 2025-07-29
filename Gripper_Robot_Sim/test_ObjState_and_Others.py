@@ -34,24 +34,24 @@ print("[Saved State]")
 print("Base pose:", state.base_pose)
 print("Joint positions:", [js[0] for js in state.joint_state])
 
-# # === 2. Apply random velocity (modify the object) ===
-# p.resetBaseVelocity(obj_id, linearVelocity=[1, 0, 0], angularVelocity=[0, 0, 0])
-# for _ in range(50):
-#     p.stepSimulation()
-#     time.sleep(1 / 240)
+# === 2. Apply random velocity (modify the object) ===
+p.resetBaseVelocity(obj_id, linearVelocity=[1, 0, 0], angularVelocity=[0, 0, 0])
+for _ in range(50):
+    p.stepSimulation()
+    time.sleep(1 / 240)
 
-# # === 3. Restore state ===
-# state.set_bullet_state(p, obj_id)
+# === 3. Restore state ===
+state.set_bullet_state(p, obj_id)
 
-# # === 4. Check restored state ===
-# restored_pose = p.getBasePositionAndOrientation(obj_id)
-# print("\n[Restored State]")
-# print("Restored pose:", restored_pose)
-# print("Should match saved pose:", state.base_pose)
+# === 4. Check restored state ===
+restored_pose = p.getBasePositionAndOrientation(obj_id)
+print("\n[Restored State]")
+print("Restored pose:", restored_pose)
+print("Should match saved pose:", state.base_pose)
 
-# # === 5. Test Serialization ===
-# serialized = state.serialize()
-# print("\nSerialized:", serialized.keys())
+# === 5. Test Serialization ===
+serialized = state.serialize()
+print("\nSerialized:", serialized.keys())
 
 # # === 6. Test Deserialization ===
 # deserialized = ObjState.deserialize(serialized)
