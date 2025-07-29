@@ -133,7 +133,7 @@ CAMERA_INTRINSICS_REAL = (
 
 def build_env_name(shared_memory, use_image_obs, use_normalized_env=False):
     """Construct the env name from parameters."""
-    env_name = "Block" 
+    env_name = "Block"  #Khodam
 
     if use_image_obs:
         env_name = env_name + "Rgb"
@@ -163,7 +163,7 @@ class BlockPush(gym.Env):
         self,
         control_frequency=10.0,
         image_size=None,
-        shared_memory=False,
+        shared_memory=False, # Khodam deleting task
         seed=None,
         goal_dist_tolerance=0.01,
         effector_height=None,
@@ -298,11 +298,8 @@ class BlockPush(gym.Env):
         return self._compute_state()
 
     def get_goal_translation(self):
-        """Return the translation component of the goal (2D)."""
-        if self._task == BlockTaskVariant.REACH:
-            return np.concatenate([self.reach_target_translation, [0]])
-        else:
-            return self._target_pose.translation if self._target_pose else None
+        """Return the translation component of the goal (2D)."""   # Khodam
+        return self._target_pose.translation if self._target_pose else None
 
     def get_obj_ids(self):
         return self._block_ids
