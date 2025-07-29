@@ -233,6 +233,9 @@ class BlockPick(gym.Env):
         self.step_Simulation_func(nsteps=100)
 
 
+    def _set_robot_target_effector_pose(self, pose):
+        self._target_effector_pose = pose
+        self._robot.set_target_effector_pose(pose)
         
             
     def _setup_pybullet(self):
