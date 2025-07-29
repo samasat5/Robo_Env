@@ -309,7 +309,7 @@ class BlockPick(gym.Env):
         self._target_pose = Pose3d_gripper(target_translation_left, target_translation_right, target_rotation_left, target_rotation_right)
 
         if reset_poses:
-            self.step_simulation_to_stabilize()
+            self.step_Simulation_func()
 
         state = self._compute_state()
         self._previous_state = state
