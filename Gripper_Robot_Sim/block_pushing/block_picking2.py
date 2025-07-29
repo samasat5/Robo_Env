@@ -257,11 +257,16 @@ class BlockPick(gym.Env):
 
         if reset_poses:
             self._pybullet_client.restoreState(self._saved_state)
-
+            
             rotation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
             rotation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
-            translation_left = np.array([0.3, -0.4, self.effector_height])
-            translation_right = np.array([0.3, -0.4, self.effector_height])
+            
+            center_translation = np.array([0.3, -0.4, self.effector_height])
+            finger_offset = 0.02  # 2 cm on each side in y-axis
+            translation_left = center_translation + np.array([0.0, -finger_offset, 0.0])
+            translation_right = center_translation + np.array([0.0, finger_offset, 0.0])
+            
+            
             starting_pose = Pose3d_gripper(rotation_left,rotation_right, translation_left,translation_right)
             self._set_robot_target_effector_pose(starting_pose)
 
