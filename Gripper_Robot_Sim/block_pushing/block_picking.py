@@ -233,7 +233,7 @@ class BlockPick(gym.Env):
 
         assert isinstance(self._pybullet_client, bullet_client.BulletClient)
         self._control_frequency = control_frequency   # If control_frequency = 10.0, the robot receives an action every 0.1 seconds
-        self._step_frequency = (
+        self._step_frequency = (     # its the inverse of PyBullet’s internal fixedTimeSte  #Example: If fixedTimeStep = 1/240, then step_frequency = 240.0. This means PyBullet simulates physics at 240 Hz.
             1 / self._pybullet_client.getPhysicsEngineParameters()["fixedTimeStep"])
 
         self._last_loop_time = None
