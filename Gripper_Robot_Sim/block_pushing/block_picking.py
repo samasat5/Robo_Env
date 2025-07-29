@@ -153,7 +153,7 @@ def sleep_spin(sleep_time_sec):
         pass
 
 
-class BlockPush(gym.Env):
+class BlockPick(gym.Env):
     """Simple XArm environment for block pushing."""
 
     def __init__(
