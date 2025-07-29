@@ -270,6 +270,7 @@ class BlockPick(gym.Env):
             
             self._set_robot_target_effector_pose(starting_pose)
 
+
             # Reset block pose.
             block_x = workspace_center_x + self._rng.uniform(low=-0.1, high=0.1)
             block_y = -0.2 + self._rng.uniform(low=-0.15, high=0.15)
