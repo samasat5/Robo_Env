@@ -19,7 +19,7 @@ p.resetDebugVisualizerCamera(
     cameraTargetPosition=[0, 0, 0.1],
 )
 
-obj_id = p.loadURDF("block2.urdf",[0.2, 0.5, 0.01]  , useFixedBase = False ) # size="0.04 0.04 0.04
+obj_id = p.loadURDF("franka_panda/panda.urdf",[0.2, 0.5, 0.01]  , useFixedBase = False ) # size="0.04 0.04 0.04
 
 
 
@@ -30,6 +30,8 @@ for _ in range(100):
 
 # === 1. Save state ===
 state = ObjState.get_bullet_state(p, obj_id)
+inf = ObjState._get_joint_info(p, obj_id, 9)
+print("info:", inf)
 print("[Saved State]")
 print("Base pose:", state.base_pose)
 print("Joint positions:", [js[0] for js in state.joint_state])
@@ -53,9 +55,9 @@ print("Should match saved pose:", state.base_pose)
 serialized = state.serialize()
 print("\nSerialized:", serialized.keys())
 
-# # === 6. Test Deserialization ===
-# deserialized = ObjState.deserialize(serialized)
-# assert deserialized.base_pose == state.base_pose
+# === 6. Test Deserialization ===
+deserialized = ObjState.deserialize(serialized)
+assert deserialized.base_pose == state.base_pose
 
 # print("\n[Deserialization works ✅]")
 
