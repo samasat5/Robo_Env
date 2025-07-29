@@ -251,7 +251,76 @@ class BlockPick(gym.Env):
         self._target_effector_pose = pose
         self._robot.set_target_effector_pose(pose)
         
-            
+    def reset(self, reset_poses=True):
+        
+        workspace_center_x = 0.4
+
+        if reset_poses:
+            self._pybullet_client.restoreState(self._saved_state)
+
+            rotation = transform.Rotation.from_rotvec([0, math.pi, 0])
+            translation = np.array([0.3, -0.4, self.effector_height])
+            starting_pose = Pose3d_gripper(rotation=rotation, translation=translation)
+            self._set_robot_target_effector_pose(starting_pose)
+
+            # Reset block pose.
+            block_x = workspace_center_x + self._rng.uniform(low=-0.1, high=0.1)
+            block_y = -0.2 + self._rng.uniform(low=-0.15, high=0.15)
+            block_translation = np.array([block_x, block_y, 0])
+            block_sampled_angle = self._rng.uniform(math.pi)
+            block_rotation = transform.Rotation.from_rotvec([0, 0, block_sampled_angle])
+
+            self._pybullet_client.resetBasePositionAndOrientation(
+                self._block_ids[0],
+                block_translation.tolist(),
+                block_rotation.as_quat().tolist(),
+            )
+
+            # Reset target pose.
+            target_x = workspace_center_x + self._rng.uniform(low=-0.10, high=0.10)
+            target_y = 0.2 + self._rng.uniform(low=-0.15, high=0.15)
+            target_translation = np.array([target_x, target_y, 0.020])
+
+            target_sampled_angle = math.pi + self._rng.uniform(
+                low=-math.pi / 6, high=math.pi / 6
+            )
+            target_rotation = transform.Rotation.from_rotvec(
+                [0, 0, target_sampled_angle]
+            )
+
+            self._pybullet_client.resetBasePositionAndOrientation(
+                self._target_id,
+                target_translation.tolist(),
+                target_rotation.as_quat().tolist(),
+            )
+        else:
+            (
+                target_translation,
+                target_orientation_quat,
+            ) = self._pybullet_client.getBasePositionAndOrientation(self._target_id)
+            target_rotation = transform.Rotation.from_quat(target_orientation_quat)
+            target_translation = np.array(target_translation)
+
+        self._target_pose = Pose3d(
+            rotation=target_rotation, translation=target_translation
+        )
+
+        if reset_poses:
+            self.step_simulation_to_stabilize()
+
+        state = self._compute_state()
+        self._previous_state = state
+
+        if self._task == BlockTaskVariant.REACH:
+            self._compute_reach_target(state)
+
+        self._init_goal_distance = self._compute_goal_distance(state)
+        init_goal_eps = 1e-7
+        assert self._init_goal_distance > init_goal_eps
+        self.best_fraction_reduced_goal_dist = 0.0
+
+        return state
+    
     def _setup_pybullet(self):
         # Connect to pybullet (DIRECT or GUI)
         pass

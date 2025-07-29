@@ -63,6 +63,8 @@ p.createConstraint(
 # Create robot with end effector
 robot = GripperArmSimRobot(pybullet_client=p)
 
+
+
 # Reset joints to home position
 print("\n[TEST] reset_joints")
 robot.reset_joints(robot.initial_joint_positions)
