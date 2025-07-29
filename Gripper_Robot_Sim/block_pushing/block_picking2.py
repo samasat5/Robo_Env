@@ -306,9 +306,7 @@ class BlockPick(gym.Env):
             target_translation_left = np.array(target_translation)
             target_translation_right = np.array(target_translation)
 
-        self._target_pose = Pose3d(
-            rotation=target_rotation, translation=target_translation
-        )
+        self._target_pose = Pose3d_gripper(target_translation_left, target_translation_right, target_rotation_left, target_rotation_right)
 
         if reset_poses:
             self.step_simulation_to_stabilize()
