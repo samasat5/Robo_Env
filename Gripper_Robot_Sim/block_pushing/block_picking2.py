@@ -144,6 +144,23 @@ class BlockPick(gym.Env):
         self._load_robot()  # Use GripperArmSimRobot
         self._load_objects()
         self._define_spaces()
+        
+        
+        self._visuals_mode = visuals_mode
+        if visuals_mode == "default":
+            self._camera_pose = DEFAULT_CAMERA_POSE
+            self._camera_orientation = DEFAULT_CAMERA_ORIENTATION
+            self.workspace_bounds = WORKSPACE_BOUNDS
+            self._image_size = image_size
+            self._camera_instrinsics = CAMERA_INTRINSICS
+            self._workspace_urdf_path = WORKSPACE_URDF_PATH
+        else:
+            self._camera_pose = CAMERA_POSE_REAL
+            self._camera_orientation = CAMERA_ORIENTATION_REAL
+            self.workspace_bounds = WORKSPACE_BOUNDS_REAL
+            self._image_size = image_size
+            self._camera_instrinsics = CAMERA_INTRINSICS_REAL
+            self._workspace_urdf_path = WORKSPACE_URDF_PATH_REAL
     
     def _setup_pybullet(self):
         # Connect to pybullet (DIRECT or GUI)
