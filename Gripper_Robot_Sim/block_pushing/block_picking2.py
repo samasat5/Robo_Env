@@ -165,7 +165,22 @@ class BlockPick(gym.Env):
             
         self.action_space = spaces.Box(low=-0.1, high=0.1, shape=(2,))  # x, y
         self.observation_space = self._create_observation_space(image_size)
-    
+
+        self._control_frequency = control_frequency   # If control_frequency = 10.0, the robot receives an action every 0.1 seconds
+        
+        self._step_frequency = (     # its the inverse of PyBullet’s internal fixedTimeSte  #Example: If fixedTimeStep = 1/240, then step_frequency = 240.0. This means PyBullet simulates physics at 240 Hz.
+            1 / self._pybullet_client.getPhysicsEngineParameters()["fixedTimeStep"])
+
+        if self._step_frequency % self._control_frequency != 0:
+            raise ValueError(
+                "Control frequency should be a multiple of the "
+                "configured Bullet TimeStep.")
+            
+        # Use saved_state and restore to make reset safe as no simulation state has
+        # been updated at this state, but the assets are now loaded.
+        self.save_state()
+        self.reset()
+            
     def _setup_pybullet(self):
         # Connect to pybullet (DIRECT or GUI)
         pass
