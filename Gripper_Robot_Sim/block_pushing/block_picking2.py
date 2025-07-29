@@ -180,6 +180,28 @@ class BlockPick(gym.Env):
         # been updated at this state, but the assets are now loaded.
         self.save_state()
         self.reset()
+
+    def _setup_workspace_and_robot(self, end_effector="suction"):
+        self._pybullet_client.resetSimulation()
+        self._pybullet_client.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
+        self._pybullet_client.setPhysicsEngineParameter(enableFileCaching=0)
+        self._pybullet_client.setGravity(0, 0, -9.8)
+
+        utils_pybullet.load_urdf(
+            self._pybullet_client, PLANE_URDF_PATH, basePosition=[0, 0, -0.001]
+        )
+        self._workspace_uid = utils_pybullet.load_urdf(
+            self._pybullet_client,
+            self._workspace_urdf_path,
+            basePosition=[0.35, 0, 0.0],
+        )
+
+        self._robot = franka_panda_sim_robot.GripperArmSimRobot(  # Khodam
+            self._pybullet_client,
+            initial_joint_positions=INITIAL_JOINT_POSITIONS, #Khodam
+            color="white" if self._visuals_mode == "real" else "default",
+        )
+
             
     def _setup_pybullet(self):
         # Connect to pybullet (DIRECT or GUI)
