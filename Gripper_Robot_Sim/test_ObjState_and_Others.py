@@ -3,7 +3,7 @@ import pybullet_data
 import time
 from typing import Tuple, Any
 
-from block_pushing.utils import utils_pybullet
+from block_pushing.utils.utils_pybullet import ObjState
 
 # === First, Setup PyBullet ===
 physics_client = p.connect(p.GUI)
