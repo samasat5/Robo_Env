@@ -124,3 +124,72 @@ CAMERA_INTRINSICS_REAL = (
     0,
     1,
 )
+
+
+class BlockPick(gym.Env):
+    def __init__(
+        self,
+        control_frequency=10.0,
+        image_size=None,
+        shared_memory=False, 
+        seed=None,
+        goal_dist_tolerance=0.01,
+        effector_height=None,
+        visuals_mode="default",
+        abs_action=False
+    ):
+        # Init camera, workspace, physics, visuals
+        self._setup_pybullet()
+        self._load_workspace()
+        self._load_robot()  # Use GripperArmSimRobot
+        self._load_objects()
+        self._define_spaces()
+    
+    def _setup_pybullet(self):
+        # Connect to pybullet (DIRECT or GUI)
+        pass
+
+    def _load_workspace(self):
+        # Load table, plane, zone
+        pass
+
+    def _load_robot(self):
+        # Instantiate GripperArmSimRobot
+        pass
+
+    def _load_objects(self):
+        # Add blocks to the workspace
+        # Maybe randomly scatter 1 or more blocks
+        pass
+
+    def _define_spaces(self):
+        # Define observation_space and action_space
+        # action: [dx, dy, dz, gripper_action]
+        pass
+
+    def reset(self):
+        # Reset pybullet state
+        # Reset block + target + robot to initial positions
+        # Return initial observation
+        pass
+
+    def step(self, action):
+        # Parse action → pose + gripper state
+        # Apply inverse kinematics (IK)
+        # Move robot and step simulation
+        # Update internal state
+        # Compute reward, done
+        # Return obs, reward, done, info
+        pass
+
+    def _compute_state(self):
+        # Get block pose, gripper pose, maybe gripper state
+        pass
+
+    def render(self, mode="rgb_array"):
+        # Optionally render camera image using pybullet
+        pass
+
+    def close(self):
+        # Disconnect from pybullet
+        pass
