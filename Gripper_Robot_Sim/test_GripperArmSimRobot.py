@@ -94,6 +94,8 @@ pose = robot.forward_kinematics()  # computes the current 3D pose (position + or
 print("FK pose translation left:", pose.translation_left) # x,y,z
 print("FK pose rotation left (quat):", pose.rotation_left.as_quat()) #quaternion [x, y, z, w]
 
+print(robot._get_current_translation_orientation())
+
 # test Inverse Kinematics
 print("\n[TEST] inverse_kinematics")
 # new_translation_left = pose.translation_left + np.array([0, 0, -1]) 

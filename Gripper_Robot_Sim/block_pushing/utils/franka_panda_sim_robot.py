@@ -84,9 +84,9 @@ class GripperArmSimRobot:
         self.right_finger = 9   # Khodam
         self.left_finger = 10   # Khodam
 
-    def _get_current_translation_orientation(self, robot_id):
-        state_right_finger = self._pybullet_client.getLinkState(robot_id, self.right_finger)
-        state_left_finger = self._pybullet_client.getLinkState(robot_id, self.left_finger)
+    def _get_current_translation_orientation(self):
+        state_right_finger = self._pybullet_client.getLinkState(self.gripperarm, self.right_finger)
+        state_left_finger = self._pybullet_client.getLinkState(self.gripperarm, self.left_finger)
         translation_left = state_left_finger[0], 
         translation_right = state_right_finger[0]
         orientation_left = state_left_finger[1], 
