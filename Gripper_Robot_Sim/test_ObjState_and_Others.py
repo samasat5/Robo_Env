@@ -33,7 +33,14 @@ state = ObjState.get_bullet_state(p, obj_id)
 inf = ObjState._get_joint_info(p, obj_id, 9)
 print("info:", inf)
 print("[Saved State]")
-print("Base pose:", state)
+# ObjState(
+#     obj_id: int,
+#     base_pose: Tuple[Vec3, Vec4],    # Position (xyz) and orientation (quaternion) of the base
+#     base_vel: Tuple[Vec3, Vec3],     # Linear and angular velocity of the base
+#     joint_info: Any,                 # Metadata (like names, limits, types) for each joint
+#     joint_state: Any                 # Position, velocity, torque, etc. for each joint
+# )
+print("Base pose:", state.base_pose)
 print("Joint positions:", [js[0] for js in state.joint_state])
 
 # === 2. Apply random velocity (modify the object) ===
@@ -59,7 +66,3 @@ print("\nSerialized:", serialized.keys())
 deserialized = ObjState.deserialize(serialized)
 assert deserialized.base_pose == state.base_pose
 
-# print("\n[Deserialization works ✅]")
-
-# # Optional: Disconnect when done
-# # p.disconnect()
