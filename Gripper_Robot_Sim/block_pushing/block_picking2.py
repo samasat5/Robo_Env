@@ -243,7 +243,10 @@ class BlockPick(gym.Env):
 
         self.step_Simulation_func(nsteps=100)
 
+    def seed(self, seed=None):
+        self._rng = np.random.RandomState(seed=seed)
 
+    # Robot methods
     def _set_robot_target_effector_pose(self, pose):
         self._target_effector_pose = pose
         self._robot.set_target_effector_pose(pose)
