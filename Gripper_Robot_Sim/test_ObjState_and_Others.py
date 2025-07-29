@@ -7,6 +7,8 @@ from block_pushing.utils.utils_pybullet import ObjState,XarmState
 from block_pushing.utils.pose3d_gripper import Pose3d_gripper
 import numpy as np
 
+from block_pushing.utils.pose3d import Pose3d
+
 # === First, Setup PyBullet ===
 physics_client = p.connect(p.DIRECT)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
@@ -48,38 +50,48 @@ print("Joint positions:", [js[0] for js in state.joint_state])
 
 
 
-target_center = np.array([0.2, 0.5, 0.01 + 0.015])
-offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
-new_translation_left = target_center - offset
-new_translation_right = target_center + offset
- 
-new_pose = Pose3d_gripper(translation_left=new_translation_left,
-                          translation_right=new_translation_right,
-                          rotation_left=pose.rotation_left, 
-                          rotation_right=pose.rotation_left)
-state = XarmState.get_bullet_state(client, obj_id, target_pose, goal_translation)
+target_pose = Pose3d(
+    translation=[0.4, 0.2, 0.3],
+    rotation=p.getQuaternionFromEuler([0, 0, 0])
+)
+goal_translation = [0.5, 0.0, 0.2]
 
-
-# === 2. Apply random velocity (modify the object) ===
-p.resetBaseVelocity(obj_id, linearVelocity=[1, 0, 0], angularVelocity=[0, 0, 0])
-for _ in range(50):
-    p.stepSimulation()
-    time.sleep(1 / 240)
-
-# === 3. Restore state ===
-state.set_bullet_state(p, obj_id)
-
-# === 4. Check restored state ===
-restored_pose = p.getBasePositionAndOrientation(obj_id)
-print("\n[Restored State]")
-print("Restored pose:", restored_pose)
-print("Should match saved pose:", state.base_pose)
-
-# === 5. Test Serialization ===
+state = XarmState.get_bullet_state(p, obj_id, target_pose, goal_translation)
 serialized = state.serialize()
-print("\nSerialized:", serialized.keys())
+print("Serialized keys:", serialized.keys())
 
-# === 6. Test Deserialization ===
-deserialized = ObjState.deserialize(serialized)
-assert deserialized.base_pose == state.base_pose
+# 7. Deserialize back to object
+deserialized_state = XarmState.deserialize(serialized)
+
+# 8. Restore robot state
+deserialized_state.set_bullet_state(p, obj_id)
+
+# 9. Optional: step a bit if using GUI
+for _ in range(100):
+    p.stepSimulation()
+    time.sleep(1 / 240.0)
+
+
+# # === 2. Apply random velocity (modify the object) ===
+# p.resetBaseVelocity(obj_id, linearVelocity=[1, 0, 0], angularVelocity=[0, 0, 0])
+# for _ in range(50):
+#     p.stepSimulation()
+#     time.sleep(1 / 240)
+
+# # === 3. Restore state ===
+# state.set_bullet_state(p, obj_id)
+
+# # === 4. Check restored state ===
+# restored_pose = p.getBasePositionAndOrientation(obj_id)
+# print("\n[Restored State]")
+# print("Restored pose:", restored_pose)
+# print("Should match saved pose:", state.base_pose)
+
+# # === 5. Test Serialization ===
+# serialized = state.serialize()
+# print("\nSerialized:", serialized.keys())
+
+# # === 6. Test Deserialization ===
+# deserialized = ObjState.deserialize(serialized)
+# assert deserialized.base_pose == state.base_pose
 
