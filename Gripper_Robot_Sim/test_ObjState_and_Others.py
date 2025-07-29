@@ -33,7 +33,7 @@ state = ObjState.get_bullet_state(p, obj_id)
 inf = ObjState._get_joint_info(p, obj_id, 9)
 print("info:", inf)
 print("[Saved State]")
-print("Base pose:", state.base_pose)
+print("Base pose:", state)
 print("Joint positions:", [js[0] for js in state.joint_state])
 
 # === 2. Apply random velocity (modify the object) ===
