@@ -50,27 +50,6 @@ print("Joint positions:", [js[0] for js in state.joint_state])
 
 
 
-target_pose = Pose3d(
-    translation=[0.4, 0.2, 0.3],
-    rotation=p.getQuaternionFromEuler([0, 0, 0])
-)
-goal_translation = [0.5, 0.0, 0.2]
-
-state = XarmState.get_bullet_state(p, obj_id, target_pose, goal_translation)
-serialized = state.serialize()
-print("Serialized keys:", serialized.keys())
-
-# 7. Deserialize back to object
-deserialized_state = XarmState.deserialize(serialized)
-
-# 8. Restore robot state
-deserialized_state.set_bullet_state(p, obj_id)
-
-# 9. Optional: step a bit if using GUI
-for _ in range(100):
-    p.stepSimulation()
-    time.sleep(1 / 240.0)
-
 
 # # === 2. Apply random velocity (modify the object) ===
 # p.resetBaseVelocity(obj_id, linearVelocity=[1, 0, 0], angularVelocity=[0, 0, 0])
