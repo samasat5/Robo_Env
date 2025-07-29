@@ -367,7 +367,10 @@ class BlockPick(gym.Env):
             rotation_right = transform.Rotation.from_rotvec([0, math.pi, 0]) #Khodam
             translation_left = np.array([0.3, -0.4, self.effector_height]) #Khodam
             translation_right = np.array([0.3, -0.4, self.effector_height]) #Khodam
-            starting_pose = Pose3d_gripper(rotation_left=rotation_left,rotation_right=rotation_right, translation_left=translation_left,translation_right=translation_right)
+            starting_pose = Pose3d_gripper(rotation_left=rotation_left,
+                                           rotation_right=rotation_right, 
+                                           translation_left=translation_left,
+                                           translation_right=translation_right)
             self._set_robot_target_effector_pose(starting_pose)  # to be changed
 
             # Reset block pose.
