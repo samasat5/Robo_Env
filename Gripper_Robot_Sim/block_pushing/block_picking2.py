@@ -182,7 +182,7 @@ class BlockPick(gym.Env):
         self.reset()
 
 
-    def _setup_workspace_and_robot(self, end_effector="suction"):
+    def _setup_workspace_and_robot(self):
         self._pybullet_client.resetSimulation()
         self._pybullet_client.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
         self._pybullet_client.setPhysicsEngineParameter(enableFileCaching=0)
@@ -200,6 +200,7 @@ class BlockPick(gym.Env):
             self._pybullet_client,
             initial_joint_positions=INITIAL_JOINT_POSITIONS, #Khodam
             color="white" if self._visuals_mode == "real" else "default",)
+
 
             
     def _setup_pybullet(self):
