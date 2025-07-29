@@ -4,6 +4,8 @@ import time
 from typing import Tuple, Any
 
 from block_pushing.utils.utils_pybullet import ObjState,XarmState
+from block_pushing.utils.pose3d_gripper import Pose3d_gripper
+import numpy as np
 
 # === First, Setup PyBullet ===
 physics_client = p.connect(p.DIRECT)
@@ -31,7 +33,6 @@ for _ in range(100):
 # === 1. Save state ===
 state = ObjState.get_bullet_state(p, obj_id)
 inf = ObjState._get_joint_info(p, obj_id, 9)
-state = XarmState.get_bullet_state(client, obj_id, target_pose, goal_translation)
 print("info:", inf)
 print("[Saved State]")
 # ObjState(
@@ -43,6 +44,21 @@ print("[Saved State]")
 # )
 print("Base pose:", state.base_pose)
 print("Joint positions:", [js[0] for js in state.joint_state])
+
+
+
+
+target_center = np.array([0.2, 0.5, 0.01 + 0.015])
+offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
+new_translation_left = target_center - offset
+new_translation_right = target_center + offset
+ 
+new_pose = Pose3d_gripper(translation_left=new_translation_left,
+                          translation_right=new_translation_right,
+                          rotation_left=pose.rotation_left, 
+                          rotation_right=pose.rotation_left)
+state = XarmState.get_bullet_state(client, obj_id, target_pose, goal_translation)
+
 
 # === 2. Apply random velocity (modify the object) ===
 p.resetBaseVelocity(obj_id, linearVelocity=[1, 0, 0], angularVelocity=[0, 0, 0])
