@@ -319,7 +319,7 @@ class BlockPush(gym.Env):
             basePosition=[0.35, 0, 0.0],
         )
 
-        self._robot = xarm_sim_robot.XArmSimRobot(
+        self._robot = franka_panda_sim_robot.GripperArmSimRobot(  # Khodam
             self._pybullet_client,
             initial_joint_positions=INITIAL_JOINT_POSITIONS,
             end_effector=end_effector,
