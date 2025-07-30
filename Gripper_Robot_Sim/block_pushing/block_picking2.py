@@ -495,25 +495,22 @@ class BlockPick(gym.Env):
     def _get_reward(self, state):
         # Reward is 1. if both blocks are inside targets, but not the same target.
 
-        reward = 0.0
+        block_pos = state["block_translation"]
+        target_pos = state["target_translation"]
 
+        # Compute 3D distance between block and target
+        dist = np.linalg.norm(block_pos - target_pos)
 
-        if self._in_target[t_i][b_i] == -1:
-            dist = _block_target_dist(b, t)
-            if dist < self.goal_dist_tolerance:
-                self._in_target[t_i][b_i] = 0
-                logger.info(
-                    f"Block {b_i} entered target {t_i} on step {self._step_num}"
-                )
-                self._event_manager.target(step=self._step_num, block_id=b_i, target_id=t_i)
-                reward += 0.49
+        # Check if block is within goal tolerance
+        if dist < self.goal_dist_tolerance:
+            logger.info(f"Block reached target on step {self._step_num}")
+            self._event_manager.target(step=self._step_num, block_id=0, target_id=0)
+            return 1.0
 
-        b0_closest_target, b0_in_target = _closest_target("block")
-        b1_closest_target, b1_in_target = _closest_target("block2")
-        # reward = 0.0
-        if b0_in_target and b1_in_target and (b0_closest_target != b1_closest_target):
-            reward = 0.51
-        return reward
+        return 0.0 
+  
+    
+    
     @property
     def succeeded(self):
         state = self._compute_state()
