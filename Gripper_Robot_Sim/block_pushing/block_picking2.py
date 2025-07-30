@@ -417,6 +417,16 @@ class BlockPick(gym.Env):
             self.workspace_bounds[0],
             self.workspace_bounds[1],
         )
+        center_translation = target_effector_translation
+        finger_offset = 0.02  # 2 cm on each side in y-axis
+        translation_left = center_translation + np.array([0.0, -finger_offset, 0.0])
+        translation_right = center_translation + np.array([0.0, finger_offset, 0.0])
+        block_pose = Pose3d_gripper(
+            rotation_left,
+            rotation_right,
+            translation_left,
+            translation_right) 
+        effector_pose = self._robot.forward_kinematics()
         target_effector_translation[-1] = self.effector_height
         target_effector_pose = Pose3d(
             rotation=block_pushing.EFFECTOR_DOWN_ROTATION, translation=target_effector_translation
