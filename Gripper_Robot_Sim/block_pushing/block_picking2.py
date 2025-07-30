@@ -472,7 +472,7 @@ class BlockPick(gym.Env):
     def _compute_goal_distance(self, state):
         real_distance_target_state = np.linalg.norm(state["target_translation"] - state["block_translation"])  # euclidean distance of block and target on the ground
         target_translation_0 = np.array([state["target_translation"][0], state["target_translation"][1], 0.2]) 
-        distance_0 = np.linalg.norm(target_translation_0 - state["block_translation"]) # distance that the robot needs to travel for a sucessful grasp-and-place task
+        distance_0 = np.linalg.norm(target_translation_0 - state["block_translation"]) # elevated goal # distance that the robot needs to travel for a sucessful grasp-and-place task
         return distance_0
 
  
