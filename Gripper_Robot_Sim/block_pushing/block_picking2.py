@@ -470,11 +470,7 @@ class BlockPick(gym.Env):
        
        
     def _compute_goal_distance(self, state):
-        blocks = ["block", "block2"]
-
-        return np.linalg.norm(
-                    state["%s_translation" % block] - state["%s_translation" % target]
-                )
+        return np.linalg.norm(state[6] - state[0])
 
  
     @property
