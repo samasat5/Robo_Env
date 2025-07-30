@@ -380,13 +380,13 @@ class BlockPick(gym.Env):
             return np.array([pose.rotation.as_euler("xyz", degrees=False)[-1] % np.pi])
 
         obs = collections.OrderedDict(
-            block_translation=block_pose.translation[0:2],
+            block_translation=block_pose.translation,
             block_orientation=_yaw_from_pose(block_pose),
             # block2_translation=block_pose.translation[0:2],
             # block2_orientation=_yaw_from_pose(block_pose),
-            effector_translation=effector_pose.translation[0:2],
-            effector_target_translation=self._target_effector_pose.translation[0:2],
-            target_translation=self._target_poses[0].translation[0:2],
+            effector_translation=effector_pose.translation,
+            effector_target_translation=self._target_effector_pose.translation,
+            target_translation=self._target_poses[0].translation,
             target_orientation=_yaw_from_pose(self._target_poses[0]),
             # target2_translation=self._target_poses[1].translation[0:2],
             # target2_orientation=_yaw_from_pose(self._target_poses[1]),
@@ -702,10 +702,3 @@ class BlockPick(gym.Env):
             )
         return spaces.Dict(obs_dict)
     
-    def render(self, mode="rgb_array"):
-        # Optionally render camera image using pybullet
-        pass
-
-    def close(self):
-        # Disconnect from pybullet
-        pass
