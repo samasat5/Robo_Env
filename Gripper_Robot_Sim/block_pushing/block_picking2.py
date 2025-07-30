@@ -467,7 +467,67 @@ class BlockPick(gym.Env):
         t0 = time.perf_counter()
         while time.perf_counter() - t0 < sleep_time_sec:
             pass
-        
+       
+       
+    def _compute_goal_distance(self, state):
+        blocks = ["block", "block2"]
+
+        def _target_block_dist(target, block):
+                return np.linalg.norm(
+                    state["%s_translation" % block] - state["%s_translation" % target]
+                )
+
+        def _closest_block_dist(target):
+            dists = [_target_block_dist(target, b) for b in blocks]
+            closest_dist = np.min(dists)
+            return closest_dist
+
+        t0_closest_dist = _closest_block_dist("target")
+        t1_closest_dist = _closest_block_dist("target2")
+        return np.mean([t0_closest_dist, t1_closest_dist])
+ 
+    @property
+    def succeeded(self):
+        state = self._compute_state()
+        reward = self._get_reward(state)
+        if reward >= 0.5:
+            return True
+        return False
+    
+    def _create_observation_space(self, image_size):
+        pi2 = math.pi * 2
+
+        obs_dict = collections.OrderedDict(
+            block_translation=spaces.Box(low=-5, high=5, shape=(2,)),  # x,y
+            block_orientation=spaces.Box(low=-pi2, high=pi2, shape=(1,)),  # phi
+            block2_translation=spaces.Box(low=-5, high=5, shape=(2,)),  # x,y
+            block2_orientation=spaces.Box(low=-pi2, high=pi2, shape=(1,)),  # phi
+            effector_translation=spaces.Box(
+                low=WORKSPACE_BOUNDS[0] - 0.1,
+                high=WORKSPACE_BOUNDS[1] + 0.1,
+            ),  # x,y
+            effector_target_translation=spaces.Box(
+                low=WORKSPACE_BOUNDS[0] - 0.1,
+                high=WORKSPACE_BOUNDS[1] + 0.1,
+            ),  # x,y
+            target_translation=spaces.Box(low=-5, high=5, shape=(2,)),  # x,y
+            target_orientation=spaces.Box(
+                low=-pi2,
+                high=pi2,
+                shape=(1,),
+            ),  # theta
+            target2_translation=spaces.Box(low=-5, high=5, shape=(2,)),  # x,y
+            target2_orientation=spaces.Box(
+                low=-pi2,
+                high=pi2,
+                shape=(1,),
+            ),  # theta
+        )
+        if image_size is not None:
+            obs_dict["rgb"] = spaces.Box(
+                low=0, high=255, shape=(image_size[0], image_size[1], 3), dtype=np.uint8
+            )
+        return spaces.Dict(obs_dict)
         
     def get_pybullet_state(self):
         """Save pybullet state of the scene.
