@@ -357,13 +357,17 @@ class BlockPick(gym.Env):
         pass
 
     def step(self, action):
-        # Parse action → pose + gripper state
-        # Apply inverse kinematics (IK)
-        # Move robot and step simulation
-        # Update internal state
-        # Compute reward, done
-        # Return obs, reward, done, info
-        pass
+        self._step_robot_and_sim(action)
+
+        state = self._compute_state()
+        done = False
+        reward = self._get_reward(state)
+        if reward >= 0.5:
+            # Terminate the episode if both blocks are close enough to the targets.
+            done = True
+
+        info = self._event_manager.get_info()
+        return state, reward, done, info
 
     def _compute_state(self):
         effector_pose = self._robot.forward_kinematics()
