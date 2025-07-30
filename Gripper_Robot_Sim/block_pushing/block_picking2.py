@@ -476,14 +476,6 @@ class BlockPick(gym.Env):
                 return np.linalg.norm(
                     state["%s_translation" % block] - state["%s_translation" % target]
                 )
-
-        def _closest_block_dist(target):
-            dists = [_target_block_dist(target, b) for b in blocks]
-            closest_dist = np.min(dists)
-            return closest_dist
-
-        t0_closest_dist = _closest_block_dist("target")
-        t1_closest_dist = _closest_block_dist("target2")
         return np.mean([t0_closest_dist, t1_closest_dist])
  
     @property
