@@ -344,33 +344,7 @@ class BlockPick(gym.Env):
 
         return state
     
-    def _setup_pybullet(self):
-        # Connect to pybullet (DIRECT or GUI)
-        pass
 
-    def _load_workspace(self):
-        # Load table, plane, zone
-        pass
-
-    def _load_robot(self):
-        # Instantiate GripperArmSimRobot
-        pass
-
-    def _load_objects(self):
-        # Add blocks to the workspace
-        # Maybe randomly scatter 1 or more blocks
-        pass
-
-    def _define_spaces(self):
-        # Define observation_space and action_space
-        # action: [dx, dy, dz, gripper_action]
-        pass
-
-    def reset(self):
-        # Reset pybullet state
-        # Reset block + target + robot to initial positions
-        # Return initial observation
-        pass
 
     def step(self, action):
         self._step_robot_and_sim(action)
