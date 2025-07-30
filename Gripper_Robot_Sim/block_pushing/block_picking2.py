@@ -466,6 +466,49 @@ class BlockPick(gym.Env):
         t0 = time.perf_counter()
         while time.perf_counter() - t0 < sleep_time_sec:
             pass
+        
+    def set_pybullet_state(self, state):
+        """Restore pyullet state.
+
+        WARNING: py_environment wrapper assumes environments aren't reset in their
+        constructor and will often reset the environment unintentionally. It is
+        always recommended that you call env.reset on the tfagents wrapper before
+        playback (replaying pybullet_state).
+
+        Args:
+          state: dict containing 'robots', 'robot_end_effectors', 'targets',
+            'objects', each containing a list of ObjState.
+        """
+
+        assert isinstance(state["robots"][0], XarmState)
+        xarm_state: XarmState = state["robots"][0]
+        xarm_state.set_bullet_state(self._pybullet_client, self.robot.xarm)
+        self._set_robot_target_effector_pose(xarm_state.target_effector_pose)
+
+        def _set_state_safe(obj_state, obj_id):
+            if obj_state is not None:
+                assert obj_id is not None, "Cannot set state for missing object."
+                obj_state.set_bullet_state(self._pybullet_client, obj_id)
+            else:
+                assert obj_id is None, f"No state found for obj_id {obj_id}"
+
+        robot_end_effectors = state["robot_end_effectors"]
+        _set_state_safe(
+            None if not robot_end_effectors else robot_end_effectors[0],
+            self.robot.end_effector,
+        )
+
+        for target_state, target_id in zip(state["targets"], self._target_ids):
+            _set_state_safe(target_state, target_id)
+
+        obj_ids = self.get_obj_ids()
+        assert len(state["objects"]) == len(obj_ids), "State length mismatch"
+        for obj_state, obj_id in zip(state["objects"], obj_ids):
+            _set_state_safe(obj_state, obj_id)
+
+        self.reset(reset_poses=False)
+        
+        
     def render(self, mode="rgb_array"):
         # Optionally render camera image using pybullet
         pass
