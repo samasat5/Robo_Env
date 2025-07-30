@@ -301,9 +301,12 @@ class BlockPick(gym.Env):
             
             target_center_rotation = transform.Rotation.from_quat(target_orientation_quat)
             target_center_translationt = np.array(target_translation)
+            finger_offset = 0.02  # 2 cm on each side in y-axis
+            translation_left = target_center_translationt + np.array([0.0, -finger_offset, 0.0])
+            translation_right = target_center_translationt + np.array([0.0, finger_offset, 0.0])
             
-        self._target_pose = self._compute_pose(target_center_translationt, target_center_rotation)
-        
+        self._target_pose = Pose3d_gripper(translation_left, translation_right, target_center_rotation, target_center_rotation)
+
         if reset_poses:
             self.step_Simulation_func()
 
