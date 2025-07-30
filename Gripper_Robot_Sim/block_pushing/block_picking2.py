@@ -493,8 +493,7 @@ class BlockPick(gym.Env):
         return distance_0
 
     def _get_reward(self, state):
-        # Reward is 1. if both blocks are inside targets, but not the same target.
-
+        # Reward is 1. the block is inside the target
         block_pos = state["block_translation"]
         target_pos = state["target_translation"]
 
@@ -506,8 +505,7 @@ class BlockPick(gym.Env):
             logger.info(f"Block reached target on step {self._step_num}")
             self._event_manager.target(step=self._step_num, block_id=0, target_id=0)
             return 1.0
-
-        return 0.0 
+        return 0.0
   
     
     
