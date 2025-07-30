@@ -379,7 +379,7 @@ class BlockPick(gym.Env):
             rotation_left,
             rotation_right,
             translation_left,
-            translation_right)
+            translation_right) 
         effector_pose = self._robot.forward_kinematics()
 
         def _yaw_from_pose(pose):
@@ -388,14 +388,14 @@ class BlockPick(gym.Env):
         obs = collections.OrderedDict(
             block_translation=block_pose.translation[0:2],
             block_orientation=_yaw_from_pose(block_pose),
-            block2_translation=block_pose.translation[0:2],
-            block2_orientation=_yaw_from_pose(block_pose),
+            # block2_translation=block_pose.translation[0:2],
+            # block2_orientation=_yaw_from_pose(block_pose),
             effector_translation=effector_pose.translation[0:2],
             effector_target_translation=self._target_effector_pose.translation[0:2],
             target_translation=self._target_poses[0].translation[0:2],
             target_orientation=_yaw_from_pose(self._target_poses[0]),
-            target2_translation=self._target_poses[1].translation[0:2],
-            target2_orientation=_yaw_from_pose(self._target_poses[1]),
+            # target2_translation=self._target_poses[1].translation[0:2],
+            # target2_orientation=_yaw_from_pose(self._target_poses[1]),
         )
 
         if self._image_size is not None:
