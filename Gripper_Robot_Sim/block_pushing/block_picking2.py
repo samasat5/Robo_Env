@@ -647,7 +647,7 @@ class BlockPick(gym.Env):
 
         obs_dict = collections.OrderedDict(
             block_translation=spaces.Box(low=-5, high=5, shape=(3,)),  # x,y
-            block_orientation=spaces.Box(low=-pi2, high=pi2, shape=(2,)),  # phi
+            block_orientation=spaces.Box(low=-pi2, high=pi2, shape=(1,)),  # phi
             effector_translation=spaces.Box(
                 low=self.workspace_bounds[0] - 0.1,  # Small buffer for to IK noise.
                 high=self.workspace_bounds[1] + 0.1,
@@ -660,7 +660,7 @@ class BlockPick(gym.Env):
             target_orientation=spaces.Box(
                 low=-pi2,
                 high=pi2,
-                shape=(2,),
+                shape=(1,),
             ),  # theta
         )
         if image_size is not None:
