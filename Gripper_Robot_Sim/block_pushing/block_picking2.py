@@ -642,6 +642,62 @@ class BlockPick(gym.Env):
 
         self.reset(reset_poses=False)
         
+    def close(self):
+        self._pybullet_client.disconnect()
+
+    def calc_camera_params(self, image_size):
+        # Mimic RealSense D415 camera parameters.
+        intrinsics = self._camera_instrinsics
+
+        # Set default camera poses.
+        front_position = self._camera_pose
+        front_rotation = self._camera_orientation
+        front_rotation = self._pybullet_client.getQuaternionFromEuler(front_rotation)
+        # Default camera configs.
+        zrange = (0.01, 10.0)
+
+        # OpenGL camera settings.
+        lookdir = np.float32([0, 0, 1]).reshape(3, 1)
+        updir = np.float32([0, -1, 0]).reshape(3, 1)
+        rotation = self._pybullet_client.getMatrixFromQuaternion(front_rotation)
+        rotm = np.float32(rotation).reshape(3, 3)
+        lookdir = (rotm @ lookdir).reshape(-1)
+        updir = (rotm @ updir).reshape(-1)
+        lookat = front_position + lookdir
+        focal_len = intrinsics[0]
+        znear, zfar = zrange
+        viewm = self._pybullet_client.computeViewMatrix(front_position, lookat, updir)
+        fovh = (image_size[0] / 2) / focal_len
+        fovh = 180 * np.arctan(fovh) * 2 / np.pi
+
+        # Notes: 1) FOV is vertical FOV 2) aspect must be float
+        aspect_ratio = image_size[1] / image_size[0]
+        projm = self._pybullet_client.computeProjectionMatrixFOV(
+            fovh, aspect_ratio, znear, zfar
+        )
+
+        return viewm, projm, front_position, lookat, updir
+
+    def _render_camera(self, image_size):
+        """Render RGB image with RealSense configuration."""
+        viewm, projm, _, _, _ = self.calc_camera_params(image_size)
+
+        # Render with OpenGL camera settings.
+        _, _, color, _, _ = self._pybullet_client.getCameraImage(
+            width=image_size[1],
+            height=image_size[0],
+            viewMatrix=viewm,
+            projectionMatrix=projm,
+            flags=pybullet.ER_SEGMENTATION_MASK_OBJECT_AND_LINKINDEX,
+            renderer=pybullet.ER_BULLET_HARDWARE_OPENGL,
+        )
+
+        # Get color image.
+        color_image_size = (image_size[0], image_size[1], 4)
+        color = np.array(color, dtype=np.uint8).reshape(color_image_size)
+        color = color[:, :, :3]  # remove alpha channel
+
+        return color.astype(np.uint8)   
     def _create_observation_space(self, image_size):
         pi2 = math.pi * 2
 
