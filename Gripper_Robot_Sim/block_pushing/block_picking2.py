@@ -467,6 +467,8 @@ class BlockPick(gym.Env):
         t0 = time.perf_counter()
         while time.perf_counter() - t0 < sleep_time_sec:
             pass
+        
+        
     def get_pybullet_state(self):
         """Save pybullet state of the scene.
 
