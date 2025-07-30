@@ -222,7 +222,26 @@ class BlockPick(gym.Env):
         # Temporarily disable rendering to speed up loading URDFs.
         pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RENDERING, 0)
 
-        self._setup_workspace_and_robot()
+        self._pybullet_client.resetSimulation()
+        self._pybullet_client.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
+        self._pybullet_client.setPhysicsEngineParameter(enableFileCaching=0)
+        self._pybullet_client.setGravity(0, 0, -9.8)
+
+        utils_pybullet.load_urdf(
+            self._pybullet_client, PLANE_URDF_PATH, basePosition=[0, 0, -0.001]
+        )
+        self._workspace_uid = utils_pybullet.load_urdf(
+            self._pybullet_client,
+            self._workspace_urdf_path,
+            basePosition=[0.35, 0, 0.0],
+        )
+
+        self._robot = xarm_sim_robot.XArmSimRobot(
+            self._pybullet_client,
+            initial_joint_positions=INITIAL_JOINT_POSITIONS,
+            end_effector=end_effector,
+            color="white" if self._visuals_mode == "real" else "default",
+        )
 
         self._target_ids = utils_pybullet.load_urdf(self._pybullet_client, ZONE_URDF_PATH, useFixedBase=True) #TODO
 
