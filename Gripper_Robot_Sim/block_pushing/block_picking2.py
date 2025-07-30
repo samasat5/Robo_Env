@@ -367,11 +367,19 @@ class BlockPick(gym.Env):
 
     def _compute_state(self):
         effector_pose = self._robot.forward_kinematics()
-        block_position_and_orientation = (self._pybullet_client.getBasePositionAndOrientation(self._block_ids[0]))
+        block_position_and_orientation = (self._pybullet_client.getBasePositionAndOrientation(self._block_ids[0]))            
+        rotation_left = transform.Rotation.from_quat(block_position_and_orientation[1])
+        rotation_right = transform.Rotation.from_quat(block_position_and_orientation[1])
+    
+        center_translation = block_position_and_orientation[0]
+        finger_offset = 0.02  # 2 cm on each side in y-axis
+        translation_left = center_translation + np.array([0.0, -finger_offset, 0.0])
+        translation_right = center_translation + np.array([0.0, finger_offset, 0.0])
         block_pose = Pose3d_gripper(
-            rotation=transform.Rotation.from_quat(block_position_and_orientation[1]),
-            translation=block_position_and_orientation[0],
-        )
+            rotation_left,
+            rotation_right,
+            translation_left,
+            translation_right)
         effector_pose = self._robot.forward_kinematics()
 
         def _yaw_from_pose(pose):
