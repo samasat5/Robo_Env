@@ -494,24 +494,6 @@ class BlockPick(gym.Env):
 
     def _get_reward(self, state):
         # Reward is 1. if both blocks are inside targets, but not the same target.
-        targets = ["target", "target2"]
-
-        def _block_target_dist(block, target):
-            return np.linalg.norm(
-                state["%s_translation" % block] - state["%s_translation" % target]
-            )
-
-        def _closest_target(block):
-            # Distances to all targets.
-            dists = [_block_target_dist(block, t) for t in targets]
-            # Which is closest.
-            closest_target = targets[np.argmin(dists)]
-            closest_dist = np.min(dists)
-            # Is it in the closest target?
-            in_target = closest_dist < self.goal_dist_tolerance
-            return closest_target, in_target
-
-        blocks = ["block", "block2"]
 
         reward = 0.0
 
