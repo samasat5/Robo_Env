@@ -378,10 +378,10 @@ class BlockPick(gym.Env):
             return np.array([pose.rotation.as_euler("xyz", degrees=False)[-1] % np.pi])
 
         obs = collections.OrderedDict(
-            block_translation=block_poses[0].translation[0:2],
-            block_orientation=_yaw_from_pose(block_poses[0]),
-            block2_translation=block_poses[1].translation[0:2],
-            block2_orientation=_yaw_from_pose(block_poses[1]),
+            block_translation=block_pose.translation[0:2],
+            block_orientation=_yaw_from_pose(block_pose),
+            block2_translation=block_pose.translation[0:2],
+            block2_orientation=_yaw_from_pose(block_pose),
             effector_translation=effector_pose.translation[0:2],
             effector_target_translation=self._target_effector_pose.translation[0:2],
             target_translation=self._target_poses[0].translation[0:2],
@@ -390,20 +390,6 @@ class BlockPick(gym.Env):
             target2_orientation=_yaw_from_pose(self._target_poses[1]),
         )
 
-        for i in range(2):
-            new_distance = np.linalg.norm(
-                block_poses[i].translation[0:2]
-            )  # + np.linalg.norm(_yaw_from_pose(block_poses[i]))
-            if self._init_distance[i] == -1:
-                self._init_distance[i] = new_distance
-            else:
-                if self._init_distance[i] != 100:
-                    if np.abs(new_distance - self._init_distance[i]) > 1e-3:
-                        logger.info(f"Block {i} moved on step {self._step_num}")
-                        self._event_manager.reach(step=self._step_num, block_id=i)
-                        self._init_distance[i] = 100
-
-        self._step_num += 1
         if self._image_size is not None:
             obs["rgb"] = self._render_camera(self._image_size)
         return obs
