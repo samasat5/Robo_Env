@@ -227,7 +227,16 @@ class BlockPick(gym.Env):
         self._target_ids = utils_pybullet.load_urdf(self._pybullet_client, ZONE_URDF_PATH, useFixedBase=True) #TODO
 
         self._block_ids = utils_pybullet.load_urdf(self._pybullet_client, BLOCK_URDF_PATH, useFixedBase=False)  #TODO
-
+        self._pybullet_client.createConstraint(   
+            parentBodyUniqueId=self._workspace_uid,
+            parentLinkIndex=-1,                # -1 means the base link of the parent
+            childBodyUniqueId=self._target_id ,
+            childLinkIndex=-1,                 # -1 means the base link of the child
+            jointType=self._pybullet_client.JOINT_FIXED,
+            jointAxis=[0, 0, 0],
+            parentFramePosition=[0, 0, 0.02],   # Position of zone relative to workspace
+            childFramePosition=[0, 0, 0],      # Position of zone relative to its own origin
+        )
         # Re-enable rendering.
         pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RENDERING, 1)
 
@@ -253,12 +262,9 @@ class BlockPick(gym.Env):
             initial_joint_positions=INITIAL_JOINT_POSITIONS, 
             color="white" if self._visuals_mode == "real" else "default",)
         
-        self._target_id = utils_pybullet.load_urdf(
-            self._pybullet_client, ZONE_URDF_PATH, useFixedBase=True)
+        self._target_id = utils_pybullet.load_urdf(self._pybullet_client, ZONE_URDF_PATH, useFixedBase=True)
         
-        self._block_ids = [
-            utils_pybullet.load_urdf(
-                self._pybullet_client, BLOCK_URDF_PATH, useFixedBase=False)]
+        self._block_ids = utils_pybullet.load_urdf(self._pybullet_client, BLOCK_URDF_PATH, useFixedBase=False)
         
         self._pybullet_client.createConstraint(   
             parentBodyUniqueId=self._workspace_uid,
