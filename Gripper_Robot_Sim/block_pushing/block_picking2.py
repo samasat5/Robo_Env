@@ -408,8 +408,7 @@ class BlockPick(gym.Env):
     
     def _step_robot_and_sim(self, action):
         """Steps the robot and pybullet sim."""
-        # Compute target_effector_pose by shifting the effector's pose by the
-        # action.
+        # Compute target_effector_pose by shifting the effector's pose by the action.
         if self._abs_action:
             target_effector_translation = np.array([action[0], action[1], 0])
         else:
