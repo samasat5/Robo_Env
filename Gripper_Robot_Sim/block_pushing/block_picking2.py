@@ -421,16 +421,13 @@ class BlockPick(gym.Env):
         finger_offset = 0.02  # 2 cm on each side in y-axis
         translation_left = center_translation + np.array([0.0, -finger_offset, 0.0])
         translation_right = center_translation + np.array([0.0, finger_offset, 0.0])
-        block_pose = Pose3d_gripper(
-            rotation_left,
-            rotation_right,
+        target_effector_pose = Pose3d_gripper(
+            EFFECTOR_DOWN_ROTATION,
+            EFFECTOR_DOWN_ROTATION,
             translation_left,
             translation_right) 
-        effector_pose = self._robot.forward_kinematics()
-        target_effector_translation[-1] = self.effector_height
-        target_effector_pose = Pose3d(
-            rotation=block_pushing.EFFECTOR_DOWN_ROTATION, translation=target_effector_translation
-        )
+
+
 
         self._set_robot_target_effector_pose(target_effector_pose)
 
@@ -464,9 +461,16 @@ class BlockPick(gym.Env):
 
         for _ in range(self._sim_steps_per_step):
             if self._connection_mode == pybullet.SHARED_MEMORY:
-                block_pushing.sleep_spin(frame_sleep_time)
+                self.sleep_spin(frame_sleep_time)
             self._pybullet_client.stepSimulation()
-    
+            
+    def sleep_spin(sleep_time_sec):
+        """Spin wait sleep. Avoids time.sleep accuracy issues on Windows."""
+        if sleep_time_sec <= 0:
+            return
+        t0 = time.perf_counter()
+        while time.perf_counter() - t0 < sleep_time_sec:
+            pass
     def render(self, mode="rgb_array"):
         # Optionally render camera image using pybullet
         pass
