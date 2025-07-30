@@ -467,6 +467,46 @@ class BlockPick(gym.Env):
         t0 = time.perf_counter()
         while time.perf_counter() - t0 < sleep_time_sec:
             pass
+    def get_pybullet_state(self):
+        """Save pybullet state of the scene.
+
+        Returns:
+          dict containing 'robots', 'robot_end_effectors', 'targets', 'objects',
+            each containing a list of ObjState.
+        """
+        state: Dict[str, List[ObjState]] = {}
+
+        state["robots"] = [
+            GripperArmSimRobot.get_bullet_state(
+                self._pybullet_client,
+                self.robot.xarm,
+                target_effector_pose=self._target_effector_pose,
+                goal_translation=None,
+            )
+        ]
+
+        state["robot_end_effectors"] = []
+        if self.robot.end_effector:
+            state["robot_end_effectors"].append(
+                ObjState.get_bullet_state(
+                    self._pybullet_client, self.robot.end_effector
+                )
+            )
+
+        state["targets"] = []
+        if self._target_ids:
+            for target_id in self._target_ids:
+                state["targets"].append(
+                    ObjState.get_bullet_state(self._pybullet_client, target_id)
+                )
+
+        state["objects"] = []
+        for obj_id in self.get_obj_ids():
+            state["objects"].append(
+                ObjState.get_bullet_state(self._pybullet_client, obj_id)
+            )
+
+        return state
         
     def set_pybullet_state(self, state):
         """Restore pyullet state.
