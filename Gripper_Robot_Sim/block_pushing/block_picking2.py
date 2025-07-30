@@ -181,7 +181,7 @@ class BlockPick(gym.Env):
             
 
         self._rng = np.random.RandomState(seed=seed)
-        self._block_ids = None
+        self._block_id = None
         self._previous_state = None
         self._robot = None
         self._workspace_uid = None
@@ -249,7 +249,7 @@ class BlockPick(gym.Env):
         
         self._target_id = utils_pybullet.load_urdf(self._pybullet_client, ZONE_URDF_PATH, useFixedBase=True)
         
-        self._block_ids = utils_pybullet.load_urdf(self._pybullet_client, BLOCK_URDF_PATH, useFixedBase=False)
+        self._block_id = utils_pybullet.load_urdf(self._pybullet_client, BLOCK_URDF_PATH, useFixedBase=False)
         
         self._pybullet_client.createConstraint(   
             parentBodyUniqueId=self._workspace_uid,
@@ -297,7 +297,7 @@ class BlockPick(gym.Env):
             block_rotation = transform.Rotation.from_rotvec([0, 0, block_sampled_angle])
 
             self._pybullet_client.resetBasePositionAndOrientation(
-                self._block_ids[0],
+                self._block_id,
                 block_translation.tolist(),
                 block_rotation.as_quat().tolist(),
             )
@@ -387,7 +387,7 @@ class BlockPick(gym.Env):
 
     def _compute_state(self):
         effector_pose = self._robot.forward_kinematics()
-        block_position_and_orientation = (self._pybullet_client.getBasePositionAndOrientation(self._block_ids[0]))            
+        block_position_and_orientation = (self._pybullet_client.getBasePositionAndOrientation(self._block_id))            
         rotation_left = transform.Rotation.from_quat(block_position_and_orientation[1])
         rotation_right = transform.Rotation.from_quat(block_position_and_orientation[1])
     
@@ -581,7 +581,7 @@ class BlockPick(gym.Env):
         if self.robot.end_effector:
             state["robot_end_effectors"].append(
                 ObjState.get_bullet_state(
-                    self._pybullet_client, self.robot.end_effector
+                    self._pybullet_client, self.robot.end_effector   #TODO putting two grippers in this ? 
                 )
             )
 
@@ -594,11 +594,10 @@ class BlockPick(gym.Env):
        
 
 
-        state["objects"] = []
-        for obj_id in self.get_obj_ids():
-            state["objects"].append(
-                ObjState.get_bullet_state(self._pybullet_client, obj_id)
-            )
+        state["objects"] = [
+            ObjState.get_bullet_state(self._pybullet_client, self._block_id
+                ) 
+        ]
 
         return state
         
