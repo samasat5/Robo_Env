@@ -515,17 +515,16 @@ class BlockPick(gym.Env):
 
         reward = 0.0
 
-        for t_i, t in enumerate(targets):
-            for b_i, b in enumerate(blocks):
-                if self._in_target[t_i][b_i] == -1:
-                    dist = _block_target_dist(b, t)
-                    if dist < self.goal_dist_tolerance:
-                        self._in_target[t_i][b_i] = 0
-                        logger.info(
-                            f"Block {b_i} entered target {t_i} on step {self._step_num}"
-                        )
-                        self._event_manager.target(step=self._step_num, block_id=b_i, target_id=t_i)
-                        reward += 0.49
+
+        if self._in_target[t_i][b_i] == -1:
+            dist = _block_target_dist(b, t)
+            if dist < self.goal_dist_tolerance:
+                self._in_target[t_i][b_i] = 0
+                logger.info(
+                    f"Block {b_i} entered target {t_i} on step {self._step_num}"
+                )
+                self._event_manager.target(step=self._step_num, block_id=b_i, target_id=t_i)
+                reward += 0.49
 
         b0_closest_target, b0_in_target = _closest_target("block")
         b1_closest_target, b1_in_target = _closest_target("block2")
