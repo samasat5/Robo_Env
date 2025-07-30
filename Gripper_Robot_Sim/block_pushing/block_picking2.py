@@ -356,7 +356,7 @@ class BlockPick(gym.Env):
             # Terminate the episode if both blocks are close enough to the targets.
             done = True
 
-        info = self._event_manager.get_info()
+        info = {"success": reward >= 0.5}
         return state, reward, done, info
 
     def _compute_state(self):
