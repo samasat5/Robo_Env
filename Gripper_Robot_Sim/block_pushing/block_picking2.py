@@ -211,55 +211,21 @@ class BlockPick(gym.Env):
         self.save_state()
         self.reset()
         
+    @property
+    def target_poses(self):
+        return self._target_poses
+
+    def get_goal_translation(self):
+        """Return the translation component of the goal (2D)."""
+        if self._target_poses:
+            return [i.translation for i in self._target_poses]
+        else:
+            return None
         
     def step_Simulation_func(self, nsteps=100):
         for _ in range(nsteps):
             self._pybullet_client.stepSimulation()
 
-    def _setup_pybullet_scene(self):
-        self._pybullet_client = bullet_client.BulletClient(self._connection_mode)
-
-        # Temporarily disable rendering to speed up loading URDFs.
-        pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RENDERING, 0)
-
-        self._pybullet_client.resetSimulation()
-        self._pybullet_client.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
-        self._pybullet_client.setPhysicsEngineParameter(enableFileCaching=0)
-        self._pybullet_client.setGravity(0, 0, -9.8)
-
-        utils_pybullet.load_urdf(
-            self._pybullet_client, PLANE_URDF_PATH, basePosition=[0, 0, -0.001]
-        )
-        self._workspace_uid = utils_pybullet.load_urdf(
-            self._pybullet_client,
-            self._workspace_urdf_path,
-            basePosition=[0.35, 0, 0.0],
-        )
-
-        self._robot = xarm_sim_robot.XArmSimRobot(
-            self._pybullet_client,
-            initial_joint_positions=INITIAL_JOINT_POSITIONS,
-            end_effector=end_effector,
-            color="white" if self._visuals_mode == "real" else "default",
-        )
-
-        self._target_ids = utils_pybullet.load_urdf(self._pybullet_client, ZONE_URDF_PATH, useFixedBase=True) #TODO
-
-        self._block_ids = utils_pybullet.load_urdf(self._pybullet_client, BLOCK_URDF_PATH, useFixedBase=False)  #TODO
-        self._pybullet_client.createConstraint(   
-            parentBodyUniqueId=self._workspace_uid,
-            parentLinkIndex=-1,                # -1 means the base link of the parent
-            childBodyUniqueId=self._target_id ,
-            childLinkIndex=-1,                 # -1 means the base link of the child
-            jointType=self._pybullet_client.JOINT_FIXED,
-            jointAxis=[0, 0, 0],
-            parentFramePosition=[0, 0, 0.02],   # Position of zone relative to workspace
-            childFramePosition=[0, 0, 0],      # Position of zone relative to its own origin
-        )
-        # Re-enable rendering.
-        pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RENDERING, 1)
-
-        self.step_simulation_to_stabilize()
         
     def _setup_the_scene(self):
         
