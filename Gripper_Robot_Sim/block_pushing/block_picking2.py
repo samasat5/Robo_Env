@@ -589,7 +589,8 @@ class BlockPick(gym.Env):
         if self._target_ids:
             for target_id in self._target_ids:
                 state["targets"].append(
-                    ObjState.get_bullet_state(self._pybullet_client, target_id))
+                    ObjState.get_bullet_state(self._pybullet_client, target_id)
+)
 
         state["objects"] = []
         for obj_id in self.get_obj_ids():
