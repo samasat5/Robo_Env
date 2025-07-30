@@ -94,7 +94,8 @@ pose = robot.forward_kinematics()  # computes the current 3D pose (position + or
 print("FK pose translation left:", pose.translation_left) # x,y,z
 print("FK pose rotation left (quat):", pose.rotation_left.as_quat()) #quaternion [x, y, z, w]
 
-print("robot current state",robot._get_current_translation_orientation())
+print("robot current state",robot._get_current_gripper_translation())
+print("robot current state",robot._get_current_gripper_orientation())
 
 # test Inverse Kinematics
 print("\n[TEST] inverse_kinematics")
@@ -136,7 +137,7 @@ for _ in range(50):
     time.sleep(1 / 240.0) 
     
 
-print("robot current state",robot._get_current_translation_orientation())
+print("robot current state",robot._get_current_gripper_translation())
 
     
 time.sleep(3)
