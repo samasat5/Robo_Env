@@ -258,8 +258,8 @@ class BlockPick(gym.Env):
         if reset_poses:
             self._pybullet_client.restoreState(self._saved_state)
             
-            rotation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
-            rotation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
+            rotation_left = EFFECTOR_DOWN_ROTATION
+            rotation_right = EFFECTOR_DOWN_ROTATION
             
             center_translation = np.array([0.3, -0.4, self.effector_height])
             finger_offset = 0.02  # 2 cm on each side in y-axis
@@ -406,6 +406,17 @@ class BlockPick(gym.Env):
             obs["rgb"] = self._render_camera(self._image_size)
         return obs
     
+    def _compute_pose(self, center_translation, center_rotation):
+        finger_offset = 0.02  # 2 cm on each side in y-axis
+        translation_left = center_translation + np.array([0.0, -finger_offset, 0.0])
+        translation_right = center_translation + np.array([0.0, finger_offset, 0.0])
+        target_effector_pose = Pose3d_gripper(
+            center_rotation,
+            center_rotation,
+            translation_left,
+            translation_right) 
+        return target_effector_pose
+    
     def _step_robot_and_sim(self, action):
         """Steps the robot and pybullet sim."""
         # Compute target_effector_pose by shifting the effector's pose by the action.
@@ -418,17 +429,9 @@ class BlockPick(gym.Env):
             self.workspace_bounds[1],
         )
         center_translation = target_effector_translation
-        finger_offset = 0.02  # 2 cm on each side in y-axis
-        translation_left = center_translation + np.array([0.0, -finger_offset, 0.0])
-        translation_right = center_translation + np.array([0.0, finger_offset, 0.0])
-        target_effector_pose = Pose3d_gripper(
-            EFFECTOR_DOWN_ROTATION,
-            EFFECTOR_DOWN_ROTATION,
-            translation_left,
-            translation_right) 
-
-
-
+        center_rotation = EFFECTOR_DOWN_ROTATION
+        
+        target_effector_pose = self._compute_pose(center_translation, center_rotation)
         self._set_robot_target_effector_pose(target_effector_pose)
 
         # Update sleep time dynamically to stay near real-time.
