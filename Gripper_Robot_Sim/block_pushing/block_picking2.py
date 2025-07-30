@@ -406,6 +406,61 @@ class BlockPick(gym.Env):
             obs["rgb"] = self._render_camera(self._image_size)
         return obs
     
+    def _step_robot_and_sim(self, action):
+        """Steps the robot and pybullet sim."""
+        # Compute target_effector_pose by shifting the effector's pose by the
+        # action.
+        if self._abs_action:
+            target_effector_translation = np.array([action[0], action[1], 0])
+        else:
+            target_effector_translation = np.array(
+                self._target_effector_pose.translation
+            ) + np.array([action[0], action[1], 0])
+
+        target_effector_translation[0:2] = np.clip(
+            target_effector_translation[0:2],
+            self.workspace_bounds[0],
+            self.workspace_bounds[1],
+        )
+        target_effector_translation[-1] = self.effector_height
+        target_effector_pose = Pose3d(
+            rotation=block_pushing.EFFECTOR_DOWN_ROTATION, translation=target_effector_translation
+        )
+
+        self._set_robot_target_effector_pose(target_effector_pose)
+
+        # Update sleep time dynamically to stay near real-time.
+        frame_sleep_time = 0
+        if self._connection_mode == pybullet.SHARED_MEMORY:
+            cur_time = time.time()
+            if self._last_loop_time is not None:
+                # Calculate the total, non-sleeping time from the previous frame, this
+                # includes the actual step as well as any compute that happens in the
+                # caller thread (model inference, etc).
+                compute_time = (
+                    cur_time
+                    - self._last_loop_time
+                    - self._last_loop_frame_sleep_time * self._sim_steps_per_step
+                )
+                # Use this to calculate the current frame's total sleep time to ensure
+                # that env.step runs at policy rate. This is an estimate since the
+                # previous frame's compute time may not match the current frame.
+                total_sleep_time = max((1 / self._control_frequency) - compute_time, 0)
+                # Now spread this out over the inner sim steps. This doesn't change
+                # control in any way, but makes the animation appear smooth.
+                frame_sleep_time = total_sleep_time / self._sim_steps_per_step
+            else:
+                # No estimate of the previous frame's compute, assume it is zero.
+                frame_sleep_time = 1 / self._step_frequency
+
+            # Cache end of this loop time, to compute sleep time on next iteration.
+            self._last_loop_time = cur_time
+            self._last_loop_frame_sleep_time = frame_sleep_time
+
+        for _ in range(self._sim_steps_per_step):
+            if self._connection_mode == pybullet.SHARED_MEMORY:
+                block_pushing.sleep_spin(frame_sleep_time)
+            self._pybullet_client.stepSimulation()
     
     def render(self, mode="rgb_array"):
         # Optionally render camera image using pybullet
