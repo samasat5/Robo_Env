@@ -31,7 +31,7 @@ INSERT_URDF_PATH = "third_party/py/envs/assets/insert.urdf"
 
 EFFECTOR_HEIGHT = 0.06
 EFFECTOR_DOWN_ROTATION = transform.Rotation.from_rotvec([0, math.pi, 0])
-
+import logging
 WORKSPACE_BOUNDS = np.array(((0.15, -0.5), (0.7, 0.5)))
 
 # Min/max bounds calculated from oracle data using:
@@ -126,6 +126,22 @@ CAMERA_INTRINSICS_REAL = (
     1,
 )
 
+# When resetting multiple targets, they should all be this far apart.
+MIN_BLOCK_DIST = 0.1
+MIN_TARGET_DIST = 0.12
+# pylint: enable=line-too-long
+NUM_RESET_ATTEMPTS = 1000
+
+# Random movement of blocks
+RANDOM_X_SHIFT = 0.1
+RANDOM_Y_SHIFT = 0.15
+
+logging.basicConfig(
+    level="INFO",
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    filemode="w",
+)
+logger = logging.getLogger()
 
 class BlockPick(gym.Env):
     def __init__(
