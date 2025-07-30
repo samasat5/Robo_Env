@@ -577,21 +577,24 @@ class BlockPick(gym.Env):
             )
         ]
 
+        # Save both gripper fingers as robot_end_effectors 
         state["robot_end_effectors"] = []
-        if self.robot.end_effector:
+        if hasattr(self.robot, "left_finger") and self.robot.left_finger is not None:
             state["robot_end_effectors"].append(
-                ObjState.get_bullet_state(
-                    self._pybullet_client, self.robot.end_effector   #TODO putting two grippers in this ? 
-                )
+                ObjState.get_bullet_state(self._pybullet_client, self.robot.left_finger)
+            )
+        if hasattr(self.robot, "right_finger") and self.robot.right_finger is not None:
+            state["robot_end_effectors"].append(
+                ObjState.get_bullet_state(self._pybullet_client, self.robot.right_finger)
             )
 
-  
-        state["target"] = [
-            ObjState.get_bullet_state(self._pybullet_client, 
-                                      self._target_id
-            )
-        ]
-       
+    
+            state["target"] = [
+                ObjState.get_bullet_state(self._pybullet_client, 
+                                        self._target_id
+                )
+            ]
+        
 
 
         state["objects"] = [
