@@ -216,7 +216,23 @@ class BlockPick(gym.Env):
         for _ in range(nsteps):
             self._pybullet_client.stepSimulation()
 
+    def _setup_pybullet_scene(self):
+        self._pybullet_client = bullet_client.BulletClient(self._connection_mode)
 
+        # Temporarily disable rendering to speed up loading URDFs.
+        pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RENDERING, 0)
+
+        self._setup_workspace_and_robot()
+
+        self._target_ids = utils_pybullet.load_urdf(self._pybullet_client, ZONE_URDF_PATH, useFixedBase=True) #TODO
+
+        self._block_ids = utils_pybullet.load_urdf(self._pybullet_client, BLOCK_URDF_PATH, useFixedBase=False)  #TODO
+
+        # Re-enable rendering.
+        pybullet.configureDebugVisualizer(pybullet.COV_ENABLE_RENDERING, 1)
+
+        self.step_simulation_to_stabilize()
+        
     def _setup_the_scene(self):
         
         self._pybullet_client.resetSimulation()
