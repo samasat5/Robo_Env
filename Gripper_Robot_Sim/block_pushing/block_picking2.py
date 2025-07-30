@@ -14,7 +14,7 @@ from block_pushing.utils import franka_panda_sim_robot
 # from block_pushing.utils.pose3d import Pose3d
 from block_pushing.utils.pose3d import Pose3d_gripper
 from block_pushing.utils.utils_pybullet import ObjState
-from block_pushing.utils.utils_pybullet import XarmState
+from block_pushing.utils.utils_pybullet import GripperArmSimRobot
 
 import numpy as np
 from scipy.spatial import transform
@@ -481,10 +481,10 @@ class BlockPick(gym.Env):
             'objects', each containing a list of ObjState.
         """
 
-        assert isinstance(state["robots"][0], XarmState)
-        xarm_state: XarmState = state["robots"][0]
-        xarm_state.set_bullet_state(self._pybullet_client, self.robot.xarm)
-        self._set_robot_target_effector_pose(xarm_state.target_effector_pose)
+        assert isinstance(state["robots"][0], GripperArmSimRobot)
+        gripperarm_state: GripperArmSimRobot = state["robots"][0]
+        gripperarm_state.set_bullet_state(self._pybullet_client, self.robot.gripperarm)
+        self._set_robot_target_effector_pose(gripperarm_state.target_effector_pose)
 
         def _set_state_safe(obj_state, obj_id):
             if obj_state is not None:
