@@ -296,18 +296,14 @@ class BlockPick(gym.Env):
                 target_rotation.as_quat().tolist(),
             )
         else:
-            (
-                target_translation,
-                target_orientation_quat,
-            ) = self._pybullet_client.getBasePositionAndOrientation(self._target_id)
+            (target_translation,
+            target_orientation_quat,) = self._pybullet_client.getBasePositionAndOrientation(self._target_id)
             
-            target_rotation_left = transform.Rotation.from_quat(target_orientation_quat)
-            target_rotation_right = transform.Rotation.from_quat(target_orientation_quat)
-            target_translation_left = np.array(target_translation)
-            target_translation_right = np.array(target_translation)
-
-        self._target_pose = Pose3d_gripper(target_translation_left, target_translation_right, target_rotation_left, target_rotation_right)
-
+            target_center_rotation = transform.Rotation.from_quat(target_orientation_quat)
+            target_center_translationt = np.array(target_translation)
+            
+        self._target_pose = self._compute_pose(target_center_translationt, target_center_rotation)
+        
         if reset_poses:
             self.step_Simulation_func()
 
