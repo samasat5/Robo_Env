@@ -476,7 +476,47 @@ class BlockPick(gym.Env):
         distance_0 = np.linalg.norm(target_translation_0 - state["block_translation"]) # elevated goal # distance that the robot needs to travel for a sucessful grasp-and-place task
         return distance_0
 
- 
+    def _get_reward(self, state):
+        # Reward is 1. if both blocks are inside targets, but not the same target.
+        targets = ["target", "target2"]
+
+        def _block_target_dist(block, target):
+            return np.linalg.norm(
+                state["%s_translation" % block] - state["%s_translation" % target]
+            )
+
+        def _closest_target(block):
+            # Distances to all targets.
+            dists = [_block_target_dist(block, t) for t in targets]
+            # Which is closest.
+            closest_target = targets[np.argmin(dists)]
+            closest_dist = np.min(dists)
+            # Is it in the closest target?
+            in_target = closest_dist < self.goal_dist_tolerance
+            return closest_target, in_target
+
+        blocks = ["block", "block2"]
+
+        reward = 0.0
+
+        for t_i, t in enumerate(targets):
+            for b_i, b in enumerate(blocks):
+                if self._in_target[t_i][b_i] == -1:
+                    dist = _block_target_dist(b, t)
+                    if dist < self.goal_dist_tolerance:
+                        self._in_target[t_i][b_i] = 0
+                        logger.info(
+                            f"Block {b_i} entered target {t_i} on step {self._step_num}"
+                        )
+                        self._event_manager.target(step=self._step_num, block_id=b_i, target_id=t_i)
+                        reward += 0.49
+
+        b0_closest_target, b0_in_target = _closest_target("block")
+        b1_closest_target, b1_in_target = _closest_target("block2")
+        # reward = 0.0
+        if b0_in_target and b1_in_target and (b0_closest_target != b1_closest_target):
+            reward = 0.51
+        return reward
     @property
     def succeeded(self):
         state = self._compute_state()
