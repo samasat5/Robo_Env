@@ -29,6 +29,7 @@ class MyCustomEnv(gym.Env):
         self.step_count += 1
 
         # Apply action (dummy dynamics)
+        pdb.set_trace()
         self.state = self.state + 0.1 * np.tanh(action)
 
         # Calculate reward (e.g., distance to goal)

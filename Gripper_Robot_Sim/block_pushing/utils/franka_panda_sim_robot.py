@@ -83,6 +83,13 @@ class GripperArmSimRobot:
         self.gripper_target = 11  # Khodam
         self.right_finger = 9   # Khodam
         self.left_finger = 10   # Khodam
+        
+    def get_joint_positions(self):
+        joint_states = self._pybullet_client.getJointStates(
+            self.gripperarm, self._joint_indices
+        )
+        joint_positions = np.array([state[0] for state in joint_states])
+        return joint_positions
 
     def _get_current_gripper_translation(self):
         state_right_finger = self._pybullet_client.getLinkState(self.gripperarm, self.right_finger)
@@ -150,7 +157,7 @@ class GripperArmSimRobot:
           joint_values: Iterable with desired joint positions.
         """
 
-        for i in range(self._n_joints):      # khodam
+        for i in range(self._n_joints):  
             self._pybullet_client.resetJointState(
                 self.gripperarm, self._joints[i], joint_values[i]
             )

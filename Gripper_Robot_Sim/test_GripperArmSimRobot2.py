@@ -4,11 +4,16 @@ import pybullet_data
 import time
 import numpy as np
 import pdb
+import os
 from scipy.spatial import transform
-
+from gym import spaces
+import collections
+import enum
+import math
 from block_pushing.utils.xarm_sim_robot import XArmSimRobot
 from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
-
+from block_pushing.utils import franka_panda_sim_robot
+import matplotlib.pyplot as plt
 from block_pushing.utils.pose3d import Pose3d
 from block_pushing.utils.pose3d_gripper import Pose3d_gripper
 
@@ -123,40 +128,258 @@ from scipy.spatial.transform import Rotation
 #     time.sleep(1 / 240.0) 
     
 
-# print("robot current state",robot._get_current_translation_orientation())
+# print("robot current state",robot._get_current_translation())
 
     
 # time.sleep(3)
 
 
+""" 
+self._setup_the_scene():
+"""
+INITIAL_JOINT_POSITIONS = np.array(
+    [
+        0.0, 
+        -0.5235987755982988, 
+        0.0, -1.0471975511965976, 
+        0.0, 1.5707963267948966, 
+        0.0, 
+        0.0, 
+        0.0
+    ])
+BLOCK_URDF_PATH = "third_party/py/envs/assets/block.urdf"
+PLANE_URDF_PATH = "third_party/bullet/examples/pybullet/gym/pybullet_data/" "plane.urdf"
+WORKSPACE_URDF_PATH = "third_party/py/envs/assets/workspace.urdf"
+ZONE_URDF_PATH = "third_party/py/envs/assets/zone.urdf"
+INSERT_URDF_PATH = "third_party/py/envs/assets/insert.urdf"
+p.connect(p.GUI)
+p.resetSimulation()
+p.configureDebugVisualizer(p.COV_ENABLE_GUI, 0)
+p.setPhysicsEngineParameter(enableFileCaching=0)
+p.setGravity(0, 0, -9.8)
 
-import pybullet
-from block_pushing.block_pushing2 import BlockPick  # adjust import path
-import numpy as np
+utils_pybullet.load_urdf(
+    p, PLANE_URDF_PATH, basePosition=[0, 0, -0.001])
 
-# 1. Instantiate the environment
-env = BlockPick(
-    control_frequency=10.0,
-    image_size=(128, 128),
-    shared_memory=False,
-    seed=42,
-    goal_dist_tolerance=0.01,
-    effector_height=0.07,  # try a safe height > 0
-    visuals_mode="default",
-    abs_action=False
+_workspace_uid = utils_pybullet.load_urdf(
+    p,
+    WORKSPACE_URDF_PATH,
+    basePosition=[0.35, 0, 0.0],)
+
+_robot = franka_panda_sim_robot.GripperArmSimRobot(p,
+                                                   INITIAL_JOINT_POSITIONS)
+# initial_joint_angles = []
+# for link in range(9):
+#     pos_link = p.getJointState(_robot.gripperarm, link)[0]
+#     initial_joint_angles.append(pos_link)
+# print("init:",initial_joint_angles)
+    
+
+_target_id = utils_pybullet.load_urdf(p,ZONE_URDF_PATH,
+                                      [0.4999, -0.36, 0.1], 
+                                      useFixedBase=True)
+_block_id = utils_pybullet.load_urdf(p, BLOCK_URDF_PATH, 
+                                     [0.2, 0.47, 0.01],
+                                     useFixedBase=False)
+
+p.createConstraint(   
+    parentBodyUniqueId=_workspace_uid,
+    parentLinkIndex=-1,                # -1 means the base link of the parent
+    childBodyUniqueId=_target_id ,
+    childLinkIndex=-1,                 # -1 means the base link of the child
+    jointType=p.JOINT_FIXED,
+    jointAxis=[0, 0, 0],
+    parentFramePosition=[0, 0, 0.02],   # Position of zone relative to workspace
+    childFramePosition=[0, 0, 0],      # Position of zone relative to its own origin
+)
+p.resetDebugVisualizerCamera(
+    cameraDistance=0.9,
+    cameraYaw=90,
+    cameraPitch=-40,
+    cameraTargetPosition=[0, 0, 0.1],
 )
 
-# 2. Reset the environment
-try:
-    obs = env.reset()
-    print("✅ Reset completed successfully.")
-except Exception as e:
-    print("❌ Reset failed:", e)
+# Re-enable rendering.
+p.configureDebugVisualizer(p.COV_ENABLE_RENDERING, 1)
 
-# 3. Inspect the initial observation
-print("Initial observation:", obs)
-print("Observation shape:", np.shape(obs))
+for _ in range(100):
+    p.stepSimulation()
+    time.sleep(0.01)
 
-env.close()
+""" Camera methods:
+"""
 
-    
+
+# image_size = np.array([320, 240])
+
+# visuals_mode = "default"
+# X_MIN_REAL = 0.15
+# X_MAX_REAL = 0.6
+# Y_MIN_REAL = -0.3048
+# Y_MAX_REAL = 0.3048
+# DEFAULT_CAMERA_POSE = (1.1, 0, 0.75)
+# DEFAULT_CAMERA_ORIENTATION = (np.pi / 4, np.pi, -np.pi / 2)
+# IMAGE_WIDTH = 320
+# IMAGE_HEIGHT = 240
+# CAMERA_INTRINSICS = (0.803 * IMAGE_WIDTH, 0,IMAGE_WIDTH / 2.0,0,0.803 * IMAGE_WIDTH,IMAGE_HEIGHT / 2.0,0,0,1,)
+# WORKSPACE_BOUNDS = np.array(((0.15, -0.5), (0.7, 0.5)))
+# WORKSPACE_BOUNDS_REAL = np.array(((X_MIN_REAL, Y_MIN_REAL), (X_MAX_REAL, Y_MAX_REAL)))
+# WORKSPACE_URDF_PATH_REAL = "third_party/py/ibc/environments/assets/workspace_real.urdf"
+# IMAGE_WIDTH_REAL = 320
+# IMAGE_HEIGHT_REAL = 180
+# CAMERA_POSE_REAL = (0.75, 0, 0.5)
+# CAMERA_ORIENTATION_REAL = (np.pi / 5, np.pi, -np.pi / 2)
+# CAMERA_INTRINSICS_REAL = (0.803 * IMAGE_WIDTH_REAL,0,IMAGE_WIDTH_REAL / 2.0,0,0.803 * IMAGE_WIDTH_REAL,IMAGE_HEIGHT_REAL / 2.0,0,0,1,)
+# # Mimic RealSense D415 camera parameters.
+# if visuals_mode == "default":
+#     _camera_pose = DEFAULT_CAMERA_POSE
+#     _camera_orientation = DEFAULT_CAMERA_ORIENTATION
+#     workspace_bounds = WORKSPACE_BOUNDS
+#     _camera_instrinsics = CAMERA_INTRINSICS
+#     _workspace_urdf_path = WORKSPACE_URDF_PATH
+# else:
+#     _camera_pose = CAMERA_POSE_REAL
+#     _camera_orientation = CAMERA_ORIENTATION_REAL
+#     workspace_bounds = WORKSPACE_BOUNDS_REAL
+#     _camera_instrinsics = CAMERA_INTRINSICS_REAL
+#     _workspace_urdf_path = WORKSPACE_URDF_PATH_REAL
+
+
+# def calc_camera_params(image_size):
+#     intrinsics = _camera_instrinsics
+
+#     # Set default camera poses.
+#     front_position = _camera_pose
+#     front_rotation = _camera_orientation
+#     front_rotation = p.getQuaternionFromEuler(front_rotation)
+#     # Default camera configs.
+#     zrange = (0.01, 10.0)
+
+#     # OpenGL camera settings.
+#     lookdir = np.float32([0, 0, 1]).reshape(3, 1)
+#     updir = np.float32([0, -1, 0]).reshape(3, 1)
+#     rotation = p.getMatrixFromQuaternion(front_rotation)
+#     rotm = np.float32(rotation).reshape(3, 3)
+#     lookdir = (rotm @ lookdir).reshape(-1)
+#     updir = (rotm @ updir).reshape(-1)
+#     lookat = front_position + lookdir
+#     focal_len = intrinsics[0]
+#     znear, zfar = zrange
+#     viewm = p.computeViewMatrix(front_position, lookat, updir)
+#     fovh = (image_size[0] / 2) / focal_len
+#     fovh = 180 * np.arctan(fovh) * 2 / np.pi
+
+#     # Notes: 1) FOV is vertical FOV 2) aspect must be float
+#     aspect_ratio = image_size[1] / image_size[0]
+#     projm = p.computeProjectionMatrixFOV(
+#         fovh, aspect_ratio, znear, zfar
+#     )
+
+
+#     return viewm, projm, front_position, lookat, updir
+
+
+
+# # def _render_camera(self, image_size):
+
+#     """Render RGB image with RealSense configuration."""
+# viewm, projm, _, _, _ = calc_camera_params(image_size)
+# _, _, color, _, _ = p.getCameraImage(
+#     width=image_size[1],
+#     height=image_size[0],
+#     viewMatrix=viewm,
+#     projectionMatrix=projm,
+#     flags=p.ER_SEGMENTATION_MASK_OBJECT_AND_LINKINDEX,
+#     renderer=p.ER_BULLET_HARDWARE_OPENGL,
+# )
+
+
+# # Get color image.
+# color_image_size = (image_size[0], image_size[1], 4)
+# color = np.array(color, dtype=np.uint8).reshape(color_image_size)
+# color = color[:, :, :3]  # remove alpha channel
+
+# image =  color.astype(np.uint8)   
+# plt.imshow(image)
+# plt.title("Simulated Camera View")
+# plt.axis("off")
+# plt.show()
+
+
+# pi2 = math.pi * 2
+
+# obs_dict = collections.OrderedDict(
+#     block_translation=spaces.Box(low=-5, high=5, shape=(3,)),  # x,y
+#     block_orientation=spaces.Box(low=-pi2, high=pi2, shape=(1,)),  # phi
+#     effector_translation=spaces.Box(
+#         low=workspace_bounds[0] - 0.1,  # Small buffer for to IK noise.
+#         high=workspace_bounds[1] + 0.1,
+#     ),  # x,y
+#     effector_target_translation=spaces.Box(
+#         low=workspace_bounds[0] - 0.1,  # Small buffer for to IK noise.
+#         high=workspace_bounds[1] + 0.1,
+#     ),  # x,y
+#     target_translation=spaces.Box(low=-5, high=5, shape=(3,)),  # x,y
+#     target_orientation=spaces.Box(
+#         low=-pi2,
+#         high=pi2,
+#         shape=(1,),
+#     ),  # theta
+# )
+# if image_size is not None:
+#     obs_dict["rgb"] = spaces.Box(
+#         low=0, high=255, shape=(image_size[0], image_size[1], 3), dtype=np.uint8
+#     )
+# obs_dic =  spaces.Dict(obs_dict)
+# print(obs_dic)
+
+
+# from PIL import Image
+# import os
+
+# def render_n_images(robot_id, block_id, max_img_number):
+#     os.makedirs("rendered_images", exist_ok=True)
+
+#     num_joints = p.getNumJoints(robot_id)
+
+#     for i in range(max_img_number):
+#         # Set a random robot joint configuration
+#         for j in range(num_joints):
+#             random_angle = np.random.uniform(-1.0, 1.0)
+#             p.resetJointState(robot_id, j, random_angle)
+
+#         # Randomize block position in workspace
+#         rand_x = np.random.uniform(0.3, 0.7)
+#         rand_y = np.random.uniform(-0.2, 0.2)
+#         p.resetBasePositionAndOrientation(block_id, [rand_x, rand_y, 0.02], [0, 0, 0, 1])
+
+#         # Step physics
+#         for _ in range(5):
+#             p.stepSimulation()
+#             time.sleep(0.01)
+
+#         # Render image
+#         viewm, projm, _, _, _ = calc_camera_params(image_size)
+#         _, _, color, _, _ = p.getCameraImage(
+#             width=image_size[1],
+#             height=image_size[0],
+#             viewMatrix=viewm,
+#             projectionMatrix=projm,
+#             renderer=p.ER_BULLET_HARDWARE_OPENGL
+#         )
+#         color = np.array(color, dtype=np.uint8).reshape((image_size[0], image_size[1], 4))[:, :, :3]
+
+#         # Save image
+#         im = Image.fromarray(color)
+#         im.save(f"rendered_images/image_{i:04d}.png")
+
+#         if i % 100 == 0:
+#             print(f"Rendered {i} images...")
+
+#     print("✅ Finished rendering images.")
+
+# render_n_images(_robot.gripperarm, _block_id, 100)
+
+
+""" Camera methods:
+"""

@@ -30,7 +30,7 @@ from scipy.spatial.transform import Rotation
 
 
 
-client = p.connect(p.DIRECT)
+client = p.connect(p.GUI)
 p.setGravity(0, 0, -9.81)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
 p.loadURDF("plane.urdf",[0, 0, -0.001])
@@ -183,7 +183,7 @@ for _ in range(100):
 time.sleep(3)
 
 # plaing the block to another place
-target_center = np.array([0.35, 0, 0.00001])
+target_center = np.array([0.35, 0, -0.001])
 offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
 new_translation_left = target_center - offset
 new_translation_right = target_center + offset
@@ -254,6 +254,89 @@ time.sleep(5)
 # # Done
 # print("\n[TEST COMPLETED]")
 # p.disconnect()
+
+from PIL import Image
+
+def render_and_save_image(step_index, image_size, image_dir="trajectory_images"):
+    os.makedirs(image_dir, exist_ok=True)
+
+    viewm, projm, _, _, _ = calc_camera_params(image_size)
+    _, _, color, _, _ = p.getCameraImage(
+        width=image_size[1],
+        height=image_size[0],
+        viewMatrix=viewm,
+        projectionMatrix=projm,
+        renderer=p.ER_BULLET_HARDWARE_OPENGL,
+    )
+    color = np.array(color, dtype=np.uint8).reshape((image_size[0], image_size[1], 4))[:, :, :3]
+    im = Image.fromarray(color)
+    im.save(os.path.join(image_dir, f"step_{step_index:04d}.png"))
+
+
+def pick_and_place():
+    step_counter = 0
+    size_of_the_block = 0.04
+    opening_width = size_of_the_block + 0.0001
+    robot.set_the_fingers_open_close(opening_width)
+
+    for _ in range(50):
+        p.stepSimulation()
+        render_and_save_image(step_counter)
+        step_counter += 1
+        time.sleep(1 / 240.0)
+
+    # Move to block
+    robot.set_target_effector_pose(new_pose, force=7)
+    for _ in range(100):
+        p.stepSimulation()
+        render_and_save_image(step_counter)
+        step_counter += 1
+        time.sleep(1 / 240.0)
+
+    # Grasp block
+    closing_width = -0.0001
+    robot.set_the_fingers_open_close(closing_width)
+    for _ in range(50):
+        p.stepSimulation()
+        render_and_save_image(step_counter)
+        step_counter += 1
+        time.sleep(1 / 240.0)
+
+    # Move to above target
+    target_center = np.array([0.35, 0, 0.15])
+    offset = np.array([0.03, 0, 0])
+    new_translation_left = target_center - offset
+    new_translation_right = target_center + offset
+    new_pose = Pose3d_gripper(
+        translation_left=new_translation_left,
+        translation_right=new_translation_right,
+        rotation_left=pose.rotation_left,
+        rotation_right=pose.rotation_left
+    )
+    robot.set_target_effector_pose(new_pose, force=0.2)
+    for _ in range(100):
+        p.stepSimulation()
+        render_and_save_image(step_counter)
+        step_counter += 1
+        time.sleep(1 / 240.0)
+
+    # Lower and release
+    target_center = np.array([0.35, 0, 0.00001])
+    new_translation_left = target_center - offset
+    new_translation_right = target_center + offset
+    new_pose = Pose3d_gripper(
+        translation_left=new_translation_left,
+        translation_right=new_translation_right,
+        rotation_left=pose.rotation_left,
+        rotation_right=pose.rotation_left
+    )
+    robot.set_target_effector_pose(new_pose, force=1)
+    for _ in range(100):
+        p.stepSimulation()
+        render_and_save_image(step_counter)
+        step_counter += 1
+        time.sleep(1 / 240.0)
+
 
 
 
