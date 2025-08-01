@@ -434,6 +434,10 @@ starting_pose = Pose3d_gripper(orientation_left=orientation_left,
 force = 2
 effector_pose = _robot.set_target_effector_pose(starting_pose,force)
 
+
+robot_yaws = robot_yaw_from_pose(robot_pose)
+gripper_orientation_left = robot_yaws[0]
+gripper_orientation_right = robot_yaws[1]
 print("gripper_orientation=", robot_yaw_from_pose(robot_pose))
 print("block_pose=", block_pose)
 
@@ -443,8 +447,8 @@ obs = collections.OrderedDict(
     
     gripper_translation_left=robot_pose.translation_left[0:3],
     gripper_translation_right=robot_pose.translation_right[0:3],
-    gripper_orientation_left=(robot_yaw_from_pose(block_pose))[0],
-    gripper_orientation_right=(robot_yaw_from_pose(block_pose))[1],
+    gripper_orientation_left=gripper_orientation_left,
+    gripper_orientation_right=gripper_orientation_right,
     
     effector_target_translation=effector_pose.translation[0:3],
     
