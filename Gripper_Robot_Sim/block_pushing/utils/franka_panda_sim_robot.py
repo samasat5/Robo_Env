@@ -296,7 +296,7 @@ class GripperArmSimRobot:
             time.sleep(1 / 240.0) 
     
     def set_target_carry_block (self,target_center):
-        
+        pose = self.forward_kinematics()
         offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
         new_translation_left = target_center - offset
         new_translation_right = target_center + offset
