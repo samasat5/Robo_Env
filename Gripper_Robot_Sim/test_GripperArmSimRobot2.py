@@ -473,6 +473,11 @@ print("gripper_orientation_left=",
 print("gripper_orientation_right=",
       gripper_orientation_right)
 
+print("effector_target_translation_left=",
+      effector_pose.translation_left[0:3])
+print("effector_target_translation_right=",
+      effector_pose.translation_right[0:3])
+
 print("target_translation=",
       _target_pose.translation[0:2])
 print("target_orientation=",
