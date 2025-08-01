@@ -84,7 +84,7 @@ from scipy.spatial.transform import Rotation
 # print("\n[TEST] forward_kinematics")## uses getLinkState
 # pose = robot.forward_kinematics()  # computes the current 3D pose (position + orientation) of the robot's end effector in  
 # print("FK pose translation left:", pose.translation_left) # x,y,z
-# print("FK pose rotation left (quat):", pose.rotation_left.as_quat()) #quaternion [x, y, z, w]
+# print("FK pose rotation left (quat):", pose.orientation_left.as_quat()) #quaternion [x, y, z, w]
 
 # print("robot current state",robot._get_current_translation_orientation())
 
@@ -99,8 +99,8 @@ from scipy.spatial.transform import Rotation
  
 # new_pose = Pose3d_gripper(translation_left=new_translation_left,
 #                           translation_right=new_translation_right,
-#                           rotation_left=pose.rotation_left, 
-#                           rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
+#                           orientation_left=pose.orientation_left, 
+#                           orientation_right=pose.orientation_left) #Create a new Pose3d with same orientation but new position
 # ik_solution = robot.inverse_kinematics(new_pose) #Solve Inverse Kinematics to find joint angles to reach new_pose
 # print("IK Joint Angles (target_joint_positions):", ik_solution)
 
@@ -392,8 +392,8 @@ block_pose = Pose3d(
 
 
 def robot_yaw_from_pose(pose):
-    return np.array([pose.rotation_left.as_euler("xyz", degrees=False)[-1],
-                     pose.rotation_right.as_euler("xyz", degrees=False)[-1]])
+    return np.array([pose.orientation_left.as_euler("xyz", degrees=False)[-1],
+                     pose.orientation_right.as_euler("xyz", degrees=False)[-1]])
     
 def _yaw_from_pose(pose):
     return np.array([pose.rotation.as_euler("xyz", degrees=False)[-1]])
@@ -419,12 +419,14 @@ robot_pose = _robot.forward_kinematics()
 
 
 
-rotation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
-rotation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
-translation_left = np.array([0.3, -0.4, 1])
-translation_right = np.array([0.3, -0.4, 1])
-starting_pose = Pose3d_gripper(rotation_left=rotation_left,
-                       rotation_right=rotation_right,
+orientation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
+orientation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
+target_center = np.array([0.3, -0.4, 1])
+offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
+translation_left = target_center - offset
+translation_right = target_center + offset
+starting_pose = Pose3d_gripper(orientation_left=orientation_left,
+                       orientation_right=orientation_right,
                        translation_left=translation_left,
                        translation_right =translation_right
                        )
