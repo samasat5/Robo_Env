@@ -42,7 +42,7 @@ for joint_index in movable_joints:
             targetPosition=angle,
             force=400,)
         p.stepSimulation()
-        time.sleep(1)
+        time.sleep(1 / 240)
 
 
 while True:
