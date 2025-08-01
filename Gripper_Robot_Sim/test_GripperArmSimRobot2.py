@@ -420,7 +420,7 @@ for joint_index in movable_joints:
             joint_index,
             controlMode=p.POSITION_CONTROL,
             targetPosition=angle,
-            force=100,)
+            force=400,)
         p.stepSimulation()
         time.sleep(1)
 
