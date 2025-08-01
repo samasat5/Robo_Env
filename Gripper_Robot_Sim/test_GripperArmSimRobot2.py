@@ -420,19 +420,9 @@ robot_pose = _robot.forward_kinematics()
 
 
 
-orientation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
-orientation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
-target_center = np.array([0.3, -0.4, 1])
-offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
-translation_left = target_center - offset
-translation_right = target_center + offset
-starting_pose = Pose3d_gripper(orientation_left=orientation_left,
-                       orientation_right=orientation_right,
-                       translation_left=translation_left,
-                       translation_right =translation_right
-                       )
-force = 2
-effector_pose = starting_pose
+
+initial_target_center = np.array([0.3, -0.4, 1])
+effector_pose = initial_target_center
 
 
 robot_yaws = robot_yaw_from_pose(robot_pose)
@@ -440,7 +430,7 @@ gripper_orientation_left = robot_yaws[0]
 gripper_orientation_right = robot_yaws[1]
 
 
-print("effector_pose:  ", effector_pose)
+
 
 obs = collections.OrderedDict(
     block_translation=block_pose.translation[0:3],
@@ -451,8 +441,7 @@ obs = collections.OrderedDict(
     gripper_orientation_left=gripper_orientation_left,
     gripper_orientation_right=gripper_orientation_right,
     
-    effector_target_translation_left=effector_pose.translation_left[0:3],
-    effector_target_translation_right=effector_pose.translation_right[0:3],
+    effector_target_togo_translation=effector_pose,
     
     target_translation=_target_pose.translation[0:3],
     target_orientation=_yaw_from_pose(_target_pose),
@@ -473,10 +462,8 @@ print("gripper_orientation_left=",
 print("gripper_orientation_right=",
       gripper_orientation_right)
 
-print("effector_target_translation_left=",
-      effector_pose.translation_left[0:3])
-print("effector_target_translation_right=",
-      effector_pose.translation_right[0:3])
+print("effector_target_togo_translation=",
+      effector_pose)
 
 print("target_translation=",
       _target_pose.translation[0:2])
