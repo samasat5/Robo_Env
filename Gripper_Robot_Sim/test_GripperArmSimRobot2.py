@@ -427,5 +427,6 @@ obs = collections.OrderedDict(
     target_translation=_target_pose.translation[0:2],
     target_orientation=_yaw_from_pose(self._target_pose),
 )
+
 if self._image_size is not None:
     obs["rgb"] = self._render_camera(self._image_size)
