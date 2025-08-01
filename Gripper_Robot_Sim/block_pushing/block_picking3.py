@@ -370,3 +370,11 @@ class BlockPick(gym.Env):
             return np.array(block_pos)
 
     
+    def _is_grasped(self):
+        left_pos = self._pybullet_client.getLinkState(self.gripperarm, self.left_finger)[0]
+        right_pos = self._pybullet_client.getLinkState(self.gripperarm, self.right_finger)[0]
+
+        left_pos = np.array(left_pos)
+        right_pos = np.array(right_pos)
+
+        distance = np.linalg.norm(left_pos - right_pos)
