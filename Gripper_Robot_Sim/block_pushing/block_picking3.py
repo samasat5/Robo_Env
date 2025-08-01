@@ -258,7 +258,6 @@ class BlockPick(gym.Env):
             rotation=transform.Rotation.from_quat(block_position_and_orientation[1]),
             translation=block_position_and_orientation[0],
         )
-
         def _yaw_from_pose(pose):
             return np.array([pose.rotation.as_euler("xyz", degrees=False)[-1]])
 
