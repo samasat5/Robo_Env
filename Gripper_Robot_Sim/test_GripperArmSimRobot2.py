@@ -391,8 +391,23 @@ block_pose = Pose3d(
 def _yaw_from_pose(pose):
     return np.array([pose.rotation.as_euler("xyz", degrees=False)[-1]])
 
+workspace_center_x = 0.4
+target_x = workspace_center_x + self._rng.uniform(low=-0.10, high=0.10)
+target_y = 0.2 + self._rng.uniform(low=-0.15, high=0.15)
+target_translation = np.array([target_x, target_y, 0.020])
 
+target_sampled_angle = math.pi + self._rng.uniform(
+    low=-math.pi / 6, high=math.pi / 6
+)
+target_rotation = transform.Rotation.from_rotvec(
+    [0, 0, target_sampled_angle]
+)
 
+self._pybullet_client.resetBasePositionAndOrientation(
+    self._target_id,
+    target_translation.tolist(),
+    target_rotation.as_quat().tolist(),
+)
 _target_pose = Pose3d(
             rotation=target_rotation, translation=target_translation
         )
