@@ -426,8 +426,8 @@ effector_pose = initial_target_center
 
 
 robot_yaws = robot_yaw_from_pose(robot_pose)
-gripper_orientation_left = robot_yaws[0]
-gripper_orientation_right = robot_yaws[1]
+gripper_orientation_left = [robot_yaws[0]]
+gripper_orientation_right = [robot_yaws[1]]
 
 
 
