@@ -403,15 +403,16 @@ target_rotation = transform.Rotation.from_rotvec(
     [0, 0, target_sampled_angle]
 )
 
-p.resetBasePositionAndOrientation(
-    _target_id,
-    target_translation.tolist(),
-    target_rotation.as_quat().tolist(),
-)
 _target_pose = Pose3d(
             rotation=target_rotation, translation=target_translation
         )
+
 robot_pose = _robot.forward_kinematics()
+print("block_translation=",
+      block_translation=block_pose.translation[0:2])
+print("block_orientation=",
+      _yaw_from_pose(block_pose))
+
 obs = collections.OrderedDict(
     block_translation=block_pose.translation[0:2],
     block_orientation=_yaw_from_pose(block_pose),
