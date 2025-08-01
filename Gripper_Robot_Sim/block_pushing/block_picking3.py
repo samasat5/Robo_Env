@@ -264,14 +264,17 @@ class BlockPick(gym.Env):
         block_pose = Pose3d(
             rotation=transform.Rotation.from_quat(block_orientation),
             translation=block_position,)
+        
         def _yaw_from_pose(pose): # special for  block
             return np.array([pose.rotation.as_euler("xyz", degrees=False)[-1]])
         
-        def _yaw_from_pose_robot(pose):
+        def _yaw_from_pose_robot(pose): # special for the robot
             return np.array([pose.orientation_left.as_euler("xyz", degrees=False)[-1],
                             pose.orientation_right.as_euler("xyz", degrees=False)[-1]])
             
         robot_pose = self._robot.forward_kinematics()
+        
+        
         obs = collections.OrderedDict(
             block_translation=block_pose.translation[0:2],
             block_orientation=_yaw_from_pose(block_pose),
