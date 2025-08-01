@@ -445,7 +445,7 @@ obs = collections.OrderedDict(
     effector_target_togo_translation=effector_pose,
     
     target_translation=_target_pose.translation[0:3],
-    target_orientation=_yaw_from_pose(_target_pose),
+
 )
 
 
