@@ -154,8 +154,8 @@ class GripperArmSimRobot:
         return Pose3d_gripper(            # Khodam
             translation_left=np.array(left_finger_state[0]),
             translation_right=np.array(right_finger_state[0]),
-            rotation_left=transform.Rotation.from_quat(left_finger_state[1]),
-            rotation_right=transform.Rotation.from_quat(right_finger_state[1]),
+            orientation_left=transform.Rotation.from_quat(left_finger_state[1]),
+            orientation_right=transform.Rotation.from_quat(right_finger_state[1]),
         )
     def get_center_translation(self,translation_left,translation_right):   # Khodam
         """Compute midpoint between left and right finger poses."""

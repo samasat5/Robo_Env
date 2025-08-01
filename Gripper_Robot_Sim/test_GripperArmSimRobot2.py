@@ -388,8 +388,16 @@ block_orientation = p.getBasePositionAndOrientation(_block_id)[1]
 block_pose = Pose3d(
     rotation=transform.Rotation.from_quat(block_orientation),
     translation=block_position,)
+
+
+
+def robot_yaw_from_pose(pose):
+    return np.array([pose.rotation_left.as_euler("xyz", degrees=False)[-1],
+                     pose.rotation_right.as_euler("xyz", degrees=False)[-1]])
+    
 def _yaw_from_pose(pose):
     return np.array([pose.rotation.as_euler("xyz", degrees=False)[-1]])
+
 
 workspace_center_x = 0.4
 target_x = workspace_center_x + np.random.RandomState(seed=2).uniform(low=-0.10, high=0.10)
@@ -407,11 +415,33 @@ _target_pose = Pose3d(
             rotation=target_rotation, translation=target_translation
         )
 
-
 robot_pose = _robot.forward_kinematics()
 
-_target_effector_pose = pose
-_robot.set_target_effector_pose(pose)
+
+
+rotation = transform.Rotation.from_rotvec([0, math.pi, 0])
+translation = np.array([0.3, -0.4, 1])
+starting_pose = Pose3d(rotation=rotation, translation=translation)
+effector_pose = _robot.set_target_effector_pose(starting_pose)
+
+
+
+
+obs = collections.OrderedDict(
+    block_translation=block_pose.translation[0:3],
+    block_orientation=_yaw_from_pose(block_pose),
+    
+    gripper_translation_left=robot_pose.translation_left[0:3],
+    gripper_translation_right=robot_pose.translation_right[0:3],
+    gripper_orientation_right=robot_yaw_from_pose(block_pose[0]),
+    gripper_orientation_right=robot_yaw_from_pose(block_pose[1]),
+    
+    effector_target_translation=effector_pose.translation[0:2],
+    
+    target_translation=_target_pose.translation[0:2],
+    target_orientation=_yaw_from_pose(_target_pose),
+)
+
 
 print("block_translation=",
       block_translation=block_pose.translation[0:2])
@@ -427,19 +457,3 @@ print("target_orientation=",
       _yaw_from_pose(_target_pose))
 
 
-
-
-
-obs = collections.OrderedDict(
-    block_translation=block_pose.translation[0:2],
-    block_orientation=_yaw_from_pose(block_pose),
-    gripper_translation_left=robot_pose.translation_left[0:2],
-    gripper_translation_right=robot_pose.translation_right[0:2],
-    effector_target_translation=_robot._target_effector_pose.translation[0:2],
-    target_translation=_target_pose.translation[0:2],
-    target_orientation=_yaw_from_pose(_target_pose),
-)
-
-
-if self._image_size is not None:
-    obs["rgb"] = self._render_camera(self._image_size)
