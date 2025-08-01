@@ -167,8 +167,10 @@ _workspace_uid = utils_pybullet.load_urdf(
     WORKSPACE_URDF_PATH,
     basePosition=[0.35, 0, 0.0],)
 
-_robot = franka_panda_sim_robot.GripperArmSimRobot(p,
-                                                   INITIAL_JOINT_POSITIONS)
+# _robot = franka_panda_sim_robot.GripperArmSimRobot(p,INITIAL_JOINT_POSITIONS)
+
+
+
 # initial_joint_angles = []
 # for link in range(9):
 #     pos_link = p.getJointState(_robot.gripperarm, link)[0]
@@ -384,7 +386,8 @@ for _ in range(100):
 
 """ compute state
 """
-robot_id = _robot
+p.setAdditionalSearchPath(pybullet_data.getDataPath())
+robot_id  = p.loadURDF("franka_panda/panda.urdf",[0,0,0], [0,0,0,1], useFixedBase = True )
 p.resetDebugVisualizerCamera(
     cameraDistance=1.5,
     cameraYaw=90,
