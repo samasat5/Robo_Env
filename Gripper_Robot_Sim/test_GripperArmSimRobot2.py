@@ -422,7 +422,8 @@ robot_pose = _robot.forward_kinematics()
 rotation = transform.Rotation.from_rotvec([0, math.pi, 0])
 translation = np.array([0.3, -0.4, 1])
 starting_pose = Pose3d(rotation=rotation, translation=translation)
-effector_pose = _robot.set_target_effector_pose(starting_pose)
+force = 2
+effector_pose = _robot.set_target_effector_pose(starting_pose,force)
 
 
 
