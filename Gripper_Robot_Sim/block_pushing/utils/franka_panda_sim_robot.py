@@ -244,6 +244,9 @@ class GripperArmSimRobot:
             positionGains=[0.4, 0.4],     # Optional: reduce control stiffness
             velocityGains=[1.0, 1.0],    
         )
+        for _ in range(50):
+            self._pybullet_client.stepSimulation()
+            time.sleep(1 / 240.0)
 
 
     def set_target_joint_velocities(self, target_joint_velocities):
@@ -267,22 +270,17 @@ class GripperArmSimRobot:
             )
     def set_target_pick(self,target_center, size_of_the_block):
         
-        opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
+        opening_width = size_of_the_block + self.grabbing_size # grabbing size to grasp the block
         self.set_the_fingers_open_close(opening_width)
-        for _ in range(50):
-            self._pybullet_client.stepSimulation()
-            time.sleep(1 / 240.0)
             
-    
-            
+        self.move_gripper_to_target (target_center)
             
         closing_width = - 0.0001
         self.set_the_fingers_open_close(closing_width)
-        for _ in range(50):
-            p.stepSimulation()
-            time.sleep(1 / 240.0) 
-    
-    def set_target_effector_pose_toward_targetcenter (self,target_center):
+
+
+
+    def move_gripper_to_target (self,target_center):
         pose = self.forward_kinematics()
         
         offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
