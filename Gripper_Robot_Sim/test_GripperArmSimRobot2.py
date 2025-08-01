@@ -433,7 +433,7 @@ starting_pose = Pose3d_gripper(orientation_left=orientation_left,
 force = 2
 effector_pose = _robot.set_target_effector_pose(starting_pose,force)
 
-
+print("gripper_orientation=", robot_yaw_from_pose(robot_pose))
 
 
 obs = collections.OrderedDict(
