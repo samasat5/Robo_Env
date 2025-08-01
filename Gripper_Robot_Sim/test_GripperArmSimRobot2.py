@@ -13,9 +13,10 @@ import math
 from block_pushing.utils.xarm_sim_robot import XArmSimRobot
 from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
 from block_pushing.utils import franka_panda_sim_robot
+
 import matplotlib.pyplot as plt
-from block_pushing.utils.pose3d import Pose3d
-from block_pushing.utils.pose3d_gripper import Pose3d_gripper
+
+from block_pushing.utils.pose3d_gripper import Pose3d_gripper, Pose3d
 
 from block_pushing.utils import utils_pybullet
 from scipy.spatial.transform import Rotation

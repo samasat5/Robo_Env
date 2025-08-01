@@ -69,3 +69,37 @@ class Pose3d_gripper(NoCopyAsDict):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+    
+
+
+@dataclasses.dataclass
+class Pose3d(NoCopyAsDict):
+    """Simple container for translation and rotation."""
+
+    rotation: transform.Rotation
+    translation: np.ndarray
+
+    @property
+    def vec7(self):
+        return np.concatenate([self.translation, self.rotation.as_quat()])
+
+    def serialize(self):
+        return {
+            "rotation": self.rotation.as_quat().tolist(),
+            "translation": self.translation.tolist(),
+        }
+
+    @staticmethod
+    def deserialize(data):
+        return Pose3d(
+            rotation=transform.Rotation.from_quat(data["rotation"]),
+            translation=np.array(data["translation"]),
+        )
+
+    def __eq__(self, other):
+        return np.array_equal(
+            self.rotation.as_quat(), other.rotation.as_quat()
+        ) and np.array_equal(self.translation, other.translation)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
