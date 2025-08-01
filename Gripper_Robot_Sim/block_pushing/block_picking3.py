@@ -248,3 +248,28 @@ class BlockPick(gym.Env):
     
     def save_state(self):
         self._saved_state = self._pybullet_client.saveState()
+
+    def _compute_state(self):
+        block_position_and_orientation = (
+            self._pybullet_client.getBasePositionAndOrientation(self._block_id)
+        )
+        block_pose = Pose3d_gripper(
+            rotation=transform.Rotation.from_quat(block_position_and_orientation[1]),
+            translation=block_position_and_orientation[0],
+        )
+
+        def _yaw_from_pose(pose):
+            return np.array([pose.rotation.as_euler("xyz", degrees=False)[-1]])
+
+        effector_pose = self._robot.forward_kinematics()
+        obs = collections.OrderedDict(
+            block_translation=block_pose.translation[0:2],
+            block_orientation=_yaw_from_pose(block_pose),
+            effector_translation=effector_pose.translation[0:2],
+            effector_target_translation=self._target_effector_pose.translation[0:2],
+            target_translation=self._target_pose.translation[0:2],
+            target_orientation=_yaw_from_pose(self._target_pose),
+        )
+        if self._image_size is not None:
+            obs["rgb"] = self._render_camera(self._image_size)
+        return obs
