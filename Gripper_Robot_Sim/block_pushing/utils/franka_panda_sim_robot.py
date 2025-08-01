@@ -273,7 +273,16 @@ class GripperArmSimRobot:
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
             
+    
             
+            
+        closing_width = - 0.0001
+        self.set_the_fingers_open_close(closing_width)
+        for _ in range(50):
+            p.stepSimulation()
+            time.sleep(1 / 240.0) 
+    
+    def set_target_effector_pose_toward_targetcenter (self,target_center):
         pose = self.forward_kinematics()
         
         offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
@@ -289,13 +298,6 @@ class GripperArmSimRobot:
         for _ in range(100):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
-            
-            
-        closing_width = - 0.0001
-        self.set_the_fingers_open_close(closing_width)
-        for _ in range(50):
-            p.stepSimulation()
-            time.sleep(1 / 240.0) 
     
     def set_target_carry_block (self,target_center):
         pose = self.forward_kinematics()
