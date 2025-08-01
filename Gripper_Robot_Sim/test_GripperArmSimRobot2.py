@@ -458,17 +458,13 @@ print("gripper_translation_left=",
       robot_pose.translation_left[0:3])
 print("gripper_translation_right=",
       robot_pose.translation_right[0:3])
-print("gripper_orientation_left=",
-      gripper_orientation_left)
-print("gripper_orientation_right=",
-      gripper_orientation_right)
+
 
 print("effector_target_togo_translation=",
       effector_pose)
 
 print("target_translation=",
       _target_pose.translation[0:2])
-print("target_orientation=",
-      _yaw_from_pose(_target_pose))
+
 
 
