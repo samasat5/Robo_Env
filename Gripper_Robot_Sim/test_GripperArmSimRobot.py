@@ -92,7 +92,7 @@ print("Torques:", torques)
 print("\n[TEST] forward_kinematics")## uses getLinkState
 pose = robot.forward_kinematics()  # computes the current 3D pose (position + orientation) of the robot's end effector in  
 print("FK pose translation left:", pose.translation_left) # x,y,z
-print("FK pose rotation left (quat):", pose.rotation_left.as_quat()) #quaternion [x, y, z, w]
+print("FK pose rotation left (quat):", pose.orientation_left.as_quat()) #quaternion [x, y, z, w]
 
 print("robot current state",robot._get_current_gripper_translation())
 print("robot current state",robot._get_current_gripper_orientation())
@@ -108,8 +108,8 @@ new_translation_right = target_center + offset
  
 new_pose = Pose3d_gripper(translation_left=new_translation_left,
                           translation_right=new_translation_right,
-                          rotation_left=pose.rotation_left, 
-                          rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
+                          orientation_left=pose.orientation_left, 
+                          orientation_right=pose.orientation_left) #Create a new Pose3d with same orientation but new position
 ik_solution = robot.inverse_kinematics(new_pose) #Solve Inverse Kinematics to find joint angles to reach new_pose
 print("IK Joint Angles (target_joint_positions):", ik_solution)
 
@@ -149,8 +149,8 @@ time.sleep(3)
 # new_translation_right = target_center + offset
 # new_pose = Pose3d_gripper(translation_left=new_translation_left,
 #                           translation_right=new_translation_right,
-#                           rotation_left=pose.rotation_left, 
-#                           rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
+#                           orientation_left=pose.orientation_left, 
+#                           orientation_right=pose.orientation_left) #Create a new Pose3d with same orientation but new position
 # ik_solution = robot.inverse_kinematics(new_pose)
 # force = 0.1 #lowering the speed to prevent the block from falling
 # robot.set_target_effector_pose(new_pose,force)
@@ -168,8 +168,8 @@ new_translation_left = target_center - offset
 new_translation_right = target_center + offset
 new_pose = Pose3d_gripper(translation_left=new_translation_left,
                           translation_right=new_translation_right,
-                          rotation_left=pose.rotation_left, 
-                          rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
+                          orientation_left=pose.orientation_left, 
+                          orientation_right=pose.orientation_left) #Create a new Pose3d with same orientation but new position
 ik_solution = robot.inverse_kinematics(new_pose)
 force = 0.2 #lowering the speed to prevent the block from falling
 robot.set_target_effector_pose(new_pose,force)
@@ -189,8 +189,8 @@ new_translation_left = target_center - offset
 new_translation_right = target_center + offset
 new_pose = Pose3d_gripper(translation_left=new_translation_left,
                           translation_right=new_translation_right,
-                          rotation_left=pose.rotation_left, 
-                          rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
+                          orientation_left=pose.orientation_left, 
+                          orientation_right=pose.orientation_left) #Create a new Pose3d with same orientation but new position
 ik_solution = robot.inverse_kinematics(new_pose)
 force = 1 #lowering the speed to prevent the block from falling
 robot.set_target_effector_pose(new_pose,force)
@@ -311,8 +311,8 @@ def pick_and_place():
     new_pose = Pose3d_gripper(
         translation_left=new_translation_left,
         translation_right=new_translation_right,
-        rotation_left=pose.rotation_left,
-        rotation_right=pose.rotation_left
+        orientation_left=pose.orientation_left,
+        orientation_right=pose.orientation_left
     )
     robot.set_target_effector_pose(new_pose, force=0.2)
     for _ in range(100):
@@ -328,8 +328,8 @@ def pick_and_place():
     new_pose = Pose3d_gripper(
         translation_left=new_translation_left,
         translation_right=new_translation_right,
-        rotation_left=pose.rotation_left,
-        rotation_right=pose.rotation_left
+        orientation_left=pose.orientation_left,
+        orientation_right=pose.orientation_left
     )
     robot.set_target_effector_pose(new_pose, force=1)
     for _ in range(100):
