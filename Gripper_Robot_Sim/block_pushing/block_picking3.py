@@ -334,6 +334,10 @@ class BlockPick(gym.Env):
                 self._target_id,
                 target_translation.tolist(),
                 target_rotation.as_quat().tolist(),)
-            
+        else: 
+            (target_translation,target_orientation_quat,
+            ) = self._pybullet_client.getBasePositionAndOrientation(self._target_id)
+            target_rotation = transform.Rotation.from_quat(target_orientation_quat)
+            target_translation = np.array(target_translation)
 
         
