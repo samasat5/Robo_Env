@@ -419,9 +419,15 @@ robot_pose = _robot.forward_kinematics()
 
 
 
-rotation = transform.Rotation.from_rotvec([0, math.pi, 0])
-translation = np.array([0.3, -0.4, 1])
-starting_pose = Pose3d(rotation=rotation, translation=translation)
+rotation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
+rotation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
+translation_left = np.array([0.3, -0.4, 1])
+translation_right = np.array([0.3, -0.4, 1])
+starting_pose = Pose3d_gripper(rotation_left=rotation_left,
+                       rotation_right=rotation_right,
+                       translation_left=translation_left,
+                       translation_right =translation_right
+                       )
 force = 2
 effector_pose = _robot.set_target_effector_pose(starting_pose,force)
 
