@@ -289,3 +289,4 @@ class BlockPick(gym.Env):
         if self._image_size is not None:
             obs["rgb"] = self._render_camera(self._image_size)
         return obs
+    
