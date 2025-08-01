@@ -342,10 +342,12 @@ class BlockPick(gym.Env):
 
 
         
-        
-        self._target_pose = Pose3d(
-            rotation=target_rotation, translation=target_translation
-        )
+        new_translation_left = target_translation - self.offset
+        new_translation_right = target_translation + self.offset
+        self._target_pose = Pose3d_gripper(translation_left=new_translation_left,
+                                translation_right=new_translation_right,
+                                orientation_left=target_rotation, 
+                                orientation_right=target_rotation) 
 
         if reset_poses:
             self.step_Simulation_func()
@@ -359,3 +361,4 @@ class BlockPick(gym.Env):
         self.best_fraction_reduced_goal_dist = 0.0
 
         return state
+    
