@@ -327,7 +327,7 @@ class BlockPick(gym.Env):
             target_y = 0.2 + self._rng.uniform(low=-0.15, high=0.15)
             target_translation = np.array([target_x, target_y, 0.020])
 
-            target_sampled_angle = math.pi + self._rng.uniform(
+            target_sampled_angle = math.pi + self._rng.uniform(  # TODO set self._rng
                 low=-math.pi / 6, high=math.pi / 6)
             target_rotation = transform.Rotation.from_rotvec(
                 [0, 0, target_sampled_angle])
