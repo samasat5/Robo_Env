@@ -295,9 +295,15 @@ class BlockPick(gym.Env):
         
         # Reset the _target_pose
         # (Where the robot is trying to move to) :
-        rotation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
-        rotation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
-        translation = np.array([0.3, -0.4, self.effector_height])
-        starting_pose = Pose3d(rotation=rotation, translation=translation)
+        orientation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
+        orientation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
+        target_center = np.array([0.3, -0.4, self.effector_height])
+        new_translation_left = target_center - offset
+        new_translation_right = target_center + offset
+        
+        starting_pose = Pose3d_gripper(translation_left=new_translation_left,
+                                translation_right=new_translation_right,
+                                orientation_left=orientation_left, 
+                                orientation_right=orientation_right) 
         self._set_robot_target_effector_pose(starting_pose)
         
