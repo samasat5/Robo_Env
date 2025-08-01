@@ -292,10 +292,10 @@ class BlockPick(gym.Env):
             obs["rgb"] = self.show_camera_img(self._image_size)
         return obs
     
-    def reset(self,Reset_random_block_target_poses):
+    def reset(self,reset_poses= True):
         self._pybullet_client.restoreState(self._saved_state)
         
-        if Reset_random_block_target_poses: 
+        if reset_poses: 
             # Reset the _target_pose
             # (The pose the robot is trying to reach to) :
             orientation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
@@ -340,4 +340,22 @@ class BlockPick(gym.Env):
             target_rotation = transform.Rotation.from_quat(target_orientation_quat)
             target_translation = np.array(target_translation)
 
+
         
+        
+        self._target_pose = Pose3d(
+            rotation=target_rotation, translation=target_translation
+        )
+
+        if reset_poses:
+            self.step_Simulation_func()
+            
+        state = self._compute_state()
+        self._previous_state = state
+        
+        self._init_goal_distance = self._compute_goal_distance(state)  #TODO do we need it ?
+        init_goal_eps = 1e-7
+        assert self._init_goal_distance > init_goal_eps
+        self.best_fraction_reduced_goal_dist = 0.0
+
+        return state
