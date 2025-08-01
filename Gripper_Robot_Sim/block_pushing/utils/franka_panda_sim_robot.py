@@ -304,7 +304,6 @@ class GripperArmSimRobot:
                                 translation_right=new_translation_right,
                                 rotation_left=pose.rotation_left, 
                                 rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
-        ik_solution = self.inverse_kinematics(new_pose)
         force = 0.2 #lowering the speed to prevent the block from falling
         self.set_target_effector_pose(new_pose,force)
         for _ in range(100):
