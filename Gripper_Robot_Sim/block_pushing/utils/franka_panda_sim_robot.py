@@ -85,6 +85,8 @@ class GripperArmSimRobot:
         self.left_finger = 10   # Khodam
         self.grabbing_size_for_block = 0.0001
         self.block_size = 0.04
+        self.closing_width = - 0.0001
+        self.opening_width = self.block_size + self.block_size
         
     def get_joint_positions(self):
         joint_states = self._pybullet_client.getJointStates(
@@ -294,22 +296,21 @@ class GripperArmSimRobot:
 
     
     def set_target_pick_the_block(self, block_position):
-        
-        opening_width = self.block_size + self.grabbing_size_for_block # grabbing size to grasp the block
-        self.set_the_fingers_open_close(opening_width)
-            
+    
+        self.set_the_fingers_open_close(self.opening_width)
         self.move_gripper_to_target (block_position)
-            
-        closing_width = - 0.0001
-        self.set_the_fingers_open_close(closing_width)
+        self.set_the_fingers_open_close(self.closing_width)
         
         
         
-    def set_target_pick_n_place_the_block (self,place_target, block_position):
+    def set_target_pick_n_place_the_block (self, place_position, block_position):
         self.set_target_pick_the_block(block_position)
         # Move above the placement target
-        hover_position = place_target +np.array([0.35, 0, -place_target[2]+0.15])
+        hover_position = place_position +np.array([0.35, 0, -place_position[2]+0.15])
         self.move_gripper_to_target(hover_position)
         
-        place_position_z = place_target +np.array([0.35, 0, -place_target[2]-0.0001])
+        # Move down to place
+        place_position_z = place_position +np.array([0.35, 0, -place_position[2]-0.0001])
         self.move_gripper_to_target(place_position_z)
+        
+    
