@@ -266,6 +266,8 @@ class GripperArmSimRobot:
                 self.gripperarm, linkIndex=i, rgbaColor=rgba_color
             )
     def set_target_pick(self,target_center, ):
+        pose = self.forward_kinematics()
+        
         offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
         new_translation_left = target_center - offset
         new_translation_right = target_center + offset
