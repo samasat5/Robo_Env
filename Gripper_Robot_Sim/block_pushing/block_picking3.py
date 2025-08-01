@@ -265,7 +265,8 @@ class BlockPick(gym.Env):
         obs = collections.OrderedDict(
             block_translation=block_pose.translation[0:2],
             block_orientation=_yaw_from_pose(block_pose),
-            effector_translation=robot_pose.translation[0:2],
+            gripper_translation_left=robot_pose.translation_left,
+            gripper_translation_right=robot_pose.translation_right,
             effector_target_translation=self._target_effector_pose.translation[0:2],
             target_translation=self._target_pose.translation[0:2],
             target_orientation=_yaw_from_pose(self._target_pose),
