@@ -217,7 +217,7 @@ print(pose.translation_left)
 # print(pose.translation_right)
 # print(center)
 position = robot.forward_kinematics().translation_left
-print("here is the robot.forward_kinematics:",position )
+print("here is the robot.forward_kinematics:",robot.forward_kinematics() )
 print("End-effector position:", position)
 
 
