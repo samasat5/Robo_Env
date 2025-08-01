@@ -80,6 +80,7 @@ class BlockPick(gym.Env):
             _camera_instrinsics = CAMERA_INTRINSICS_REAL
             _workspace_urdf_path = WORKSPACE_URDF_PATH_REAL
         
+        self._pybullet_client = None
         assert isinstance(self._pybullet_client, bullet_client.BulletClient)
         self._connection_mode = pybullet.DIRECT
         if shared_memory:
