@@ -83,6 +83,7 @@ class GripperArmSimRobot:
         self.gripper_target = 11  # Khodam
         self.right_finger = 9   # Khodam
         self.left_finger = 10   # Khodam
+        self.grabbing_size_for_block = 0.0001
         
     def get_joint_positions(self):
         joint_states = self._pybullet_client.getJointStates(
@@ -221,6 +222,9 @@ class GripperArmSimRobot:
     def set_target_effector_pose(self, new_pose,force):  # Khodam
         target_joint_positions = self.inverse_kinematics(new_pose)  # khodam
         self.set_target_joint_positions(target_joint_positions,force)
+        for _ in range(100):
+            self._pybullet_client.stepSimulation()
+            time.sleep(1 / 240.0)
         
     def set_target_joint_positions(self, target_joint_positions,force):
         # print("Moving to the new pose...")
@@ -268,15 +272,7 @@ class GripperArmSimRobot:
             self._pybullet_client.changeVisualShape(
                 self.gripperarm, linkIndex=i, rgbaColor=rgba_color
             )
-    def set_target_pick(self,target_center, size_of_the_block):
-        
-        opening_width = size_of_the_block + self.grabbing_size # grabbing size to grasp the block
-        self.set_the_fingers_open_close(opening_width)
             
-        self.move_gripper_to_target (target_center)
-            
-        closing_width = - 0.0001
-        self.set_the_fingers_open_close(closing_width)
 
 
 
@@ -293,10 +289,19 @@ class GripperArmSimRobot:
                                 rotation_right=pose.rotation_left) 
         force = 7
         self.set_target_effector_pose(new_pose,force)
-        for _ in range(100):
-            self._pybullet_client.stepSimulation()
-            time.sleep(1 / 240.0)
+
     
+    def set_target_pick(self,target_center, size_of_the_block):
+        
+        opening_width = size_of_the_block + self.grabbing_size_for_block # grabbing size to grasp the block
+        self.set_the_fingers_open_close(opening_width)
+            
+        self.move_gripper_to_target (target_center)
+            
+        closing_width = - 0.0001
+        self.set_the_fingers_open_close(closing_width)
+        
+        
     def set_target_carry_block (self,target_center):
         pose = self.forward_kinematics()
         offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
