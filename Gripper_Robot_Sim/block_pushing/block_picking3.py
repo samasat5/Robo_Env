@@ -94,6 +94,7 @@ class BlockPick(gym.Env):
         self._control_frequency = None
         assert isinstance(self._pybullet_client, bullet_client.BulletClient)
         self.offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
+        self.workspace_center_x = 0.4
 
 
     @property
@@ -308,6 +309,30 @@ class BlockPick(gym.Env):
         self._set_robot_target_effector_pose(starting_pose)
         
         # Reset the block pose: 
+        block_x = self.workspace_center_x + self._rng.uniform(low=-0.1, high=0.1)
+        block_y = -0.2 + self._rng.uniform(low=-0.15, high=0.15)
+        block_translation = np.array([block_x, block_y, 0])
+        block_sampled_angle = self._rng.uniform(math.pi)
+        block_rotation = transform.Rotation.from_rotvec([0, 0, block_sampled_angle])
+        self._pybullet_client.resetBasePositionAndOrientation(
+            self._block_ids[0],
+            block_translation.tolist(),
+            block_rotation.as_quat().tolist(),)
+        
+        # Reset the ultimate target (the flat target) pose:
+        target_x = self.workspace_center_x + self._rng.uniform(low=-0.10, high=0.10)
+        target_y = 0.2 + self._rng.uniform(low=-0.15, high=0.15)
+        target_translation = np.array([target_x, target_y, 0.020])
+
+        target_sampled_angle = math.pi + self._rng.uniform(
+            low=-math.pi / 6, high=math.pi / 6)
+        target_rotation = transform.Rotation.from_rotvec(
+            [0, 0, target_sampled_angle])
+
+        self._pybullet_client.resetBasePositionAndOrientation(
+            self._target_id,
+            target_translation.tolist(),
+            target_rotation.as_quat().tolist(),)
         
 
         
