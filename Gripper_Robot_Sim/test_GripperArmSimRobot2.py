@@ -436,6 +436,7 @@ gripper_orientation_right = [robot_yaws[1]]
 
 
 obs = collections.OrderedDict(
+    
     block_translation=block_pose.translation[0:3],
     block_orientation=_yaw_from_pose(block_pose),
     
