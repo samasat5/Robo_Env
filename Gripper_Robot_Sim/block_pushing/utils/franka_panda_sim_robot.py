@@ -224,6 +224,7 @@ class GripperArmSimRobot:
 
     def set_target_effector_pose(self, new_pose,force):  # Khodam
         target_joint_positions = self.inverse_kinematics(new_pose)  # khodam
+        print("target_joint_positions:", target_joint_positions)
         self.set_target_joint_positions(target_joint_positions,force)
         for _ in range(100):
             self._pybullet_client.stepSimulation()
