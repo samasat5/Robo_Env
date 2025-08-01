@@ -93,7 +93,8 @@ class BlockPick(gym.Env):
         self._target_pose = None
         self._control_frequency = None
         assert isinstance(self._pybullet_client, bullet_client.BulletClient)
-        
+        self._target_pose = None
+        self._target_effector_pose = None
 
     @property
     def pybullet_client(self):
@@ -250,7 +251,11 @@ class BlockPick(gym.Env):
     
     def save_state(self):
         self._saved_state = self._pybullet_client.saveState()
-
+    
+    @property
+    def target_effector_pose(self):
+        return self._target_effector_pose
+    
     def _compute_state(self):
         
         block_position = self._pybullet_client.getBasePositionAndOrientation(self._block_id)[0]
