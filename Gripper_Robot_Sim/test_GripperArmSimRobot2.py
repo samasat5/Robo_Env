@@ -391,6 +391,11 @@ block_pose = Pose3d(
 def _yaw_from_pose(pose):
     return np.array([pose.rotation.as_euler("xyz", degrees=False)[-1]])
 
+
+
+_target_pose = Pose3d(
+            rotation=target_rotation, translation=target_translation
+        )
 robot_pose = _robot.forward_kinematics()
 obs = collections.OrderedDict(
     block_translation=block_pose.translation[0:2],
