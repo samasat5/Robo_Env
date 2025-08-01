@@ -407,6 +407,7 @@ _target_pose = Pose3d(
             rotation=target_rotation, translation=target_translation
         )
 
+
 robot_pose = _robot.forward_kinematics()
 
 _target_effector_pose = pose
