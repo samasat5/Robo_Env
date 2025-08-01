@@ -251,6 +251,7 @@ class BlockPick(gym.Env):
         self._saved_state = self._pybullet_client.saveState()
 
     def _compute_state(self):
+        
         block_position_and_orientation = (
             self._pybullet_client.getBasePositionAndOrientation(self._block_id)
         )
