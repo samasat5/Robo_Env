@@ -265,7 +265,7 @@ class GripperArmSimRobot:
             self._pybullet_client.changeVisualShape(
                 self.gripperarm, linkIndex=i, rgbaColor=rgba_color
             )
-    def set_target_pick(self,target_center, ):
+    def set_target_pick(self,target_center, size_of_the_block):
         pose = self.forward_kinematics()
         
         offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
@@ -277,3 +277,19 @@ class GripperArmSimRobot:
                                 rotation_left=pose.rotation_left, 
                                 rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
         ik_solution = self.inverse_kinematics(new_pose)
+        opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
+        self.set_the_fingers_open_close(opening_width)
+        for _ in range(50):
+            p.stepSimulation()
+            time.sleep(1 / 240.0)
+        force = 7
+        self.set_target_effector_pose(new_pose,force)
+        for _ in range(100):
+            p.stepSimulation()
+            time.sleep(1 / 240.0)
+        closing_width = - 0.0001
+        self.set_the_fingers_open_close(closing_width)
+        for _ in range(50):
+            p.stepSimulation()
+            time.sleep(1 / 240.0) 
+            
