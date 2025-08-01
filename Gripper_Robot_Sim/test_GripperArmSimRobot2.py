@@ -438,8 +438,9 @@ effector_pose = _robot.set_target_effector_pose(starting_pose,force)
 robot_yaws = robot_yaw_from_pose(robot_pose)
 gripper_orientation_left = robot_yaws[0]
 gripper_orientation_right = robot_yaws[1]
-print("gripper_orientation=", robot_yaw_from_pose(robot_pose))
-print("block_pose=", block_pose)
+
+
+print("effector_pose:  ", effector_pose)
 
 obs = collections.OrderedDict(
     block_translation=block_pose.translation[0:3],
