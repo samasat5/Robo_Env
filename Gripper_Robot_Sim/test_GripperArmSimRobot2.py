@@ -381,5 +381,25 @@ for _ in range(100):
 # render_n_images(_robot.gripperarm, _block_id, 100)
 
 
-""" Camera methods:
+""" compute state
 """
+block_position = p.getBasePositionAndOrientation(_block_id)[0]
+block_orientation = p.getBasePositionAndOrientation(_block_id)[1]
+block_pose = Pose3d(
+    rotation=transform.Rotation.from_quat(block_orientation),
+    translation=block_position,)
+def _yaw_from_pose(pose):
+    return np.array([pose.rotation.as_euler("xyz", degrees=False)[-1]])
+
+robot_pose = _robot.forward_kinematics()
+obs = collections.OrderedDict(
+    block_translation=block_pose.translation[0:2],
+    block_orientation=_yaw_from_pose(block_pose),
+    gripper_translation_left=robot_pose.translation_left[0:2],
+    gripper_translation_right=robot_pose.translation_right[0:2],
+    effector_target_translation=_target_effector_pose.translation[0:2],
+    target_translation=_target_pose.translation[0:2],
+    target_orientation=_yaw_from_pose(self._target_pose),
+)
+if self._image_size is not None:
+    obs["rgb"] = self._render_camera(self._image_size)
