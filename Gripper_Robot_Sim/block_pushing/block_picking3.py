@@ -5,7 +5,7 @@ from gym import spaces
 from gym.envs import registration
 from typing import Dict, List, Optional, Tuple, Union
 from block_pushing.utils.pose3d_gripper import Pose3d_gripper
-from block_pushing.utils.pose3d_gripper import Pose3d_gripper
+from diffusion_policy.env.block_pushing.utils.pose3d import Pose3d
 from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
 from block_pushing.utils import utils_pybullet, franka_panda_sim_robot
 from block_pushing.utils.utils_pybullet import ObjState, XarmState
@@ -254,7 +254,7 @@ class BlockPick(gym.Env):
         block_position_and_orientation = (
             self._pybullet_client.getBasePositionAndOrientation(self._block_id)
         )
-        block_pose = Pose3d_gripper(
+        block_pose = Pose3d(
             rotation=transform.Rotation.from_quat(block_position_and_orientation[1]),
             translation=block_position_and_orientation[0],
         )
