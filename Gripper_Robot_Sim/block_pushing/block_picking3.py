@@ -292,47 +292,48 @@ class BlockPick(gym.Env):
             obs["rgb"] = self.show_camera_img(self._image_size)
         return obs
     
-    def reset(self):
+    def reset(self,Reset_random_block_target_poses):
         self._pybullet_client.restoreState(self._saved_state)
         
-        # Reset the _target_pose
-        # (The pose the robot is trying to reach to) :
-        orientation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
-        orientation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
-        target_center = np.array([0.3, -0.4, self.effector_height])
-        new_translation_left = target_center - self.offset
-        new_translation_right = target_center + self.offset
-        starting_pose = Pose3d_gripper(translation_left=new_translation_left,
-                                translation_right=new_translation_right,
-                                orientation_left=orientation_left, 
-                                orientation_right=orientation_right) 
-        self._set_robot_target_effector_pose(starting_pose)
-        
-        # Reset the block pose: 
-        block_x = self.workspace_center_x + self._rng.uniform(low=-0.1, high=0.1)
-        block_y = -0.2 + self._rng.uniform(low=-0.15, high=0.15)
-        block_translation = np.array([block_x, block_y, 0])
-        block_sampled_angle = self._rng.uniform(math.pi)
-        block_rotation = transform.Rotation.from_rotvec([0, 0, block_sampled_angle])
-        self._pybullet_client.resetBasePositionAndOrientation(
-            self._block_ids[0],
-            block_translation.tolist(),
-            block_rotation.as_quat().tolist(),)
-        
-        # Reset the ultimate target (the flat target) pose:
-        target_x = self.workspace_center_x + self._rng.uniform(low=-0.10, high=0.10)
-        target_y = 0.2 + self._rng.uniform(low=-0.15, high=0.15)
-        target_translation = np.array([target_x, target_y, 0.020])
+        if Reset_random_block_target_poses: 
+            # Reset the _target_pose
+            # (The pose the robot is trying to reach to) :
+            orientation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
+            orientation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
+            target_center = np.array([0.3, -0.4, self.effector_height])
+            new_translation_left = target_center - self.offset
+            new_translation_right = target_center + self.offset
+            starting_pose = Pose3d_gripper(translation_left=new_translation_left,
+                                    translation_right=new_translation_right,
+                                    orientation_left=orientation_left, 
+                                    orientation_right=orientation_right) 
+            self._set_robot_target_effector_pose(starting_pose)
+            
+            # Reset the block pose: 
+            block_x = self.workspace_center_x + self._rng.uniform(low=-0.1, high=0.1)
+            block_y = -0.2 + self._rng.uniform(low=-0.15, high=0.15)
+            block_translation = np.array([block_x, block_y, 0])
+            block_sampled_angle = self._rng.uniform(math.pi)
+            block_rotation = transform.Rotation.from_rotvec([0, 0, block_sampled_angle])
+            self._pybullet_client.resetBasePositionAndOrientation(
+                self._block_ids[0],
+                block_translation.tolist(),
+                block_rotation.as_quat().tolist(),)
+            
+            # Reset the ultimate target (the flat target) pose:
+            target_x = self.workspace_center_x + self._rng.uniform(low=-0.10, high=0.10)
+            target_y = 0.2 + self._rng.uniform(low=-0.15, high=0.15)
+            target_translation = np.array([target_x, target_y, 0.020])
 
-        target_sampled_angle = math.pi + self._rng.uniform(
-            low=-math.pi / 6, high=math.pi / 6)
-        target_rotation = transform.Rotation.from_rotvec(
-            [0, 0, target_sampled_angle])
+            target_sampled_angle = math.pi + self._rng.uniform(
+                low=-math.pi / 6, high=math.pi / 6)
+            target_rotation = transform.Rotation.from_rotvec(
+                [0, 0, target_sampled_angle])
 
-        self._pybullet_client.resetBasePositionAndOrientation(
-            self._target_id,
-            target_translation.tolist(),
-            target_rotation.as_quat().tolist(),)
-        
+            self._pybullet_client.resetBasePositionAndOrientation(
+                self._target_id,
+                target_translation.tolist(),
+                target_rotation.as_quat().tolist(),)
+            
 
         
