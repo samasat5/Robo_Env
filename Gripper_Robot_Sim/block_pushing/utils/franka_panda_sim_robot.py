@@ -291,6 +291,7 @@ class GripperArmSimRobot:
         force = 7
         self.set_target_effector_pose(new_pose,force)
 
+
     
     def set_target_pick_the_block(self, block_position):
         
@@ -301,6 +302,7 @@ class GripperArmSimRobot:
             
         closing_width = - 0.0001
         self.set_the_fingers_open_close(closing_width)
+        
         
         
     def set_target_pick_n_place_the_block (self,place_target, block_position):
