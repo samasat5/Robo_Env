@@ -307,9 +307,9 @@ class GripperArmSimRobot:
         
     def set_target_pick_n_place_the_block (self,place_target, block_position):
         self.set_target_pick_the_block(block_position)
+        # Move above the placement target
+        hover_position = place_target +np.array([0.35, 0, -place_target[2]+0.15])
+        self.move_gripper_to_target(hover_position)
         
-        hover_place_target = place_target +np.array([0.35, 0, -place_target[2]+0.15])
-        self.move_gripper_to_target(hover_place_target)
-        
-        getdown_place_target = place_target +np.array([0.35, 0, -place_target[2]-0.0001])
-        self.move_gripper_to_target(getdown_place_target)
+        place_position_z = place_target +np.array([0.35, 0, -place_target[2]-0.0001])
+        self.move_gripper_to_target(place_position_z)
