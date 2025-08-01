@@ -87,6 +87,7 @@ class GripperArmSimRobot:
         self.block_size = 0.04
         self.closing_width = - 0.0001
         self.opening_width = self.block_size + self.block_size
+        self.offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
         
     def get_joint_positions(self):
         joint_states = self._pybullet_client.getJointStates(
@@ -283,9 +284,9 @@ class GripperArmSimRobot:
     def move_gripper_to_target (self,target_center):
         pose = self.forward_kinematics()
         
-        offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
-        new_translation_left = target_center - offset
-        new_translation_right = target_center + offset
+        
+        new_translation_left = target_center - self.offset
+        new_translation_right = target_center + self.offset
         
         new_pose = Pose3d_gripper(translation_left=new_translation_left,
                                 translation_right=new_translation_right,

@@ -93,6 +93,7 @@ class BlockPick(gym.Env):
         self._target_pose = None
         self._control_frequency = None
         assert isinstance(self._pybullet_client, bullet_client.BulletClient)
+        self.offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
 
 
     @property
@@ -298,8 +299,8 @@ class BlockPick(gym.Env):
         orientation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
         orientation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
         target_center = np.array([0.3, -0.4, self.effector_height])
-        new_translation_left = target_center - offset
-        new_translation_right = target_center + offset
+        new_translation_left = target_center - self.offset
+        new_translation_right = target_center + self.offset
         
         starting_pose = Pose3d_gripper(translation_left=new_translation_left,
                                 translation_right=new_translation_right,
