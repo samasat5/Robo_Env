@@ -432,7 +432,7 @@ starting_pose = Pose3d_gripper(orientation_left=orientation_left,
                        translation_right =translation_right
                        )
 force = 2
-effector_pose = _robot.set_target_effector_pose(starting_pose,force)
+effector_pose = starting_pose
 
 
 robot_yaws = robot_yaw_from_pose(robot_pose)
