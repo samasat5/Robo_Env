@@ -384,6 +384,14 @@ for _ in range(100):
 
 """ compute state
 """
+
+targit = p.loadURDF("franka_panda/panda.urdf",[0,0,0], [0,0,0,1], useFixedBase = True )
+for i in range(p.getNumJoints(_robot)):
+    info = p.getJointInfo(targit, i)
+    print(i, info[12].decode('utf-8'))
+    p.addUserDebugText(str(i), [0, 0, 0.1], parentObjectUniqueId=targit, parentLinkIndex=i)
+    time.sleep(4.05)
+    
 block_position = p.getBasePositionAndOrientation(_block_id)[0]
 block_orientation = p.getBasePositionAndOrientation(_block_id)[1]
 block_pose = Pose3d(
