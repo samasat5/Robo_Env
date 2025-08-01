@@ -84,6 +84,7 @@ class GripperArmSimRobot:
         self.right_finger = 9   # Khodam
         self.left_finger = 10   # Khodam
         self.grabbing_size_for_block = 0.0001
+        self.block_size = 0.04
         
     def get_joint_positions(self):
         joint_states = self._pybullet_client.getJointStates(
@@ -291,30 +292,18 @@ class GripperArmSimRobot:
         self.set_target_effector_pose(new_pose,force)
 
     
-    def set_target_pick(self,target_center, size_of_the_block):
+    def set_target_pick_the_block(self, block_position):
         
-        opening_width = size_of_the_block + self.grabbing_size_for_block # grabbing size to grasp the block
+        opening_width = self.block_size + self.grabbing_size_for_block # grabbing size to grasp the block
         self.set_the_fingers_open_close(opening_width)
             
-        self.move_gripper_to_target (target_center)
+        self.move_gripper_to_target (block_position)
             
         closing_width = - 0.0001
         self.set_the_fingers_open_close(closing_width)
         
         
-    def set_target_carry_block (self,target_center):
-        pose = self.forward_kinematics()
-        offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
-        new_translation_left = target_center - offset
-        new_translation_right = target_center + offset
-        new_pose = Pose3d_gripper(translation_left=new_translation_left,
-                                translation_right=new_translation_right,
-                                rotation_left=pose.rotation_left, 
-                                rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
-        force = 0.2 #lowering the speed to prevent the block from falling
-        self.set_target_effector_pose(new_pose,force)
-        for _ in range(100):
-            p.stepSimulation()
-            time.sleep(1 / 240.0)
-            
+    def set_target_pick_n_place_the_block (self,place_target, block_position):
+        self.set_target_pick_the_block(block_position)
+        
             
