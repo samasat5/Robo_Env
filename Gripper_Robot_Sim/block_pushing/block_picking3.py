@@ -350,6 +350,7 @@ class BlockPick(gym.Env):
                                 translation_right=new_translation_right,
                                 orientation_left=target_rotation, 
                                 orientation_right=target_rotation) 
+        # TODO: this _target_pose is literaly the flat target ,or the temporary target the robot is moving to 
 
         if reset_poses:
             self.step_Simulation_func()
