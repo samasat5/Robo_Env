@@ -106,46 +106,6 @@ class GripperArmSimRobot:
         return [orientation_left,
                 orientation_right]
         
-    def _setup_end_effector(self, end_effector):    # Khodam: ino dast nemizanam chon gripperarm dg end effector nemikhad
-        """Adds a suction or cylinder end effector."""
-        pose = self.forward_kinematics()
-        if end_effector == "suction":
-            body = utils_pybullet.load_urdf(
-                self._pybullet_client,
-                SUCTION_URDF_PATH,
-                pose.translation,
-                pose.rotation.as_quat(),
-            )
-        elif end_effector == "cylinder":
-            body = utils_pybullet.load_urdf(
-                self._pybullet_client,
-                CYLINDER_URDF_PATH,
-                pose.translation,
-                pose.rotation.as_quat(),
-            )
-        elif end_effector == "cylinder_real":
-            body = utils_pybullet.load_urdf(
-                self._pybullet_client,
-                CYLINDER_REAL_URDF_PATH,
-                pose.translation,
-                pose.rotation.as_quat(),
-            )
-        else:
-            raise ValueError('end_effector "%s" is not supported.' % end_effector)
-
-        constraint_id = self._pybullet_client.createConstraint(
-            parentBodyUniqueId=self.xarm,
-            parentLinkIndex=6,
-            childBodyUniqueId=body,
-            childLinkIndex=-1,
-            jointType=pybullet.JOINT_FIXED,
-            jointAxis=(0, 0, 0),
-            parentFramePosition=(0, 0, 0),
-            childFramePosition=(0, 0, 0),
-        )
-        self._pybullet_client.changeConstraint(constraint_id, maxForce=50)
-
-        return body
 
     def reset_joints(self, joint_values):
         """Sets the position of the Robot's joints.
@@ -261,11 +221,19 @@ class GripperArmSimRobot:
     def set_target_effector_pose(self, new_pose,force):  # Khodam
         target_joint_positions = self.inverse_kinematics(new_pose)  # khodam
         self.set_target_joint_positions(target_joint_positions,force)
-
-
-    def set_the_fingers_open_close(self,opening_width):
+        
+    def set_target_joint_positions(self, target_joint_positions,force):
+        # print("Moving to the new pose...")
+        self._pybullet_client.setJointMotorControlArray(
+            self.gripperarm, # Khodamm
+            self._joint_indices,
+            pybullet.POSITION_CONTROL,
+            targetPositions=target_joint_positions,
+            forces=[force * 240.0] * len(self._joint_indices),
+        )
+    def set_the_fingers_open_close(self,opening_or_closing_width):
         print("Opening fingers...and wait")
-        half_opening = opening_width / 2.0
+        half_opening = opening_or_closing_width / 2.0
         
         self._pybullet_client.setJointMotorControlArray(      # Using POSITION_CONTROL
             bodyUniqueId=self.gripperarm,
@@ -277,17 +245,6 @@ class GripperArmSimRobot:
             velocityGains=[1.0, 1.0],    
         )
 
-        
-    def set_target_joint_positions(self, target_joint_positions,force):
-
-        print("Moving to the new pose...")
-        self._pybullet_client.setJointMotorControlArray(
-            self.gripperarm, # Khodamm
-            self._joint_indices,
-            pybullet.POSITION_CONTROL,
-            targetPositions=target_joint_positions,
-            forces=[force * 240.0] * len(self._joint_indices),
-        )
 
     def set_target_joint_velocities(self, target_joint_velocities):
         self._pybullet_client.setJointMotorControlArray(
@@ -308,3 +265,13 @@ class GripperArmSimRobot:
             self._pybullet_client.changeVisualShape(
                 self.gripperarm, linkIndex=i, rgbaColor=rgba_color
             )
+    def set_target_pick(self,target_center, ):
+        offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
+        new_translation_left = target_center - offset
+        new_translation_right = target_center + offset
+        
+        new_pose = Pose3d_gripper(translation_left=new_translation_left,
+                                translation_right=new_translation_right,
+                                rotation_left=pose.rotation_left, 
+                                rotation_right=pose.rotation_left) #Create a new Pose3d with same orientation but new position
+        ik_solution = self.inverse_kinematics(new_pose)
