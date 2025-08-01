@@ -442,8 +442,8 @@ obs = collections.OrderedDict(
     
     gripper_translation_left=robot_pose.translation_left[0:3],
     gripper_translation_right=robot_pose.translation_right[0:3],
-    gripper_orientation_left=robot_yaw_from_pose(block_pose)[0],
-    gripper_orientation_right=robot_yaw_from_pose(block_pose)[1],
+    gripper_orientation_left=(robot_yaw_from_pose(block_pose))[0],
+    gripper_orientation_right=(robot_yaw_from_pose(block_pose))[1],
     
     effector_target_translation=effector_pose.translation[0:3],
     
