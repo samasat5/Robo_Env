@@ -287,6 +287,10 @@ class BlockPick(gym.Env):
             target_translation=self._target_pose.translation[0:3],
         )
         if self._image_size is not None:
-            obs["rgb"] = self._render_camera(self._image_size)
+            obs["rgb"] = self.show_camera_img(self._image_size)
         return obs
     
+    def reset(self):
+        self._pybullet_client.restoreState(self._saved_state)
+        
+        # Target position 
