@@ -81,7 +81,6 @@ class BlockPick(gym.Env):
             _workspace_urdf_path = WORKSPACE_URDF_PATH_REAL
         
         self._pybullet_client = None
-        assert isinstance(self._pybullet_client, bullet_client.BulletClient)
         self._connection_mode = pybullet.DIRECT
         if shared_memory:
             self._connection_mode = pybullet.SHARED_MEMORY
@@ -93,6 +92,7 @@ class BlockPick(gym.Env):
         self._target_effector_pose = None
         self._target_pose = None
         self._control_frequency = None
+        assert isinstance(self._pybullet_client, bullet_client.BulletClient)
         
 
     @property
@@ -253,13 +253,11 @@ class BlockPick(gym.Env):
 
     def _compute_state(self):
         
-        block_position_and_orientation = (
-            self._pybullet_client.getBasePositionAndOrientation(self._block_id)
-        )
+        block_position = self._pybullet_client.getBasePositionAndOrientation(self._block_id)[0]
+        block_orientation = self._pybullet_client.getBasePositionAndOrientation(self._block_id)[1]
         block_pose = Pose3d(
-            rotation=transform.Rotation.from_quat(block_position_and_orientation[1]),
-            translation=block_position_and_orientation[0],
-        )
+            rotation=transform.Rotation.from_quat(block_orientation),
+            translation=block_position,)
         def _yaw_from_pose(pose):
             return np.array([pose.rotation.as_euler("xyz", degrees=False)[-1]])
 
