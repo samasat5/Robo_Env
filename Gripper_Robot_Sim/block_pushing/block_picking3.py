@@ -248,8 +248,10 @@ class BlockPick(gym.Env):
         plt.axis("off")
         plt.show()
     
+    
     def save_state(self):
         self._saved_state = self._pybullet_client.saveState()
+    
     
     def _set_robot_target_effector_pose(self, pose):
         self._target_effector_pose = pose
