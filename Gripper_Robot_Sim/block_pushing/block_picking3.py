@@ -95,6 +95,7 @@ class BlockPick(gym.Env):
         assert isinstance(self._pybullet_client, bullet_client.BulletClient)
         self.offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
         self.workspace_center_x = 0.4
+        self._is_grasped = False
 
 
     @property
@@ -296,6 +297,7 @@ class BlockPick(gym.Env):
         self._pybullet_client.restoreState(self._saved_state)
         
         if reset_poses: 
+            
             # Reset the _target_pose
             # (The pose the robot is trying to reach to) :
             orientation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
@@ -363,7 +365,7 @@ class BlockPick(gym.Env):
         return state
     
     def get_goal_translation(self):
-        if self._is_grasped(): # If the robot is holding the object, the goal is the place target.
+        if self._is_grasped==True: # If the robot is holding the object, the goal is the place target.
             return self._target_pose.translation
         else:   #If not, the goal is to go to the object's current position (pick).
             block_pos, _ = self._pybullet_client.getBasePositionAndOrientation(self._block_id)
@@ -371,10 +373,14 @@ class BlockPick(gym.Env):
 
     
     def _is_grasped(self):
-        left_pos = self._pybullet_client.getLinkState(self.gripperarm, self.left_finger)[0]
-        right_pos = self._pybullet_client.getLinkState(self.gripperarm, self.right_finger)[0]
+        left_pos = self._pybullet_client.getLinkState(self._robot.gripperarm, self._robot.left_finger)[0]
+        right_pos = self._pybullet_client.getLinkState(self._robot.gripperarm, self._robot.right_finger)[0]
 
         left_pos = np.array(left_pos)
         right_pos = np.array(right_pos)
 
         distance = np.linalg.norm(left_pos - right_pos)
+        if distance <= self._robot.closing_width:
+            self._is_grasped = True
+        else: 
+            self._is_grasped = False
