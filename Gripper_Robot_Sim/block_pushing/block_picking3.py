@@ -251,6 +251,10 @@ class BlockPick(gym.Env):
     def save_state(self):
         self._saved_state = self._pybullet_client.saveState()
     
+    def _set_robot_target_effector_pose(self, pose):
+        self._target_effector_pose = pose
+        self._robot.set_target_effector_pose(pose)
+        
     def _compute_state(self):
         
         block_position = self._pybullet_client.getBasePositionAndOrientation(self._block_id)[0]

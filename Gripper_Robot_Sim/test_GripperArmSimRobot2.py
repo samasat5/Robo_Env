@@ -409,6 +409,9 @@ _target_pose = Pose3d(
 
 robot_pose = _robot.forward_kinematics()
 
+_target_effector_pose = pose
+_robot.set_target_effector_pose(pose)
+
 print("block_translation=",
       block_translation=block_pose.translation[0:2])
 print("block_orientation=",
@@ -421,6 +424,10 @@ print("target_translation=",
       _target_pose.translation[0:2])
 print("target_orientation=",
       _yaw_from_pose(_target_pose))
+
+
+
+
 
 obs = collections.OrderedDict(
     block_translation=block_pose.translation[0:2],
