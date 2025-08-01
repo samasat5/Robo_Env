@@ -308,4 +308,5 @@ class GripperArmSimRobot:
     def set_target_pick_n_place_the_block (self,place_target, block_position):
         self.set_target_pick_the_block(block_position)
         
-            
+        feasible_place_target = place_target +np.array([0.35, 0, -place_target[2]-0.001])
+        self.move_gripper_to_target(feasible_place_target)
