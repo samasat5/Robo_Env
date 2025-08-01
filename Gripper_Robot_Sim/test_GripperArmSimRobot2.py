@@ -417,6 +417,10 @@ print("gripper_translation_left=",
       robot_pose.translation_left[0:2])
 print("gripper_translation_right=",
       robot_pose.translation_right[0:2])
+print("target_translation=",
+      _target_pose.translation[0:2])
+print("target_orientation=",
+      _yaw_from_pose(_target_pose))
 
 obs = collections.OrderedDict(
     block_translation=block_pose.translation[0:2],
@@ -425,7 +429,7 @@ obs = collections.OrderedDict(
     gripper_translation_right=robot_pose.translation_right[0:2],
     effector_target_translation=_robot._target_effector_pose.translation[0:2],
     target_translation=_target_pose.translation[0:2],
-    target_orientation=_yaw_from_pose(self._target_pose),
+    target_orientation=_yaw_from_pose(_target_pose),
 )
 
 
