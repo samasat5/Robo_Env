@@ -385,8 +385,9 @@ for _ in range(100):
 """ compute state
 """
 
+p.setAdditionalSearchPath(pybullet_data.getDataPath())
 targit = p.loadURDF("franka_panda/panda.urdf",[0,0,0], [0,0,0,1], useFixedBase = True )
-for i in range(p.getNumJoints(_robot)):
+for i in range(p.getNumJoints(targit)):
     info = p.getJointInfo(targit, i)
     print(i, info[12].decode('utf-8'))
     p.addUserDebugText(str(i), [0, 0, 0.1], parentObjectUniqueId=targit, parentLinkIndex=i)
