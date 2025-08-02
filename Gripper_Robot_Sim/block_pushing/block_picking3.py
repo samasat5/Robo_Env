@@ -331,7 +331,7 @@ class BlockPick(gym.Env):
             target_y = 0.2 + self._rng.uniform(low=-0.15, high=0.15)
             target_translation = np.array([target_x, target_y, 0.020])
 
-            target_sampled_angle = math.pi + self._rng.uniform(  # TODO set self._rng
+            target_sampled_angle = math.pi + self._rng.uniform(  
                 low=-math.pi / 6, high=math.pi / 6)
             target_rotation = transform.Rotation.from_rotvec(
                 [0, 0, target_sampled_angle])
@@ -396,3 +396,5 @@ class BlockPick(gym.Env):
         goal_translation = self.get_goal_translation()
         goal_distance = np.linalg.norm(state["effector_translation"] - goal_translation[0:2])
         return goal_distance
+    
+    
