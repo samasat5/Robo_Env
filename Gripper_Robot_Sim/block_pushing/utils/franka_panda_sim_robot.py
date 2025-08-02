@@ -229,7 +229,7 @@ class GripperArmSimRobot:
         self.set_target_joint_positions(target_joint_positions,force)
         for _ in range(100):
             self._pybullet_client.stepSimulation()
-            time.sleep(1 / 240.0)
+            time.sleep(1)
         
     def set_target_joint_positions(self, target_joint_positions,force):
         # print("Moving to the new pose...")
@@ -255,7 +255,7 @@ class GripperArmSimRobot:
         )
         for _ in range(50):
             self._pybullet_client.stepSimulation()
-            time.sleep(1 / 240.0)
+            time.sleep(1)
 
 
     def set_target_joint_velocities(self, target_joint_velocities):
