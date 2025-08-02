@@ -85,7 +85,7 @@ class GripperArmSimRobot:
         self.left_finger = 10   # Khodam
         self.grabbing_size_for_block = 0.0001
         self.block_size = 0.04
-        self.closing_width = - 0.0001
+        self.closing_width = 0
         self.opening_width = self.block_size + self.grabbing_size_for_block
         self.offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
         
@@ -238,7 +238,7 @@ class GripperArmSimRobot:
             targetPositions=target_joint_positions,
             forces=[force * 240.0] * len(self._joint_indices),
         )
-    def set_the_fingers_open_close(self,opening_or_closing_width):
+    def set_the_fingers_open_close(self,opening_or_closing_width,force):
         print("Opening fingers...and wait")
         half_opening = opening_or_closing_width / 2.0
         
@@ -247,7 +247,7 @@ class GripperArmSimRobot:
             jointIndices=[self.left_finger, self.right_finger],
             controlMode=pybullet.POSITION_CONTROL,
             targetPositions=[half_opening, half_opening],
-            forces=[100, 100],            # Apply up to 100N of torque
+            forces=[force*100, force*100],            # Apply up to 100N of torque
             positionGains=[0.4, 0.4],     # Optional: reduce control stiffness
             velocityGains=[1.0, 1.0],    
         )
@@ -295,8 +295,9 @@ class GripperArmSimRobot:
 
     
     def set_target_pick_the_block(self, block_position):
-        print("opening")
-        self.set_the_fingers_open_close(self.opening_width)
+        print("_2opening")
+        force =2
+        self.set_the_fingers_open_close(self.opening_width,force)
         for _ in range(100):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
@@ -306,8 +307,8 @@ class GripperArmSimRobot:
         for _ in range(100):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
-        print("closing")
-        self.set_the_fingers_open_close(self.closing_width)
+        print("\n\nclosing???")
+        self.set_the_fingers_open_close(self.closing_width,force)
         for _ in range(100):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
