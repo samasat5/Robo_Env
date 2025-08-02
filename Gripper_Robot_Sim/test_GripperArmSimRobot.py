@@ -118,7 +118,7 @@ print("IK Joint Angles (target_joint_positions):", ik_solution)
 
 
 # Apply pose via IK (going toward the block and grasping it)
-print("\n[TEST] set_target_effector_pose")
+print("\n[TEST] pick and place")
 size_of_the_block = 0.04
 opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
 force = 2
