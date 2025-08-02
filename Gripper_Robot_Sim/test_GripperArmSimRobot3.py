@@ -71,6 +71,8 @@ for _ in range(100):
     p.stepSimulation()
     time.sleep(1 / 240.0)
 robot.move_gripper_to_target (block_position)
-
+for _ in range(100):
+    p.stepSimulation()
+    time.sleep(1 / 240.0)
 
 p.disconnect()

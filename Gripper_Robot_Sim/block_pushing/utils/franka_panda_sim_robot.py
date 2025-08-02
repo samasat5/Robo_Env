@@ -208,13 +208,13 @@ class GripperArmSimRobot:
         translation_right = new_pose.translation_right
         center_translation = self.get_center_translation(translation_left,translation_right)
         center_rotation = self.get_center_rotation(translation_left,translation_right)
-        return np.array( # Khodam
+        return np.array( # 
             self._pybullet_client.calculateInverseKinematics(
             bodyUniqueId=self.gripperarm,
-            endEffectorLinkIndex=self.gripper_target, # what to put ?? I put 11 as the gripper_target
+            endEffectorLinkIndex=self.gripper_target, 
             targetPosition=center_translation,
             targetOrientation=center_rotation.as_quat(),  # as_quat returns xyzw.
-                lowerLimits=[-2.9] * 9, # Khodam: use 9 instead of 6
+                lowerLimits=[-2.9] * 9, # : use 9 instead of 6
                 upperLimits=[2.9] * 9,
                 jointRanges=[5.8] * 9,
                 restPoses=[0, 0] + self.get_joint_positions()[2:].tolist(),
@@ -223,8 +223,8 @@ class GripperArmSimRobot:
             )
         )
 
-    def set_target_effector_pose(self, new_pose,force):  # Khodam
-        target_joint_positions = self.inverse_kinematics(new_pose)  # khodam
+    def set_target_effector_pose(self, new_pose,force):  
+        target_joint_positions = self.inverse_kinematics(new_pose)  
         print("target_joint_positions:", target_joint_positions)
         self.set_target_joint_positions(target_joint_positions,force)
 
@@ -232,7 +232,7 @@ class GripperArmSimRobot:
     def set_target_joint_positions(self, target_joint_positions,force):
         # print("Moving to the new pose...")
         self._pybullet_client.setJointMotorControlArray(
-            self.gripperarm, # Khodamm
+            self.gripperarm, 
             self._joint_indices,
             pybullet.POSITION_CONTROL,
             targetPositions=target_joint_positions,
