@@ -65,11 +65,12 @@ for _ in range(100):
 # Pick and place
 place_position = np.array([0.4999, -0.36, 0.1])  # place on other side
 block_position = np.array([0.2, 0.47, 0.01])
-robot.set_target_pick_n_place_the_block(place_position, block_position)
-
-# Let simulation run for a while
-for _ in range(300):
+opening_width = 0.0001 + 0.04
+robot.set_the_fingers_open_close(opening_width)
+for _ in range(100):
     p.stepSimulation()
-    time.sleep(1 / 240.)
+    time.sleep(1 / 240.0)
+robot.move_gripper_to_target (block_position)
+
 
 p.disconnect()

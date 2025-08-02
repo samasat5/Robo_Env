@@ -86,7 +86,7 @@ class GripperArmSimRobot:
         self.grabbing_size_for_block = 0.0001
         self.block_size = 0.04
         self.closing_width = - 0.0001
-        self.opening_width = self.block_size + self.block_size
+        self.opening_width = self.block_size + self.grabbing_size_for_block
         self.offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
         
     def get_joint_positions(self):
