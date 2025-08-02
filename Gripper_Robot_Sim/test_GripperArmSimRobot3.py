@@ -57,8 +57,9 @@ block_id = utils_pybullet.load_urdf(p, BLOCK_URDF_PATH,
 
 # Load block
 
-# Pick and place
+# Pick and place 
 place_position = np.array([0.4999, -0.36, 0.1])  # place on other side
+place_position = np.array([0.35, 0, 0.15])
 block_position = np.array([0.2, 0.47, 0.01])
 force = 2
 size_of_the_block = 0.05
