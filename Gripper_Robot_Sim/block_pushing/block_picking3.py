@@ -96,6 +96,7 @@ class BlockPick(gym.Env):
         self.offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
         self.workspace_center_x = 0.4
         self._is_grasped = False
+        self._rng = np.random.RandomState(seed=seed)
 
 
     @property
@@ -254,7 +255,9 @@ class BlockPick(gym.Env):
     
     def save_state(self):
         self._saved_state = self._pybullet_client.saveState()
-    
+   
+    def seed(self, seed=None):
+        self._rng = np.random.RandomState(seed=seed) 
     
     def _set_robot_target_effector_pose(self, pose):
         self._target_effector_pose = pose
