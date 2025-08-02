@@ -283,11 +283,11 @@ class GripperArmSimRobot:
         
         new_translation_left = target_center - self.offset
         new_translation_right = target_center + self.offset
-        
+        center_rotation = self.get_center_rotation(new_translation_left, new_translation_right)
         new_pose = Pose3d_gripper(translation_left=new_translation_left,
                                 translation_right=new_translation_right,
-                                orientation_left=pose.orientation_left, 
-                                orientation_right=pose.orientation_right) 
+                                orientation_left=center_rotation, 
+                                orientation_right=center_rotation) 
         print("_____________Force is 1")
         
         self.set_target_effector_pose(new_pose,force)
