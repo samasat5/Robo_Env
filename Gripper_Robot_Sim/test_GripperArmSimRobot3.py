@@ -59,7 +59,7 @@ block_id = utils_pybullet.load_urdf(p, BLOCK_URDF_PATH,
 
 # Pick and place 
 # place_position2 = np.array([0.4999, -0.36, 0.1]) 
-place_position = np.array([0.4999, -0.36, 0]) +np.array([0, 0, 0.2])   # place on other side
+place_position = np.array([0.4999, -0.36, 0]) # place on other side
 # place_position = np.array([0.35, 0, 0.15])
 block_position = np.array([0.2, 0.47, 0.01])
 opening_width =0.04+0.0001
@@ -75,6 +75,7 @@ for _ in range(50):
     time.sleep(1 / 240.0)
 time.sleep(2)
 force = 7
+feasible_block_position = block_position + np.array([0, 0, 0.01])
 robot.move_gripper_to_target(block_position,force)
 for _ in range(100):
     p.stepSimulation()
@@ -85,8 +86,10 @@ robot.set_the_fingers_open_close(closing_width,force)
 for _ in range(100):
     p.stepSimulation()
     time.sleep(1 / 240.0)
+time.sleep(2)
 force = 0.4
-robot.move_gripper_to_target(place_position,force)
+feasible_place_position = place_position + np.array([0, 0, 0.1])
+robot.move_gripper_to_target(feasible_place_position, force)
 for _ in range(500):
     p.stepSimulation()
     time.sleep(1 / 150)
