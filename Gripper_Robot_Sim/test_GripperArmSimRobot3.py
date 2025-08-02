@@ -60,7 +60,7 @@ block_id = utils_pybullet.load_urdf(p, BLOCK_URDF_PATH,
 # Pick and place
 place_position = np.array([0.4999, -0.36, 0.1])  # place on other side
 block_position = np.array([0.2, 0.47, 0.01])
-force = 0.01
+force = 2
 size_of_the_block = 0.05
 opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
 robot.set_the_fingers_open_close(opening_width,force)
@@ -74,7 +74,7 @@ for _ in range(100):
     p.stepSimulation()
     time.sleep(1 / 240.0)
 closing_width = -0.001
-force = 0.01
+force = 1
 robot.set_the_fingers_open_close(closing_width,force)
 for _ in range(100):
     p.stepSimulation()
