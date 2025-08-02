@@ -21,12 +21,35 @@ p.setTimeStep(1. / 240.)
 plane_id = p.loadURDF("plane.urdf")
 
 # Create robot
-robot = GripperArmSimRobot(physics_client)
+INITIAL_JOINT_POSITIONS = np.array(
+    [
+        0.0, 
+        -0.5235987755982988, 
+        0.0, -1.0471975511965976, 
+        0.0, 1.5707963267948966, 
+        0.0, 
+        0.0, 
+        0.0])
+BLOCK_URDF_PATH = "third_party/py/envs/assets/block.urdf"
+PLANE_URDF_PATH = "third_party/bullet/examples/pybullet/gym/pybullet_data/" "plane.urdf"
+WORKSPACE_URDF_PATH = "third_party/py/envs/assets/workspace.urdf"
+ZONE_URDF_PATH = "third_party/py/envs/assets/zone.urdf"
+INSERT_URDF_PATH = "third_party/py/envs/assets/insert.urdf"
+workspace_uid = utils_pybullet.load_urdf(
+    p,
+    WORKSPACE_URDF_PATH,
+    basePosition=[0.35, 0, 0.0],)
+
+robot = GripperArmSimRobot(p,INITIAL_JOINT_POSITIONS)
+target_id = utils_pybullet.load_urdf(p,ZONE_URDF_PATH,
+                                      [0.4999, -0.36, 0.1], 
+                                      useFixedBase=True)
+block_id = utils_pybullet.load_urdf(p, BLOCK_URDF_PATH, 
+                                     [0.2, 0.47, 0.01],
+                                     useFixedBase=False)
+
 
 # Load block
-block_start_pos = [0.4, -0.3, 0.04]  # height must match block URDF base
-block_start_ori = p.getQuaternionFromEuler([0, 0, 0])
-block_id = p.loadURDF("cube_small.urdf", block_start_pos, block_start_ori)
 
 # Let everything settle
 for _ in range(100):
