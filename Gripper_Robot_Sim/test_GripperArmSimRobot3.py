@@ -17,7 +17,7 @@ p.setAdditionalSearchPath(pybullet_data.getDataPath())
 p.setGravity(0, 0, -9.81)
 p.setTimeStep(1. / 240.)
 p.resetDebugVisualizerCamera(
-    cameraDistance=0.9,
+    cameraDistance=1.2,
     cameraYaw=90,
     cameraPitch=-40,
     cameraTargetPosition=[0, 0, 0.1],
@@ -57,15 +57,17 @@ block_id = utils_pybullet.load_urdf(p, BLOCK_URDF_PATH,
 
 # Load block
 
-# Let everything settle
-for _ in range(100):
-    p.stepSimulation()
-    time.sleep(1 / 240.)
-
 # Pick and place
 place_position = np.array([0.4999, -0.36, 0.1])  # place on other side
 block_position = np.array([0.2, 0.47, 0.01])
-force = 2
+force = 1
+size_of_the_block = 0.05
+opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
+robot.set_the_fingers_open_close(opening_width,force)
+for _ in range(50):
+    p.stepSimulation()
+    time.sleep(1 / 240.0)
+force = 15
 robot.move_gripper_to_target ( block_position,force)
 # opening_width = 0.0001 + 0.04
 # robot.set_the_fingers_open_close(opening_width)
