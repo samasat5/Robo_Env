@@ -83,9 +83,9 @@ class GripperArmSimRobot:
         self.gripper_target = 11  # Khodam
         self.right_finger = 9   # Khodam
         self.left_finger = 10   # Khodam
-        self.grabbing_size_for_block = 0.0001
+        self.grabbing_size_for_block = 0.01
         self.block_size = 0.04
-        self.closing_width = -0.005
+        self.closing_width = -0.01
         self.opening_width = self.block_size + self.grabbing_size_for_block
         self.offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
         
@@ -239,7 +239,6 @@ class GripperArmSimRobot:
             forces=[force * 240.0] * len(self._joint_indices),
         )
     def set_the_fingers_open_close(self,opening_or_closing_width,force):
-        print("Opening fingers...and wait")
         half_opening = opening_or_closing_width / 2.0
         
         self._pybullet_client.setJointMotorControlArray(      # Using POSITION_CONTROL
@@ -251,7 +250,6 @@ class GripperArmSimRobot:
             positionGains=[0.4, 0.4],     # Optional: reduce control stiffness
             velocityGains=[1.0, 1.0],    
         )
-
 
 
     def set_target_joint_velocities(self, target_joint_velocities):
@@ -305,33 +303,44 @@ class GripperArmSimRobot:
         force = 7
         self.move_gripper_to_target (block_position, force)
         for _ in range(200):
+            time.sleep(1 / 50)
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
 
-        force = 1
+        force = 0.8
         closing_width = self.closing_width
         self.set_the_fingers_open_close(closing_width,force)
         for _ in range(200):
+            time.sleep(1 / 100.0)
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
+        time.sleep(1)
         
         
         
     def set_target_pick_n_place_the_block (self, place_position, block_position):
         self.set_target_pick_the_block(block_position)
         # Move above the placement target
-        force = 0.4
-        feasible_place_position = place_position + np.array([0.0, 0, 0.3])
+        force = 1
+        feasible_place_position = place_position + np.array([0.0, 0, 0.1])
         self.move_gripper_to_target(feasible_place_position,force)
         for _ in range(500):
+            time.sleep(1 / 100)
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
         # Move down to place
-        place_position_z = place_position +np.array([0, 0, -0.01])
+        place_position_z = place_position +np.array([0, 0, 0.02])
         force = 0.4
         self.move_gripper_to_target(place_position_z,force)
-        for _ in range(100):
+        for _ in range(80):
+            time.sleep(1 / 100)
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
-        
+        force = 2
+        opening_width = self.opening_width
+        self.set_the_fingers_open_close(opening_width,force)
+        for _ in range(50):
+            self._pybullet_client.stepSimulation()
+            time.sleep(1 / 240.0)
+                
     

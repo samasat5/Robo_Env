@@ -17,12 +17,11 @@ p.setAdditionalSearchPath(pybullet_data.getDataPath())
 p.setGravity(0, 0, -9.81)
 p.setTimeStep(1. / 240.)
 p.resetDebugVisualizerCamera(
-    cameraDistance=1.7,
-    cameraYaw=0,
-    cameraPitch=-40,
+    cameraDistance=1.3,
+    cameraYaw=100,
+    cameraPitch=-30,
     cameraTargetPosition=[0, 0, 0.1],
 )
-
 # Load plane
 plane_id = p.loadURDF("plane.urdf")
 
@@ -44,14 +43,14 @@ INSERT_URDF_PATH = "third_party/py/envs/assets/insert.urdf"
 workspace_uid = utils_pybullet.load_urdf(
     p,
     WORKSPACE_URDF_PATH,
-    basePosition=[0.35, 0, 0.0],)
+    basePosition=[0.35, 0, 0.001],)
 
 robot = GripperArmSimRobot(p,INITIAL_JOINT_POSITIONS)
 target_id = utils_pybullet.load_urdf(p,ZONE_URDF_PATH,
-                                      [0.4999, -0.36, 0], 
+                                      [0.4999, -0.36, 0.002], 
                                       useFixedBase=True)
 block_id = utils_pybullet.load_urdf(p, BLOCK_URDF_PATH, 
-                                     [0.2, 0.47, 0.01],
+                                     [0.4, 0.47, 0.01],
                                      useFixedBase=False)
 
 
@@ -61,44 +60,53 @@ block_id = utils_pybullet.load_urdf(p, BLOCK_URDF_PATH,
 # place_position2 = np.array([0.4999, -0.36, 0.1]) 
 place_position = np.array([0.4999, -0.36, 0]) # place on other side
 # place_position = np.array([0.35, 0, 0.15])
-block_position = np.array([0.2, 0.47, 0.01])
+block_position = np.array([0.4, 0.47, 0.01])
 opening_width =0.04+0.0001
-closing_width = -0.005
-# robot.set_target_pick_the_block(block_position)
-# robot.set_target_pick_n_place_the_block (place_position, block_position)
-force = 2
-size_of_the_block = 0.04
-opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
-robot.set_the_fingers_open_close(opening_width,force)
-for _ in range(50):
-    p.stepSimulation()
-    time.sleep(1 / 240.0)
-time.sleep(2)
-force = 7
-feasible_block_position = block_position + np.array([0, 0, 0])
-robot.move_gripper_to_target(feasible_block_position,force)
-for _ in range(100):
-    p.stepSimulation()
-    time.sleep(1 / 240.0)
-closing_width = -0.008
-force = 1
-robot.set_the_fingers_open_close(closing_width,force)
-for _ in range(100):
-    p.stepSimulation()
-    time.sleep(1 / 240.0)
-time.sleep(2)
-force = 0.3
-feasible_place_position = place_position + np.array([0, 0, 0.1])
-robot.move_gripper_to_target(feasible_place_position, force)
-for _ in range(500):
-    time.sleep(1 / 100)
-    p.stepSimulation()
-    time.sleep(1 / 150)
-feasible_place_position = feasible_place_position + np.array([0, 0, -0.05])
-robot.move_gripper_to_target(feasible_place_position, force)
-for _ in range(500):
-    time.sleep(1 / 100)
-    p.stepSimulation()
-    time.sleep(1 / 150)
 
-p.disconnect()
+# robot.set_target_pick_the_block(block_position)
+robot.set_target_pick_n_place_the_block (place_position, block_position)
+force = 2
+# size_of_the_block = 0.04
+# opening_width = size_of_the_block + 0.01 # grabbing size to grasp the block
+# robot.set_the_fingers_open_close(opening_width,force)
+# for _ in range(50):
+#     p.stepSimulation()
+#     time.sleep(1 / 240.0)
+# time.sleep(1)
+# force = 7
+# feasible_block_position = block_position + np.array([0, 0, 0])
+# robot.move_gripper_to_target(feasible_block_position,force)
+# for _ in range(100):
+#     time.sleep(1 / 50)
+#     p.stepSimulation()
+#     time.sleep(1 / 240.0)
+# # closing_width = -0.008
+# closing_width = -0.01
+# force = 0.8
+# robot.set_the_fingers_open_close(closing_width,force)
+# for _ in range(100):
+#     time.sleep(1 / 100.0)
+#     p.stepSimulation()
+#     time.sleep(1 / 240.0)
+# time.sleep(1)
+# force = 1
+# feasible_place_position = place_position + np.array([0, 0, 0.1])
+# robot.move_gripper_to_target(feasible_place_position, force)
+# for _ in range(500):
+#     time.sleep(1 / 100)
+#     p.stepSimulation()
+#     time.sleep(1 / 150)
+# feasible_place_position = feasible_place_position + np.array([0, 0, -0.08])
+# robot.move_gripper_to_target(feasible_place_position, force)
+# for _ in range(500):
+#     time.sleep(1 / 100)
+#     p.stepSimulation()
+#     time.sleep(1 / 150)
+# force = 2
+# size_of_the_block = 0.04
+# opening_width = size_of_the_block + 0.01 # grabbing size to grasp the block
+# robot.set_the_fingers_open_close(opening_width,force)
+# for _ in range(50):
+#     p.stepSimulation()
+#     time.sleep(1 / 240.0)
+# # p.disconnect()
