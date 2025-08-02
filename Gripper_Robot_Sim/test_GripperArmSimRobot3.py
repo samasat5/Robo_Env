@@ -36,7 +36,7 @@ INITIAL_JOINT_POSITIONS = np.array(
         0.0, 
         0.0, 
         0.0])
-BLOCK_URDF_PATH = "third_party/py/envs/assets/block.urdf"
+BLOCK_URDF_PATH = "third_party/py/envs/assets/block2.urdf"
 PLANE_URDF_PATH = "third_party/bullet/examples/pybullet/gym/pybullet_data/" "plane.urdf"
 WORKSPACE_URDF_PATH = "third_party/py/envs/assets/workspace.urdf"
 ZONE_URDF_PATH = "third_party/py/envs/assets/zone.urdf"
@@ -79,7 +79,7 @@ robot.set_the_fingers_open_close(closing_width,force)
 for _ in range(100):
     p.stepSimulation()
     time.sleep(1 / 240.0)
-force = 0.5
+force = 0.1
 robot.move_gripper_to_target(place_position,force)
 for _ in range(500):
     p.stepSimulation()
