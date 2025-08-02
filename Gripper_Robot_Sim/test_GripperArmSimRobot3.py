@@ -59,36 +59,36 @@ block_id = utils_pybullet.load_urdf(p, BLOCK_URDF_PATH,
 
 # Pick and place 
 # place_position2 = np.array([0.4999, -0.36, 0.1]) 
-place_position = np.array([0.4999, -0.36, 0])    # place on other side
+place_position = np.array([0.4999, -0.36, 0]) +np.array([0, 0, 0.2])   # place on other side
 # place_position = np.array([0.35, 0, 0.15])
 block_position = np.array([0.2, 0.47, 0.01])
 opening_width =0.04+0.0001
 closing_width = -0.005
 # robot.set_target_pick_the_block(block_position)
-robot.set_target_pick_n_place_the_block (place_position, block_position)
-# force = 2
-# size_of_the_block = 0.04
-# opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
-# robot.set_the_fingers_open_close(opening_width,force)
-# for _ in range(50):
-#     p.stepSimulation()
-#     time.sleep(1 / 240.0)
-# time.sleep(2)
-# force = 7
-# robot.move_gripper_to_target(block_position,force)
-# for _ in range(100):
-#     p.stepSimulation()
-#     time.sleep(1 / 240.0)
-# closing_width = -0.005
-# force = 1
-# robot.set_the_fingers_open_close(closing_width,force)
-# for _ in range(100):
-#     p.stepSimulation()
-#     time.sleep(1 / 240.0)
-# force = 0.4
-# robot.move_gripper_to_target(place_position,force)
-# for _ in range(500):
-#     p.stepSimulation()
-#     time.sleep(1 / 150)
+# robot.set_target_pick_n_place_the_block (place_position, block_position)
+force = 2
+size_of_the_block = 0.04
+opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
+robot.set_the_fingers_open_close(opening_width,force)
+for _ in range(50):
+    p.stepSimulation()
+    time.sleep(1 / 240.0)
+time.sleep(2)
+force = 7
+robot.move_gripper_to_target(block_position,force)
+for _ in range(100):
+    p.stepSimulation()
+    time.sleep(1 / 240.0)
+closing_width = -0.005
+force = 1
+robot.set_the_fingers_open_close(closing_width,force)
+for _ in range(100):
+    p.stepSimulation()
+    time.sleep(1 / 240.0)
+force = 0.4
+robot.move_gripper_to_target(place_position,force)
+for _ in range(500):
+    p.stepSimulation()
+    time.sleep(1 / 150)
 
 p.disconnect()
