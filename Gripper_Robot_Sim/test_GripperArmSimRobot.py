@@ -121,6 +121,7 @@ print("IK Joint Angles (target_joint_positions):", ik_solution)
 print("\n[TEST] set_target_effector_pose")
 size_of_the_block = 0.04
 opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
+force = 2
 robot.set_the_fingers_open_close(opening_width,force)
 for _ in range(50):
     p.stepSimulation()
@@ -131,7 +132,8 @@ for _ in range(100):
     p.stepSimulation()
     time.sleep(1 / 240.0)
 closing_width = - 0.0001
-robot.set_the_fingers_open_close(closing_width)
+force = 1
+robot.set_the_fingers_open_close(closing_width,force)
 for _ in range(50):
     p.stepSimulation()
     time.sleep(1 / 240.0) 
