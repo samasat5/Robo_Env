@@ -63,8 +63,8 @@ place_position = np.array([0.4999, -0.36, 0.1])  # place on other side
 block_position = np.array([0.2, 0.47, 0.01])
 opening_width =0.04+0.0001
 closing_width = -0.005
-robot.set_target_pick_the_block(opening_width,closing_width, block_position)
-
+# robot.set_target_pick_the_block(block_position)
+robot.set_target_pick_n_place_the_block (place_position, block_position)
 # force = 2
 # size_of_the_block = 0.04
 # opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block

@@ -294,7 +294,7 @@ class GripperArmSimRobot:
 
 
     
-    def set_target_pick_the_block(self, opening_width,closing_width, block_position):
+    def set_target_pick_the_block(self, block_position):
         force = 2
         opening_width = self.opening_width
         self.set_the_fingers_open_close(opening_width,force)
@@ -322,13 +322,14 @@ class GripperArmSimRobot:
         # Move above the placement target
         hover_position = place_position +np.array([0.35, 0, -place_position[2]+0.15])
         force = 0.2
-        self.move_gripper_to_target(hover_position,force)
+        self.move_gripper_to_target(place_position,force)
         for _ in range(100):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
         # Move down to place
         place_position_z = place_position +np.array([0.35, 0, -place_position[2]-0.0001])
-        self.move_gripper_to_target(place_position_z)
+        force = 0.2
+        self.move_gripper_to_target(place_position_z,force)
         for _ in range(100):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
