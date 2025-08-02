@@ -289,7 +289,7 @@ class GripperArmSimRobot:
                                 orientation_left=pose.orientation_left, 
                                 orientation_right=pose.orientation_right) 
         print("_____________Force is 1")
-        force = 1
+        force = 15
         self.set_target_effector_pose(new_pose,force)
 
 
