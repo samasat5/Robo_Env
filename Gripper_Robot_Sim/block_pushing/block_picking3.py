@@ -370,7 +370,9 @@ class BlockPick(gym.Env):
     
     def get_goal_translation(self):
         if self._is_grasped==True: # If the robot is holding the object, the goal is the place target.
-            return self._target_pose.translation #TODO ? translation_left i guess
+            translation_left = self._target_pose.translation_left
+            target_translation = translation_left+self.offset
+            return target_translation 
         else:   #If not, the goal is to go to the object's current position (pick).
             block_pos, _ = self._pybullet_client.getBasePositionAndOrientation(self._block_id)
             return np.array(block_pos)
