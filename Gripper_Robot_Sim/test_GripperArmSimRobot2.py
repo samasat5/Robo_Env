@@ -13,7 +13,7 @@ import math
 from block_pushing.utils.xarm_sim_robot import XArmSimRobot
 from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
 from block_pushing.utils import franka_panda_sim_robot
-
+from block_pushing.block_picking3 import BlockPick
 import matplotlib.pyplot as plt
 
 from block_pushing.utils.pose3d_gripper import Pose3d_gripper, Pose3d
@@ -450,22 +450,7 @@ obs = collections.OrderedDict(
 )
 
 
-print("block_translation=",
-      block_pose.translation[0:3])
-print("block_orientation=",
-      _yaw_from_pose(block_pose))
 
-print("gripper_translation_left=",
-      robot_pose.translation_left[0:3])
-print("gripper_translation_right=",
-      robot_pose.translation_right[0:3])
-
-
-print("effector_target_togo_translation=",
-      effector_pose)
-
-print("target_translation=",
-      _target_pose.translation[0:2])
 
 
 
