@@ -17,7 +17,7 @@ p.setAdditionalSearchPath(pybullet_data.getDataPath())
 p.setGravity(0, 0, -9.81)
 p.setTimeStep(1. / 240.)
 p.resetDebugVisualizerCamera(
-    cameraDistance=1.5,
+    cameraDistance=1.7,
     cameraYaw=0,
     cameraPitch=-40,
     cameraTargetPosition=[0, 0, 0.1],
@@ -75,12 +75,12 @@ for _ in range(50):
     time.sleep(1 / 240.0)
 time.sleep(2)
 force = 7
-feasible_block_position = block_position + np.array([0, 0, 0.01])
-robot.move_gripper_to_target(block_position,force)
+feasible_block_position = block_position + np.array([0, 0, 0])
+robot.move_gripper_to_target(feasible_block_position,force)
 for _ in range(100):
     p.stepSimulation()
     time.sleep(1 / 240.0)
-closing_width = -0.005
+closing_width = -0.008
 force = 1
 robot.set_the_fingers_open_close(closing_width,force)
 for _ in range(100):
