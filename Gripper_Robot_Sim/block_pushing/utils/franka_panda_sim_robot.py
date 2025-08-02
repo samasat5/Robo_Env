@@ -294,20 +294,22 @@ class GripperArmSimRobot:
 
 
     
-    def set_target_pick_the_block(self, opening_width,closing_width,  block_position):
-        print("_2opening")
-        force =2
-        self.set_the_fingers_open_close(opening_width,force)
+    def set_target_pick_the_block(self, 
+                                  force, 
+                                  opening_width,
+                                  closing_width, 
+                                  block_position):
+        force_open = 3
+        self.set_the_fingers_open_close(opening_width, force_open)
         for _ in range(100):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
             
-        print("move gripper to taregt")
-        self.move_gripper_to_target (block_position)
+        self.move_gripper_to_target (block_position, force)
         for _ in range(100):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
-        print("\n\nclosing???")
+
         self.set_the_fingers_open_close(closing_width,force)
         for _ in range(100):
             self._pybullet_client.stepSimulation()
