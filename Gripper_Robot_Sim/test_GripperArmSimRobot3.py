@@ -57,9 +57,9 @@ for _ in range(100):
     time.sleep(1 / 240.)
 
 # Pick and place
-place_position = np.array([0.4, 0.3, 0.04])  # place on other side
-
-robot.set_target_pick_n_place_the_block(place_position, np.array(block_start_pos))
+place_position = np.array([0.4999, -0.36, 0.1])  # place on other side
+block_position = np.array([0.2, 0.47, 0.01])
+robot.set_target_pick_n_place_the_block(place_position, block_position)
 
 # Let simulation run for a while
 for _ in range(300):

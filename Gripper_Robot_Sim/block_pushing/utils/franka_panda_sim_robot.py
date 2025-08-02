@@ -290,8 +290,9 @@ class GripperArmSimRobot:
         
         new_pose = Pose3d_gripper(translation_left=new_translation_left,
                                 translation_right=new_translation_right,
-                                orientation_left=pose.rotation_left, 
-                                orientation_right=pose.rotation_left) 
+                                orientation_left=pose.orientation_left, 
+                                orientation_right=pose.orientation_right) 
+        print("_____________Force is 7")
         force = 7
         self.set_target_effector_pose(new_pose,force)
 
