@@ -298,7 +298,7 @@ class BlockPick(gym.Env):
         
         if reset_poses: 
             
-            # Reset the _target_pose
+            # Reset the _target_effector_pose
             # (The pose the robot is trying to reach to) :
             orientation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
             orientation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
@@ -322,7 +322,8 @@ class BlockPick(gym.Env):
                 block_translation.tolist(),
                 block_rotation.as_quat().tolist(),)
             
-            # Reset the ultimate target (the flat target) pose:
+            # Reset _target_pose
+            # the ultimate target (the flat target) pose:
             target_x = self.workspace_center_x + self._rng.uniform(low=-0.10, high=0.10)
             target_y = 0.2 + self._rng.uniform(low=-0.15, high=0.15)
             target_translation = np.array([target_x, target_y, 0.020])
@@ -350,8 +351,7 @@ class BlockPick(gym.Env):
                                 translation_right=new_translation_right,
                                 orientation_left=target_rotation, 
                                 orientation_right=target_rotation) 
-        # TODO: this _target_pose is literaly the flat target ,or the temporary target the robot is moving to 
-
+        
         if reset_poses:
             self.step_Simulation_func()
             
