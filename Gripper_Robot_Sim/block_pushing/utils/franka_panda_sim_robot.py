@@ -227,9 +227,7 @@ class GripperArmSimRobot:
         target_joint_positions = self.inverse_kinematics(new_pose)  # khodam
         print("target_joint_positions:", target_joint_positions)
         self.set_target_joint_positions(target_joint_positions,force)
-        for _ in range(100):
-            self._pybullet_client.stepSimulation()
-            time.sleep(1)
+
         
     def set_target_joint_positions(self, target_joint_positions,force):
         # print("Moving to the new pose...")
@@ -253,9 +251,7 @@ class GripperArmSimRobot:
             positionGains=[0.4, 0.4],     # Optional: reduce control stiffness
             velocityGains=[1.0, 1.0],    
         )
-        for _ in range(50):
-            self._pybullet_client.stepSimulation()
-            time.sleep(1)
+
 
 
     def set_target_joint_velocities(self, target_joint_velocities):
@@ -301,8 +297,17 @@ class GripperArmSimRobot:
     def set_target_pick_the_block(self, block_position):
     
         self.set_the_fingers_open_close(self.opening_width)
+        for _ in range(100):
+            self._pybullet_client.stepSimulation()
+            time.sleep(1 / 240.0)
         self.move_gripper_to_target (block_position)
+        for _ in range(100):
+            self._pybullet_client.stepSimulation()
+            time.sleep(1 / 240.0)
         self.set_the_fingers_open_close(self.closing_width)
+        for _ in range(100):
+            self._pybullet_client.stepSimulation()
+            time.sleep(1 / 240.0)
         
         
         
