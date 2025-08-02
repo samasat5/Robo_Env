@@ -85,7 +85,7 @@ class GripperArmSimRobot:
         self.left_finger = 10   # Khodam
         self.grabbing_size_for_block = 0.0001
         self.block_size = 0.04
-        self.closing_width = 0
+        self.closing_width = -0.005
         self.opening_width = self.block_size + self.grabbing_size_for_block
         self.offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
         
@@ -294,19 +294,22 @@ class GripperArmSimRobot:
 
 
     
-    def set_target_pick_the_block(self, force, opening_width,closing_width,  block_position):
-        print("_2opening")
+    def set_target_pick_the_block(self, opening_width,closing_width, block_position):
+        force = 2
+        opening_width = self.opening_width
         self.set_the_fingers_open_close(opening_width,force)
         for _ in range(100):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
             
-        print("move gripper to taregt")
+        force = 7
         self.move_gripper_to_target (block_position, force)
         for _ in range(100):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
-        print("\n\nclosing???")
+
+        force = 1
+        closing_width = self.closing_width
         self.set_the_fingers_open_close(closing_width,force)
         for _ in range(100):
             self._pybullet_client.stepSimulation()
@@ -318,7 +321,8 @@ class GripperArmSimRobot:
         self.set_target_pick_the_block(block_position)
         # Move above the placement target
         hover_position = place_position +np.array([0.35, 0, -place_position[2]+0.15])
-        self.move_gripper_to_target(hover_position)
+        force = 0.2
+        self.move_gripper_to_target(hover_position,force)
         for _ in range(100):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
