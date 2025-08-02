@@ -68,7 +68,7 @@ for _ in range(50):
     p.stepSimulation()
     time.sleep(1 / 240.0)
 time.sleep(2)
-force = 3
+force = 7
 robot.move_gripper_to_target(block_position,force)
 for _ in range(100):
     p.stepSimulation()
@@ -79,7 +79,7 @@ robot.set_the_fingers_open_close(closing_width,force)
 for _ in range(100):
     p.stepSimulation()
     time.sleep(1 / 240.0)
-force = 2
+force = 0.2
 robot.move_gripper_to_target(place_position,force)
 for _ in range(500):
     p.stepSimulation()
