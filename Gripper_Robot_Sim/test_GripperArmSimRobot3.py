@@ -18,7 +18,7 @@ p.setGravity(0, 0, -9.81)
 p.setTimeStep(1. / 240.)
 p.resetDebugVisualizerCamera(
     cameraDistance=1.5,
-    cameraYaw=90,
+    cameraYaw=0,
     cameraPitch=-40,
     cameraTargetPosition=[0, 0, 0.1],
 )
@@ -89,6 +89,12 @@ for _ in range(100):
 time.sleep(2)
 force = 0.3
 feasible_place_position = place_position + np.array([0, 0, 0.1])
+robot.move_gripper_to_target(feasible_place_position, force)
+for _ in range(500):
+    time.sleep(1 / 100)
+    p.stepSimulation()
+    time.sleep(1 / 150)
+feasible_place_position = feasible_place_position + np.array([0, 0, -0.04])
 robot.move_gripper_to_target(feasible_place_position, force)
 for _ in range(500):
     time.sleep(1 / 100)
