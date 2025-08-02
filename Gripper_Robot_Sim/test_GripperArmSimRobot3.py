@@ -16,6 +16,12 @@ physics_client = p.connect(p.GUI)  # Use GUI for visualization
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
 p.setGravity(0, 0, -9.81)
 p.setTimeStep(1. / 240.)
+p.resetDebugVisualizerCamera(
+    cameraDistance=0.9,
+    cameraYaw=90,
+    cameraPitch=-40,
+    cameraTargetPosition=[0, 0, 0.1],
+)
 
 # Load plane
 plane_id = p.loadURDF("plane.urdf")
