@@ -292,8 +292,8 @@ class GripperArmSimRobot:
                                 translation_right=new_translation_right,
                                 orientation_left=pose.orientation_left, 
                                 orientation_right=pose.orientation_right) 
-        print("_____________Force is 1")
-        force = 1
+        print("_____________Force is 0")
+        force = 0.0001
         self.set_target_effector_pose(new_pose,force)
 
 
