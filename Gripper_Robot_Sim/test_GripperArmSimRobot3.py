@@ -87,7 +87,7 @@ for _ in range(100):
     p.stepSimulation()
     time.sleep(1 / 240.0)
 time.sleep(2)
-force = 0.4
+force = 0.2
 feasible_place_position = place_position + np.array([0, 0, 0.1])
 robot.move_gripper_to_target(feasible_place_position, force)
 for _ in range(500):
