@@ -36,7 +36,7 @@ INITIAL_JOINT_POSITIONS = np.array(
         0.0, 
         0.0, 
         0.0])
-BLOCK_URDF_PATH = "third_party/py/envs/assets/block.urdf"
+BLOCK_URDF_PATH = "third_party/py/envs/assets/block2.urdf"
 PLANE_URDF_PATH = "third_party/bullet/examples/pybullet/gym/pybullet_data/" "plane.urdf"
 WORKSPACE_URDF_PATH = "third_party/py/envs/assets/workspace.urdf"
 ZONE_URDF_PATH = "third_party/py/envs/assets/zone.urdf"
