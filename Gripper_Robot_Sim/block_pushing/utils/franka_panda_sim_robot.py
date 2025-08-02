@@ -277,7 +277,7 @@ class GripperArmSimRobot:
 
 
 
-    def move_gripper_to_target (self,target_center):
+    def move_gripper_to_target (self,target_center,force):
         pose = self.forward_kinematics()
         
         
@@ -289,7 +289,7 @@ class GripperArmSimRobot:
                                 orientation_left=pose.orientation_left, 
                                 orientation_right=pose.orientation_right) 
         print("_____________Force is 1")
-        force = 15
+        
         self.set_target_effector_pose(new_pose,force)
 
 

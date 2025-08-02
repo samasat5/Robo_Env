@@ -65,7 +65,8 @@ for _ in range(100):
 # Pick and place
 place_position = np.array([0.4999, -0.36, 0.1])  # place on other side
 block_position = np.array([0.2, 0.47, 0.01])
-robot.move_gripper_to_target ( block_position)
+force = 2
+robot.move_gripper_to_target ( block_position,force)
 # opening_width = 0.0001 + 0.04
 # robot.set_the_fingers_open_close(opening_width)
 # for _ in range(100):
