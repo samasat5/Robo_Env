@@ -5,7 +5,7 @@ from gym import spaces
 from gym.envs import registration
 from typing import Dict, List, Optional, Tuple, Union
 from block_pushing.utils.pose3d_gripper import Pose3d_gripper
-from diffusion_policy.env.block_pushing.utils.pose3d import Pose3d
+
 from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
 from block_pushing.utils import utils_pybullet, franka_panda_sim_robot
 from block_pushing.utils.utils_pybullet import ObjState, XarmState
