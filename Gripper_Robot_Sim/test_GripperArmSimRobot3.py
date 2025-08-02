@@ -48,7 +48,7 @@ workspace_uid = utils_pybullet.load_urdf(
 
 robot = GripperArmSimRobot(p,INITIAL_JOINT_POSITIONS)
 target_id = utils_pybullet.load_urdf(p,ZONE_URDF_PATH,
-                                      [0.4999, -0.36, 0.1], 
+                                      [0.4999, -0.36, 0], 
                                       useFixedBase=True)
 block_id = utils_pybullet.load_urdf(p, BLOCK_URDF_PATH, 
                                      [0.2, 0.47, 0.01],
@@ -58,7 +58,8 @@ block_id = utils_pybullet.load_urdf(p, BLOCK_URDF_PATH,
 # Load block
 
 # Pick and place 
-place_position = np.array([0.4999, -0.36, 0.1])  # place on other side
+# place_position2 = np.array([0.4999, -0.36, 0.1]) 
+place_position = np.array([0.4999, -0.36, 0])    # place on other side
 # place_position = np.array([0.35, 0, 0.15])
 block_position = np.array([0.2, 0.47, 0.01])
 opening_width =0.04+0.0001
