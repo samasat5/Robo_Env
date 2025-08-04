@@ -382,7 +382,7 @@ class BlockPick(gym.Env):
             return np.array(block_pos)
 
     
-    def _is_grasped(self):
+    def _set_is_grasped(self):
         left_pos = self._pybullet_client.getLinkState(self._robot.gripperarm, self._robot.left_finger)[0]
         right_pos = self._pybullet_client.getLinkState(self._robot.gripperarm, self._robot.right_finger)[0]
 
