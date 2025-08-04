@@ -402,9 +402,7 @@ class BlockPick(gym.Env):
     
     def step(self, action):
         p_state = self._compute_state()
-
         move_to_position = np.array([action[0], action[1], action[2]])
-
         # Case 1: Move toward the block to pick
         if np.allclose(move_to_position, np.append(p_state["block_translation"], self.effector_height)):
             block_position = np.append(p_state["block_translation"], self.effector_height)
@@ -440,5 +438,11 @@ class BlockPick(gym.Env):
             done = True
 
         return state, reward, done, {}
-
-            
+    
+    @property
+    def succeeded(self):
+        state = self._compute_state()
+        goal_distance = self._compute_goal_distance(state)
+        if goal_distance < self.goal_dist_tolerance:
+            return True
+        return False
