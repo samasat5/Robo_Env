@@ -5,9 +5,9 @@ import numpy as np
 import gym
 import matplotlib.pyplot as plt
 from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
+import block_pushing.block_picking3
 
-
-env = gym.make("BlockInsert-v0")
+env = gym.make("BlockPick-v0")
 
 obs = env.reset()
 done = False
