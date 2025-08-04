@@ -400,8 +400,8 @@ class BlockPick(gym.Env):
         return goal_distance
     
     def step(self, action):
-        state = self._compute_state()
         
+        state = self._compute_state()
         if np.array([action[0], action[1], action[2]]) == state[0]: # if the action is to go towards the block:
             f
         
