@@ -446,3 +446,8 @@ class BlockPick(gym.Env):
         if goal_distance < self.goal_dist_tolerance:
             return True
         return False
+    
+    @property
+    def goal_distance(self):
+        state = self._compute_state()
+        return self._compute_goal_distance(state)
