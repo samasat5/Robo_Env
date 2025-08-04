@@ -67,18 +67,21 @@ class BlockPick(gym.Env):
 ):
       
         # Mimic RealSense D415 camera parameters.
+        if visuals_mode != "default" and visuals_mode != "real":
+            raise ValueError("visuals_mode must be `real` or `default`.")
+        self._visuals_mode = visuals_mode
         if visuals_mode == "default":
-            _camera_pose = DEFAULT_CAMERA_POSE
-            _camera_orientation = DEFAULT_CAMERA_ORIENTATION
-            workspace_bounds = WORKSPACE_BOUNDS
-            _camera_instrinsics = CAMERA_INTRINSICS
-            _workspace_urdf_path = WORKSPACE_URDF_PATH
+            self._camera_pose = DEFAULT_CAMERA_POSE
+            self._camera_orientation = DEFAULT_CAMERA_ORIENTATION
+            self.workspace_bounds = WORKSPACE_BOUNDS
+            self._camera_instrinsics = CAMERA_INTRINSICS
+            self._workspace_urdf_path = WORKSPACE_URDF_PATH
         else:
-            _camera_pose = CAMERA_POSE_REAL
-            _camera_orientation = CAMERA_ORIENTATION_REAL
-            workspace_bounds = WORKSPACE_BOUNDS_REAL
-            _camera_instrinsics = CAMERA_INTRINSICS_REAL
-            _workspace_urdf_path = WORKSPACE_URDF_PATH_REAL
+            self._camera_pose = CAMERA_POSE_REAL
+            self._camera_orientation = CAMERA_ORIENTATION_REAL
+            self.workspace_bounds = WORKSPACE_BOUNDS_REAL
+            self._camera_instrinsics = CAMERA_INTRINSICS_REAL
+            self._workspace_urdf_path = WORKSPACE_URDF_PATH_REAL
         
         self._connection_mode = pybullet.DIRECT
         self._pybullet_client = bullet_client.BulletClient(connection_mode=self._connection_mode)
@@ -92,17 +95,14 @@ class BlockPick(gym.Env):
         self.reset()
         self._target_effector_pose = None
         self._target_pose = None
-        self._control_frequency = None
+        self._control_frequency = control_frequency
         assert isinstance(self._pybullet_client, bullet_client.BulletClient)
         self.offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
         self.workspace_center_x = 0.4
         self._is_grasped = False
         self._rng = np.random.RandomState(seed=seed)
         self.block_translation = None
-        # self._camera_pose = ...
-        # self._camera_orientation = ...
-        # self._camera_instrinsics = ...
-        # self._workspace_urdf_path = ...
+        self.rendered_img = None
 
 
     @property
