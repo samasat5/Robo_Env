@@ -289,7 +289,7 @@ class BlockPick(gym.Env):
             gripper_translation_left=robot_pose.translation_left[0:3],
             gripper_translation_right=robot_pose.translation_right[0:3],
             
-            effector_target_translation=self._target_effector_pose.translation[0:2],
+            effector_target_translation=self._target_effector_pose.translation[0:3],
             
             target_translation=self._target_pose.translation[0:3],
         )
@@ -402,4 +402,6 @@ class BlockPick(gym.Env):
     def step(self, action):
         state = self._compute_state()
         
-        if np.array([action[0], action[1], action[2]]) == 
+        if np.array([action[0], action[1], action[2]]) == state[0]: # if the action is to go towards the block:
+            f
+        
