@@ -424,7 +424,7 @@ class BlockPick(gym.Env):
                 self._pybullet_client.stepSimulation()
                 time.sleep(1 / 240.0)
 
-        # Compute next state and reward
+
         state = self._compute_state()
         goal_distance = self._compute_goal_distance(state)
         fraction_reduced_goal_distance = 1.0 - (goal_distance / self._init_goal_distance)
