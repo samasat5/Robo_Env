@@ -376,6 +376,16 @@ class BlockPick(gym.Env):
 
         return state
     
+    def _compute_reach_target(self, state):
+        xy_block = state["block_translation"]
+        xy_target = state["target_translation"]
+
+        xy_block_to_target = xy_target - xy_block
+        xy_dir_block_to_target = (xy_block_to_target) / np.linalg.norm(
+            xy_block_to_target
+        )
+        self.reach_target_translation = xy_block + -1 * xy_dir_block_to_target * 0.05
+        
     def get_goal_translation(self):
         if self._is_grasped==True: # If the robot is holding the object, the goal is the place target.
             translation_left = self._target_pose.translation_left
