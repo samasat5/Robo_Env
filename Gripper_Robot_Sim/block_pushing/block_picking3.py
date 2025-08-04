@@ -451,3 +451,9 @@ class BlockPick(gym.Env):
     def goal_distance(self):
         state = self._compute_state()
         return self._compute_goal_distance(state)
+
+    def render(self, mode="rgb_array"):
+        return self._env.render(mode)
+
+    def close(self):
+        self._env.close()
