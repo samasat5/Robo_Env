@@ -491,3 +491,15 @@ class BlockPick(gym.Env):
 
     def close(self):
         self._pybullet_client.disconnect()
+
+
+
+if "BlockPick-v0" in registration.registry:
+    del registration.registry["BlockPick-v0"]
+
+
+registration.register(
+    id="BlockPick-v0",
+    entry_point=BlockPick,
+    max_episode_steps=50,
+)
