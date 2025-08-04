@@ -403,5 +403,6 @@ class BlockPick(gym.Env):
         
         state = self._compute_state()
         if np.array([action[0], action[1], action[2]]) == state[0]: # if the action is to go towards the block:
-            f
+            block_position = state[0]
+            self._robot.set_target_pick_the_block(block_position)
         
