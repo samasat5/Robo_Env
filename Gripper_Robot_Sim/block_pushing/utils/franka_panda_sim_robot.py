@@ -278,7 +278,6 @@ class GripperArmSimRobot:
     def move_gripper_to_target (self,target_center,force):
         pose = self.forward_kinematics()
         
-        
         new_translation_left = target_center - self.offset
         new_translation_right = target_center + self.offset
         center_rotation = self.get_center_rotation(new_translation_left, new_translation_right)
@@ -286,7 +285,6 @@ class GripperArmSimRobot:
                                 translation_right=new_translation_right,
                                 orientation_left=center_rotation, 
                                 orientation_right=center_rotation) 
-        print("_____________Force is 1")
         
         self.set_target_effector_pose(new_pose,force)
 

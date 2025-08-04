@@ -5,7 +5,7 @@ from gym import spaces
 from gym.envs import registration
 from typing import Dict, List, Optional, Tuple, Union
 from block_pushing.utils.pose3d_gripper import Pose3d_gripper
-
+from block_pushing.utils.pose3d import Pose3d
 from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
 from block_pushing.utils import utils_pybullet, franka_panda_sim_robot
 from block_pushing.utils.utils_pybullet import ObjState, XarmState
@@ -97,6 +97,7 @@ class BlockPick(gym.Env):
         self.workspace_center_x = 0.4
         self._is_grasped = False
         self._rng = np.random.RandomState(seed=seed)
+        self.block_translation = None
 
 
     @property
@@ -318,6 +319,7 @@ class BlockPick(gym.Env):
             block_x = self.workspace_center_x + self._rng.uniform(low=-0.1, high=0.1)
             block_y = -0.2 + self._rng.uniform(low=-0.15, high=0.15)
             block_translation = np.array([block_x, block_y, 0])
+            self.block_translation = block_translation
             block_sampled_angle = self._rng.uniform(math.pi)
             block_rotation = transform.Rotation.from_rotvec([0, 0, block_sampled_angle])
             self._pybullet_client.resetBasePositionAndOrientation(
@@ -397,4 +399,7 @@ class BlockPick(gym.Env):
         goal_distance = np.linalg.norm(state["effector_translation"] - goal_translation[0:2])
         return goal_distance
     
-    
+    def step(self, action):
+        state = self._compute_state()
+        
+        if np.array([action[0], action[1], action[2]]) == 
