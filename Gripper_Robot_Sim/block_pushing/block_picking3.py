@@ -407,4 +407,6 @@ class BlockPick(gym.Env):
             self._robot.set_target_pick_the_block(block_position)
         
         elif np.array([action[0], action[1], action[2]]) == p_state[5] & self._is_grasped == True: # if th eaction is to go towards the flat taregt
-            they
+            place_position = p_state[5]
+            self._robot.set_target_pick_the_block(place_position)
+            
