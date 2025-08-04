@@ -404,6 +404,7 @@ class BlockPick(gym.Env):
     
     def step(self, action):
         p_state = self._compute_state()
+        self._set_is_grasped()
         move_to_position = np.array([action[0], action[1], action[2]])
         # Case 1: Move toward the block to pick
         if np.allclose(move_to_position, np.append(p_state["block_translation"], self.effector_height)):
