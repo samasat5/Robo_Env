@@ -325,7 +325,7 @@ class BlockPick(gym.Env):
             block_sampled_angle = self._rng.uniform(math.pi)
             block_rotation = transform.Rotation.from_rotvec([0, 0, block_sampled_angle])
             self._pybullet_client.resetBasePositionAndOrientation(
-                self._block_ids,
+                self._block_id,
                 block_translation.tolist(),
                 block_rotation.as_quat().tolist(),)
             
