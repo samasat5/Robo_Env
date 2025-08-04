@@ -57,7 +57,7 @@ class BlockPick(gym.Env):
     def __init__(
     self,
     control_frequency=10.0,
-    image_size=None,
+    image_size=np.array([320, 240]),
     shared_memory=False, 
     seed=None,
     goal_dist_tolerance=0.01,
@@ -99,6 +99,10 @@ class BlockPick(gym.Env):
         self._is_grasped = False
         self._rng = np.random.RandomState(seed=seed)
         self.block_translation = None
+        self._camera_pose = ...
+        self._camera_orientation = ...
+        self._camera_instrinsics = ...
+        self._workspace_urdf_path = ...
 
 
     @property
