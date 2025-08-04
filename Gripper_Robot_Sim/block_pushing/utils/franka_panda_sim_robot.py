@@ -88,6 +88,7 @@ class GripperArmSimRobot:
         self.closing_width = -0.01
         self.opening_width = self.block_size + self.grabbing_size_for_block
         self.offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
+        self._is_grasped = False
         
     def get_joint_positions(self):
         joint_states = self._pybullet_client.getJointStates(
@@ -305,6 +306,8 @@ class GripperArmSimRobot:
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
 
+        self._is_grasped = True
+        
         force = 0.8
         closing_width = self.closing_width
         self.set_the_fingers_open_close(closing_width,force)
