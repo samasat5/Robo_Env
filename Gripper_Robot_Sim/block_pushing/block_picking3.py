@@ -453,7 +453,24 @@ class BlockPick(gym.Env):
         return self._compute_goal_distance(state)
 
     def render(self, mode="rgb_array"):
-        return self._env.render(mode)
+        if self._image_size is not None:
+            image_size = self._image_size
+        else:
+            # This allows rendering even for state-only obs,
+            # for visualization.
+            image_size = (IMAGE_HEIGHT, IMAGE_WIDTH)
+
+        data = self._render_camera(image_size=(image_size[0], image_size[1]))
+        if mode == "human":
+            if self.rendered_img is None:
+                self.rendered_img = plt.imshow(
+                    np.zeros((image_size[0], image_size[1], 4))
+                )
+            else:
+                self.rendered_img.set_data(data)
+            plt.draw()
+            plt.pause(0.00001)
+        return data
 
     def close(self):
-        self._env.close()
+        self._pybullet_client.disconnect()
