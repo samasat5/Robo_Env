@@ -401,40 +401,44 @@ class BlockPick(gym.Env):
     
     
     def step(self, action):
-        
         p_state = self._compute_state()
-        if np.array([action[0], action[1], action[2]]) == p_state[0]: # if the action is to go towards the block:
-            block_position = p_state[0]
+
+        move_to_position = np.array([action[0], action[1], action[2]])
+
+        # Case 1: Move toward the block to pick
+        if np.allclose(move_to_position, np.append(p_state["block_translation"], self.effector_height)):
+            block_position = np.append(p_state["block_translation"], self.effector_height)
             self._robot.set_target_pick_the_block(block_position)
-        
-        elif np.array([action[0], action[1], action[2]]) == p_state[5] & self._is_grasped == True: # if th eaction is to go towards the flat taregt
-            place_position = p_state[5]
+
+        # Case 2: Move toward the target to place
+        elif np.allclose(move_to_position, np.append(p_state["target_translation"], self.effector_height)) and self._is_grasped:
+            place_position = np.append(p_state["target_translation"], self.effector_height)
             self._robot.set_target_pick_the_block(place_position)
-            
-        else: 
-            move_to_position = np.array([action[0], action[1], action[2]])
+
+        # Case 3: General movement
+        else:
             force = 7
-            self._robot.move_gripper_to_target (move_to_position, force)
+            self._robot.move_gripper_to_target(move_to_position, force)
             for _ in range(200):
                 time.sleep(1 / 50)
                 self._pybullet_client.stepSimulation()
                 time.sleep(1 / 240.0)
-                
+
+        # Compute next state and reward
         state = self._compute_state()
         goal_distance = self._compute_goal_distance(state)
-        fraction_reduced_goal_distance = 1.0 - (
-            goal_distance / self._init_goal_distance
-        )
+        fraction_reduced_goal_distance = 1.0 - (goal_distance / self._init_goal_distance)
+
         if fraction_reduced_goal_distance > self.best_fraction_reduced_goal_dist:
             self.best_fraction_reduced_goal_dist = fraction_reduced_goal_distance
 
-        done = False
         reward = self.best_fraction_reduced_goal_dist
-
+        done = False
 
         if goal_distance < self.goal_dist_tolerance:
             reward = 1.0
             done = True
 
         return state, reward, done, {}
-        
+
+            
