@@ -410,3 +410,13 @@ class BlockPick(gym.Env):
             place_position = p_state[5]
             self._robot.set_target_pick_the_block(place_position)
             
+        else: 
+            move_to_position = np.array([action[0], action[1], action[2]])
+            force = 7
+            self._robot.move_gripper_to_target (move_to_position, force)
+            for _ in range(200):
+                time.sleep(1 / 50)
+                self._pybullet_client.stepSimulation()
+                time.sleep(1 / 240.0)
+        
+        
