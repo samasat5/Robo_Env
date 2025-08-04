@@ -399,6 +399,7 @@ class BlockPick(gym.Env):
         goal_distance = np.linalg.norm(state["effector_translation"] - goal_translation[0:2])
         return goal_distance
     
+    
     def step(self, action):
         
         p_state = self._compute_state()
@@ -418,5 +419,22 @@ class BlockPick(gym.Env):
                 time.sleep(1 / 50)
                 self._pybullet_client.stepSimulation()
                 time.sleep(1 / 240.0)
-        
+                
+        state = self._compute_state()
+        goal_distance = self._compute_goal_distance(state)
+        fraction_reduced_goal_distance = 1.0 - (
+            goal_distance / self._init_goal_distance
+        )
+        if fraction_reduced_goal_distance > self.best_fraction_reduced_goal_dist:
+            self.best_fraction_reduced_goal_dist = fraction_reduced_goal_distance
+
+        done = False
+        reward = self.best_fraction_reduced_goal_dist
+
+
+        if goal_distance < self.goal_dist_tolerance:
+            reward = 1.0
+            done = True
+
+        return state, reward, done, {}
         
