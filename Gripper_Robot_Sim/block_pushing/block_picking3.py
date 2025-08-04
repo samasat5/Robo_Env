@@ -80,8 +80,8 @@ class BlockPick(gym.Env):
             _camera_instrinsics = CAMERA_INTRINSICS_REAL
             _workspace_urdf_path = WORKSPACE_URDF_PATH_REAL
         
-        self._pybullet_client = None
         self._connection_mode = pybullet.DIRECT
+        self._pybullet_client = bullet_client.BulletClient(connection_mode=self._connection_mode)
         if shared_memory:
             self._connection_mode = pybullet.SHARED_MEMORY
         self._setup_the_scene()
@@ -129,6 +129,7 @@ class BlockPick(gym.Env):
 
         
     def _setup_the_scene(self):
+        
         bullet_client.BulletClient(connection_mode=self._connection_mode)
         self._pybullet_client.resetSimulation()
         self._pybullet_client.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
