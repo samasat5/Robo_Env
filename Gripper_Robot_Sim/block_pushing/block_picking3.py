@@ -85,6 +85,7 @@ class BlockPick(gym.Env):
         if shared_memory:
             self._connection_mode = pybullet.SHARED_MEMORY
         self._setup_the_scene()
+        self._image_size = image_size
         self.image_size = np.array([320, 240])
         self.image_dir="trajectory_images"
         self.save_state()
