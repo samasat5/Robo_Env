@@ -324,27 +324,22 @@ class BlockPick(gym.Env):
         pi2 = math.pi * 2
 
         obs_dict = collections.OrderedDict(
-            block_translation=spaces.Box(low=-5, high=5, shape=(3,)),  # x,y
+            block_translation=spaces.Box(low=-5, high=5, shape=(3,)),  # x,y,z
             
             block_orientation=spaces.Box(low=-pi2, high=pi2, shape=(1,)),  # phi
             
             effector_translation=spaces.Box(
                 low=self.workspace_bounds[0] - 0.1,  # Small buffer for to IK noise.
                 high=self.workspace_bounds[1] + 0.1,
-            ),  # x,y
+            ),  # x,y,z
             
             effector_target_translation=spaces.Box(
                 low=self.workspace_bounds[0] - 0.1,  # Small buffer for to IK noise.
                 high=self.workspace_bounds[1] + 0.1,
-            ),  # x,y
+            ),  # x,y,z
             
-            target_translation=spaces.Box(low=-5, high=5, shape=(3,)),  # x,y
+            target_translation=spaces.Box(low=-5, high=5, shape=(3,)),  # x,y,z
             
-            target_orientation=spaces.Box(
-                low=-pi2,
-                high=pi2,
-                shape=(1,),
-            ),  # theta
         )
         if image_size is not None:
             obs_dict["rgb"] = spaces.Box(
