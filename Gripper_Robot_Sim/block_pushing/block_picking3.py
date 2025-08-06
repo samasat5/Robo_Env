@@ -345,10 +345,10 @@ class BlockPick(gym.Env):
             target_translation=spaces.Box(low=-5, high=5, shape=(3,)),  # x,y,z
             
         )
-        if image_size is not None:
-            obs_dict["rgb"] = spaces.Box(
-                low=0, high=255, shape=(image_size[0], image_size[1], 3), dtype=np.uint8
-            )
+        # if image_size is not None:
+        #     obs_dict["rgb"] = spaces.Box(
+        #         low=0, high=255, shape=(image_size[0], image_size[1], 3), dtype=np.uint8
+        #     )
         return spaces.Dict(obs_dict)
     
     def reset(self,reset_poses= True):
