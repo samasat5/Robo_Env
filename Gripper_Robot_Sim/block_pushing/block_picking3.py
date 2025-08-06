@@ -530,7 +530,7 @@ class BlockPick(gym.Env):
             # for visualization.
             image_size = (IMAGE_HEIGHT, IMAGE_WIDTH)
 
-        data = self.render_and_save_image(image_size=(image_size[0], image_size[1]))
+        data = self.render_and_save_image(step_index=10)
         if mode == "human":
             if self.rendered_img is None:
                 self.rendered_img = plt.imshow(
