@@ -10,7 +10,8 @@ import block_pushing.block_picking3
 
 env = gym.make("BlockPick-v0")
 
-obs = env.reset(seed=42)
+# obs = env.reset(seed=42)
+obs = env.reset()
 done = False
 step = 0
 
