@@ -478,7 +478,7 @@ class BlockPick(gym.Env):
             self._robot.set_target_pick_the_block(block_position)
 
         # Case 2: Move toward the target to place
-        elif np.allclose(move_to_position, np.append(p_state["target_translation"], self.effector_height)) and self._is_grasped:
+        elif np.allclose(move_to_position, np.r_[p_state["target_translation"][:2], self.effector_height]) and self._is_grasped:
             place_position = np.append(p_state["target_translation"], self.effector_height)
             self._robot.set_target_pick_the_block(place_position)
 
