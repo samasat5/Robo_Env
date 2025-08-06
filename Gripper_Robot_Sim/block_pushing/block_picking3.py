@@ -382,7 +382,7 @@ class BlockPick(gym.Env):
                 block_translation.tolist(),
                 block_rotation.as_quat().tolist(),)
             
-            print(f"here is the block translation: {block_translation} ")
+            print(f"\n\nhere is the block translation: {block_translation} ")
             
             # Reset _target_pose
             # the ultimate target (the flat target) pose:
@@ -404,7 +404,7 @@ class BlockPick(gym.Env):
             ) = self._pybullet_client.getBasePositionAndOrientation(self._target_id)
             target_rotation = transform.Rotation.from_quat(target_orientation_quat)
             target_translation = np.array(target_translation)
-            print(f"here is the target translation: {target_translation} ")
+            print(f"\n\nhere is the target translation: {target_translation} ")
 
 
         
