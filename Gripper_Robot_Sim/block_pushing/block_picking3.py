@@ -472,6 +472,8 @@ class BlockPick(gym.Env):
         p_state = self._compute_state()
         self._set_is_grasped()
         move_to_position = np.array(action)
+        target_block_pos = np.r_[p_state["block_translation"][:2], self.effector_height]
+        target_place_pos = np.r_[p_state["target_translation"][:2], self.effector_height]
         # Case 1: Move toward the block to pick
         if np.allclose(move_to_position, np.concatenate([p_state["block_translation"][:2]]), self.effector_height):
             block_position = np.append(p_state["block_translation"], self.effector_height)
