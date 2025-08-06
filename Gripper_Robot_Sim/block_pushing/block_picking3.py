@@ -310,8 +310,8 @@ class BlockPick(gym.Env):
             
             target_translation=_target_pose_translation,
         )
-        if self._image_size is not None:
-            obs["rgb"] = self.show_camera_img(self._image_size)
+        # if self._image_size is not None:
+        #     obs["rgb"] = self.show_camera_img(self._image_size)
         return obs
     
     def reset(self,reset_poses= True):
