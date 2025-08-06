@@ -105,6 +105,10 @@ class BlockPick(gym.Env):
         self.block_translation = None
         self.rendered_img = None
         self.goal_dist_tolerance = 0.001
+    
+        self.action_space = spaces.Box(low=-0.1, high=0.1, shape=(3,))  
+        self.observation_space = self._create_observation_space(image_size)
+        
         self.reset()
 
 
