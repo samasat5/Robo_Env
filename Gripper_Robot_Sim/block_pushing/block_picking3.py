@@ -93,18 +93,18 @@ class BlockPick(gym.Env):
         self.image_size = np.array([320, 240])
         self.image_dir="trajectory_images"
         self.save_state()
-        self.reset()
+        self.effector_height = effector_height or EFFECTOR_HEIGHT
+        self.offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
         self._target_effector_pose = None
         self._target_pose = None
         self._control_frequency = control_frequency
         assert isinstance(self._pybullet_client, bullet_client.BulletClient)
-        self.offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
         self.workspace_center_x = 0.4
         self._is_grasped = False
         self._rng = np.random.RandomState(seed=seed)
         self.block_translation = None
         self.rendered_img = None
-        self.effector_height = effector_height or EFFECTOR_HEIGHT
+        self.reset()
 
 
     @property
@@ -268,9 +268,9 @@ class BlockPick(gym.Env):
     def seed(self, seed=None):
         self._rng = np.random.RandomState(seed=seed) 
     
-    def _set_robot_target_effector_pose(self, pose):
+    def _set_robot_target_effector_pose(self, pose,force):
         self._target_effector_pose = pose
-        self._robot.set_target_effector_pose(pose)
+        self._robot.set_target_effector_pose(pose,force)
         
     def _compute_state(self):
         
@@ -321,7 +321,8 @@ class BlockPick(gym.Env):
                                     translation_right=new_translation_right,
                                     orientation_left=orientation_left, 
                                     orientation_right=orientation_right) 
-            self._set_robot_target_effector_pose(starting_pose)
+            force = 7
+            self._set_robot_target_effector_pose(starting_pose, force)
             
             # Reset the block pose: 
             block_x = self.workspace_center_x + self._rng.uniform(low=-0.1, high=0.1)
