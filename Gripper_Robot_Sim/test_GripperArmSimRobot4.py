@@ -5,10 +5,12 @@ import numpy as np
 import gym
 import matplotlib.pyplot as plt
 from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
+from block_pushing.block_picking3 import BlockPick
 import block_pushing.block_picking3
 
 
-env = gym.make("BlockPick-v0")
+# env = gym.make("BlockPick-v0")
+env = BlockPick(image_size=None)
 
 # obs = env.reset(seed=42)
 obs = env.reset()
