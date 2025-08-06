@@ -289,7 +289,10 @@ class BlockPick(gym.Env):
             
         robot_pose = self._robot.forward_kinematics()
         
-        
+        _target_effector_pose_trans_left = self._target_effector_pose.translation_left[0:3]
+        _target_effector_pose_translation = _target_effector_pose_trans_left +  self.offset
+
+
         obs = collections.OrderedDict(
             block_translation=block_pose.translation[0:3],
             block_orientation=_yaw_from_pose(block_pose),
@@ -297,7 +300,7 @@ class BlockPick(gym.Env):
             gripper_translation_left=robot_pose.translation_left[0:3],
             gripper_translation_right=robot_pose.translation_right[0:3],
             
-            effector_target_translation=self._target_effector_pose.translation[0:3],
+            effector_target_translation=_target_effector_pose_translation,
             
             target_translation=self._target_pose.translation[0:3],
         )
