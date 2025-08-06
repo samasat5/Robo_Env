@@ -336,11 +336,12 @@ class BlockPick(gym.Env):
             ),
 
             
-            effector_target_translation=spaces.Box(   # TODO
-                low=self.workspace_bounds[0] - 0.1,  # Small buffer for to IK noise.
-                high=self.workspace_bounds[1] + 0.1,
-            ),  # x,y,z
-            
+            effector_target_translation=spaces.Box(   
+              low=np.array([self.workspace_bounds[0, 0] - 0.1, 
+                              self.workspace_bounds[0, 1] - 0.1, 0.0]),
+                high=np.array([self.workspace_bounds[1, 0] + 0.1, 
+                               self.workspace_bounds[1, 1] + 0.1, 0.2]),
+            ),
             target_translation=spaces.Box(low=-5, high=5, shape=(3,)),  # x,y,z
             
         )
