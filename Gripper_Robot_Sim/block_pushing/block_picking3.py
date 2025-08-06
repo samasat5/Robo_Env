@@ -27,6 +27,7 @@ Y_MAX_REAL = 0.3048
 DEFAULT_CAMERA_POSE = (1.1, 0, 0.75)
 DEFAULT_CAMERA_ORIENTATION = (np.pi / 4, np.pi, -np.pi / 2)
 IMAGE_WIDTH = 320
+EFFECTOR_HEIGHT = 0.06
 IMAGE_HEIGHT = 240
 CAMERA_INTRINSICS = (0.803 * IMAGE_WIDTH, 0,IMAGE_WIDTH / 2.0,0,0.803 * IMAGE_WIDTH,IMAGE_HEIGHT / 2.0,0,0,1,)
 WORKSPACE_BOUNDS = np.array(((0.15, -0.5), (0.7, 0.5)))
@@ -103,6 +104,7 @@ class BlockPick(gym.Env):
         self._rng = np.random.RandomState(seed=seed)
         self.block_translation = None
         self.rendered_img = None
+        self.effector_height = effector_height or EFFECTOR_HEIGHT
 
 
     @property
