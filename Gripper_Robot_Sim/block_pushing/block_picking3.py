@@ -84,11 +84,10 @@ class BlockPick(gym.Env):
             self._camera_instrinsics = CAMERA_INTRINSICS_REAL
             self._workspace_urdf_path = WORKSPACE_URDF_PATH_REAL
         
-        self._connection_mode = pybullet.DIRECT
+        self._connection_mode = pybullet.GUI
         self._pybullet_client = bullet_client.BulletClient(connection_mode=self._connection_mode)
         if shared_memory:
             self._connection_mode = pybullet.SHARED_MEMORY
-        self._pybullet_client = bullet_client.BulletClient(connection_mode=self._connection_mode)
         self._setup_the_scene()
         self._image_size = image_size
         self.image_size = np.array([320, 240])
