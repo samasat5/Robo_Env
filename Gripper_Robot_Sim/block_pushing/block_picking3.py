@@ -329,8 +329,10 @@ class BlockPick(gym.Env):
             block_orientation=spaces.Box(low=-pi2, high=pi2, shape=(1,)),  # phi
             
             effector_translation = spaces.Box(
-                low=np.array([self.workspace_bounds[0, 0] - 0.1, self.workspace_bounds[0, 1] - 0.1, 0.0]),
-                high=np.array([self.workspace_bounds[1, 0] + 0.1, self.workspace_bounds[1, 1] + 0.1, 0.2]),
+                low=np.array([self.workspace_bounds[0, 0] - 0.1, 
+                              self.workspace_bounds[0, 1] - 0.1, 0.0]),
+                high=np.array([self.workspace_bounds[1, 0] + 0.1, 
+                               self.workspace_bounds[1, 1] + 0.1, 0.2]),
             ),
 
             
