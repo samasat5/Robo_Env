@@ -292,7 +292,11 @@ class BlockPick(gym.Env):
         _target_effector_pose_trans_left = self._target_effector_pose.translation_left[0:3]
         _target_effector_pose_translation = _target_effector_pose_trans_left +  self.offset
 
-
+        _target_pose_trans_left=self._target_pose.translation_left[0:3]
+        _target_pose_translation = _target_pose_trans_left + self.offset
+        
+        
+        
         obs = collections.OrderedDict(
             block_translation=block_pose.translation[0:3],
             block_orientation=_yaw_from_pose(block_pose),
@@ -302,7 +306,7 @@ class BlockPick(gym.Env):
             
             effector_target_translation=_target_effector_pose_translation,
             
-            target_translation=self._target_pose.translation[0:3],
+            target_translation=_target_pose_translation,
         )
         if self._image_size is not None:
             obs["rgb"] = self.show_camera_img(self._image_size)
