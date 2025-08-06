@@ -137,7 +137,7 @@ class BlockPick(gym.Env):
         
     def _setup_the_scene(self):
         
-        bullet_client.BulletClient(connection_mode=self._connection_mode)
+        # bullet_client.BulletClient(connection_mode=self._connection_mode)
         self._pybullet_client.resetSimulation()
         self._pybullet_client.configureDebugVisualizer(pybullet.COV_ENABLE_GUI, 0)
         self._pybullet_client.setPhysicsEngineParameter(enableFileCaching=0)
