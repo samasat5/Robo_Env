@@ -104,6 +104,7 @@ class BlockPick(gym.Env):
         self._rng = np.random.RandomState(seed=seed)
         self.block_translation = None
         self.rendered_img = None
+        self.goal_dist_tolerance = 0.001
         self.reset()
 
 
@@ -135,6 +136,7 @@ class BlockPick(gym.Env):
             time.sleep(timesleep)
 
         
+    
     def _setup_the_scene(self):
         
         # bullet_client.BulletClient(connection_mode=self._connection_mode)
@@ -343,6 +345,8 @@ class BlockPick(gym.Env):
                 block_translation.tolist(),
                 block_rotation.as_quat().tolist(),)
             
+            print(f"here is the block translation: {block_translation} ")
+            
             # Reset _target_pose
             # the ultimate target (the flat target) pose:
             target_x = self.workspace_center_x + self._rng.uniform(low=-0.10, high=0.10)
@@ -363,6 +367,7 @@ class BlockPick(gym.Env):
             ) = self._pybullet_client.getBasePositionAndOrientation(self._target_id)
             target_rotation = transform.Rotation.from_quat(target_orientation_quat)
             target_translation = np.array(target_translation)
+            print(f"here is the target translation: {target_translation} ")
 
 
         

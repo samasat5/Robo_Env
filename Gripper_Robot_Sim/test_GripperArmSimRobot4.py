@@ -10,9 +10,11 @@ import block_pushing.block_picking3
 
 env = gym.make("BlockPick-v0")
 
-obs = env.reset()
+obs = env.reset(seed=42)
 done = False
 step = 0
+
+# dataset = 
 
 for i in range(10):
     action = env.action_space.sample()  # random action
