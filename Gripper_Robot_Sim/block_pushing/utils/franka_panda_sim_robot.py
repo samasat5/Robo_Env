@@ -302,7 +302,7 @@ class GripperArmSimRobot:
             
         self._pybullet_client.setJointMotorControlArray(
         self.gripperarm, 
-        6,
+        [6],
         pybullet.POSITION_CONTROL,
         targetPositions=2,
         forces=[force * 240.0] * len(self._joint_indices),
