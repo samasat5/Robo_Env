@@ -290,13 +290,13 @@ class GripperArmSimRobot:
         self.set_target_effector_pose(new_pose,force)
 
 
-    def set_adjust_the_head(self):
+    def set_adjust_the_head(self,twist_amount):
         force = 15
         self._pybullet_client.setJointMotorControlArray(
         self.gripperarm, 
         [6],
         pybullet.POSITION_CONTROL,
-        targetPositions=[2],
+        targetPositions=[twist_amount],
         forces=[force * 240.0] ,
         )
 
@@ -304,7 +304,7 @@ class GripperArmSimRobot:
         return self._pybullet_client.getJointState(self.gripperarm, joint_idx)[0]
 
         
-    def set_target_pick_the_block(self, block_position):
+    def set_target_pick_the_block(self, block_position,twist_amount):
         force = 2
         opening_width = self.opening_width
         print("Open the gripper")
@@ -325,7 +325,7 @@ class GripperArmSimRobot:
             time.sleep(1 / 240.0)
 
 
-        self.set_adjust_the_head()
+        self.set_adjust_the_head(twist_amount)
         for _ in range(200):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
@@ -382,7 +382,7 @@ class GripperArmSimRobot:
     
     
     
-    def set_target_pick_n_place_the_block (self, place_position, block_position):
-        self.set_target_pick_the_block(block_position)
+    def set_target_pick_n_place_the_block (self, place_position, block_position,twist_amount):
+        self.set_target_pick_the_block(block_position,twist_amount)
         self.set_target_place_the_block (place_position)
     
