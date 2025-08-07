@@ -484,7 +484,7 @@ class BlockPick(gym.Env):
         elif np.allclose(move_to_position, target_place_pos) and self._is_grasped:
             self._robot.set_target_pick_the_block(target_place_pos)
 
-        # Case 3: General movement 2633511996
+        # Case 3: General movement 
         else:
             force = 7
             self._robot.move_gripper_to_target(move_to_position, force)
