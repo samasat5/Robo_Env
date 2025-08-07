@@ -109,7 +109,7 @@ class BlockPick(gym.Env):
         self.action_space = spaces.Box(low=-0.1, high=0.1, shape=(3,))  
         self.observation_space = self._create_observation_space(image_size)
         
-        self.reset()
+        # self.reset()
 
 
     @property
