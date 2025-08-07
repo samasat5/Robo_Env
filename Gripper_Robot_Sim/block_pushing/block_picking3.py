@@ -67,7 +67,7 @@ class BlockPick(gym.Env):
     goal_dist_tolerance=0.01,
     effector_height=None,
     visuals_mode="default",
-    abs_action=False
+    # abs_action=False
 ):
       
         # Mimic RealSense D415 camera parameters.
@@ -107,7 +107,7 @@ class BlockPick(gym.Env):
         self._rng = np.random.RandomState(seed=seed)
         self.block_translation = None
         self.rendered_img = None
-        self.goal_dist_tolerance = 0.001
+        self.goal_dist_tolerance =  goal_dist_tolerance
     
         self.action_space = spaces.Box(low=-0.1, high=0.1, shape=(3,))  
         self.observation_space = self._create_observation_space(image_size)
