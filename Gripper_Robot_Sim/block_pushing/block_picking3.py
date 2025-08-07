@@ -364,7 +364,7 @@ class BlockPick(gym.Env):
             # (The pose the robot is trying to reach to) :
             orientation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
             orientation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
-            target_center = np.array([0.3, -0.4, self.effector_height])
+            target_center = np.array([0.3, -0.4, 0.5])
             new_translation_left = target_center - self.offset
             new_translation_right = target_center + self.offset
             starting_pose = Pose3d_gripper(translation_left=new_translation_left,
