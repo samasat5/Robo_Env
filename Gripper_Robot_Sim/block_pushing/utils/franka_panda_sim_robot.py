@@ -315,7 +315,7 @@ class GripperArmSimRobot:
             time.sleep(1 / 100.0)
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
-        time.sleep(1)
+        time.sleep(1 / 100.0)
         
         
         
