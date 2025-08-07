@@ -300,6 +300,7 @@ class GripperArmSimRobot:
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
             
+        
         self._pybullet_client.setJointMotorControlArray(
         self.gripperarm, 
         [6],
