@@ -17,21 +17,31 @@ obs = env.reset()
 done = False
 step = 0
 
+trajectory = {}
+
+block_pos = obs['block_translation']
+target_pos = obs['target_translation']
+actions = [
+    block_pos,
+    target_pos
+]
 # dataset = 
 
-for i in range(10):
-    action = env.action_space.sample()  # random action
+for i, action in enumerate(actions):
+    # action = env.action_space.sample()  # random action
     # action = dataset[i]['action'].squeeze(0).numpy()
     obs, reward, done, info = env.step(action)
 
-    print(f"Step {step}: reward={reward:.3f}, done={done}")
-    print("Event info:", info)
+    frame = env.render() if hasattr(env, 'render') else None
 
-    # Optional: render as RGB
-    img = env.render(mode="rgb_array")
-    plt.imshow(img)
-    plt.title(f"Step {step}")
-    plt.pause(0.1)
-    step += 1
+    trajectory.append({
+        "step": i,
+        "obs": obs,
+        "action": action.tolist(),
+        "reward": reward,
+        "done": done,
+        "info": info,
+        "frame": frame  # optional, remove if not needed
+    })
 
 env.close()
