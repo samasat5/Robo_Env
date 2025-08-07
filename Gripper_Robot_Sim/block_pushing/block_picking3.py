@@ -487,7 +487,7 @@ class BlockPick(gym.Env):
         if np.allclose(move_to_position, target_block_pos):
             target_block_pos = np.array(p_state["block_translation"])
             # twist_amount = p_state["block_orientation"][0]*1.5
-            twist_amount = 0
+            twist_amount = 1
             
             print("\n\n\n\n")
             print("self._robot.get_joint_state(6)",self._robot.get_joint_state(6))
