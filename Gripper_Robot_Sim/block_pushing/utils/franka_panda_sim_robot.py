@@ -304,7 +304,7 @@ class GripperArmSimRobot:
         force = 7
         print("move gripper")
         
-        block_position = np.r_[block_position, 0.1]
+        block_position = np.r_[block_position[0:2], 0.1]
 
         self.move_gripper_to_target (block_position, force)
         for _ in range(200):
@@ -318,7 +318,7 @@ class GripperArmSimRobot:
         self.gripperarm, 
         [6],
         pybullet.POSITION_CONTROL,
-        targetPositions=[1.99],
+        targetPositions=[0.99],
         forces=[force * 240.0] ,
         )
         for _ in range(200):
