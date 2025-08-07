@@ -309,6 +309,7 @@ class BlockPick(gym.Env):
         gripper_translation_left=robot_pose.translation_left[0:3]
         effector_translation = gripper_translation_left + self.offset
         
+        head_gripper_orientation = self._robot._pybullet_client.getJointState(self.gripperarm, 6)[0]
         
         
         
