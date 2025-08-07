@@ -85,7 +85,7 @@ class BlockPick(gym.Env):
             self._camera_instrinsics = CAMERA_INTRINSICS_REAL
             self._workspace_urdf_path = WORKSPACE_URDF_PATH_REAL
         
-        self._connection_mode = pybullet.GUI
+        self._connection_mode = pybullet.DIRECT
         self._pybullet_client = bullet_client.BulletClient(connection_mode=self._connection_mode)
         if shared_memory:
             self._connection_mode = pybullet.SHARED_MEMORY
@@ -479,6 +479,7 @@ class BlockPick(gym.Env):
         # Case 1: Move toward the block to pick
         if np.allclose(move_to_position, target_block_pos):
             target_block_pos = np.array([p_state["block_translation"]])
+            pdb.set_trace()
             self._robot.set_target_pick_the_block(target_block_pos)
 
         # Case 2: Move toward the target to place
