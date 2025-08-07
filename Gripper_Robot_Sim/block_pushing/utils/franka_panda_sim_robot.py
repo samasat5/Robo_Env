@@ -304,7 +304,7 @@ class GripperArmSimRobot:
         self.gripperarm, 
         [6],
         pybullet.POSITION_CONTROL,
-        targetPositions=[2.0],
+        targetPositions=[1.99],
         forces=[force * 240.0] ,
         )
         state = self._pybullet_client.getJointState(self.gripperarm, 6)[0]
