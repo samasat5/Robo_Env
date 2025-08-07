@@ -11,65 +11,65 @@ import block_pushing.block_picking3
 from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot 
 
 import pybullet_data
-INITIAL_JOINT_POSITIONS = np.array(
-    [
-        0.0, 
-        -0.5235987755982988, 
-        0.0, -1.0471975511965976, 
-        0.0, 1.5707963267948966, 
-        0.0, 
-        0.0, 
-        0.0])
-physics_client = p.connect(p.GUI)  # Use GUI for visualization
-p.setAdditionalSearchPath(pybullet_data.getDataPath())
-p.setGravity(0, 0, -9.81)
-p.setTimeStep(1. / 240.)
-p.resetDebugVisualizerCamera(
-    cameraDistance=1.3,
-    cameraYaw=100,
-    cameraPitch=-30,
-    cameraTargetPosition=[0, 0, 0.1],
-)
-# Load plane
-plane_id = p.loadURDF("plane.urdf")
-robot = GripperArmSimRobot(p,INITIAL_JOINT_POSITIONS)
-time.sleep(2)
+# INITIAL_JOINT_POSITIONS = np.array(
+#     [
+#         0.0, 
+#         -0.5235987755982988, 
+#         0.0, -1.0471975511965976, 
+#         0.0, 1.5707963267948966, 
+#         0.0, 
+#         0.0, 
+#         0.0])
+# physics_client = p.connect(p.GUI)  # Use GUI for visualization
+# p.setAdditionalSearchPath(pybullet_data.getDataPath())
+# p.setGravity(0, 0, -9.81)
+# p.setTimeStep(1. / 240.)
+# p.resetDebugVisualizerCamera(
+#     cameraDistance=1.3,
+#     cameraYaw=100,
+#     cameraPitch=-30,
+#     cameraTargetPosition=[0, 0, 0.1],
+# )
+# # Load plane
+# plane_id = p.loadURDF("plane.urdf")
+# robot = GripperArmSimRobot(p,INITIAL_JOINT_POSITIONS)
+# time.sleep(2)
 
 
-# # env = gym.make("BlockPick-v0")
-# env = BlockPick(image_size=None)
+# env = gym.make("BlockPick-v0")
+env = BlockPick(image_size=None)
 
-# # obs = env.reset(seed=42)
-# obs = env.reset()
-# done = False
-# step = 0
+# obs = env.reset(seed=42)
+obs = env.reset()
+done = False
+step = 0
 
-# trajectory = []
-# z_height = env.effector_height 
+trajectory = []
+z_height = env.effector_height 
 
-# block_pos = obs['block_translation']
-# target_pos = obs['target_translation']
-# actions = [
-#     np.r_[block_pos[:2], env.effector_height],  
-#     np.r_[target_pos[:2], env.effector_height],  
-# ]
+block_pos = obs['block_translation']
+target_pos = obs['target_translation']
+actions = [
+    np.r_[block_pos[:2], env.effector_height],  
+    np.r_[target_pos[:2], env.effector_height],  
+]
 
 
-# for i, action in enumerate(actions):
-#     # action = env.action_space.sample()  # random action
-#     # action = dataset[i]['action'].squeeze(0).numpy()
-#     obs, reward, done, info = env.step(action)
+for i, action in enumerate(actions):
+    # action = env.action_space.sample()  # random action
+    # action = dataset[i]['action'].squeeze(0).numpy()
+    obs, reward, done, info = env.step(action)
 
-#     frame = env.render() if hasattr(env, 'render') else None
+    frame = env.render() if hasattr(env, 'render') else None
 
-#     trajectory.append({
-#         "step": i,
-#         "obs": obs,
-#         "action": action.tolist(),
-#         "reward": reward,
-#         "done": done,
-#         "info": info,
-#         "frame": frame  # optional, remove if not needed
-#     })
+    trajectory.append({
+        "step": i,
+        "obs": obs,
+        "action": action.tolist(),
+        "reward": reward,
+        "done": done,
+        "info": info,
+        "frame": frame  # optional, remove if not needed
+    })
 
-# env.close()
+env.close()
