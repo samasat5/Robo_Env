@@ -164,6 +164,7 @@ class BlockPick(gym.Env):
             self._pybullet_client,
             initial_joint_positions=INITIAL_JOINT_POSITIONS, 
             color="white" if self._visuals_mode == "real" else "default",)
+        print("INITIAL DONE")
         self._target_id = utils_pybullet.load_urdf(self._pybullet_client, ZONE_URDF_PATH, useFixedBase=True)
         self._block_id = utils_pybullet.load_urdf(self._pybullet_client, BLOCK_URDF_PATH, useFixedBase=False)
         
