@@ -300,7 +300,9 @@ class GripperArmSimRobot:
         forces=[force * 240.0] ,
         )
 
-        
+    def get_joint_state(self, joint_idx):
+        return self._pybullet_client.getJointState(self.gripperarm, joint_idx)[0]
+
         
     def set_target_pick_the_block(self, block_position):
         force = 2
@@ -328,7 +330,8 @@ class GripperArmSimRobot:
         for _ in range(200):
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
-        stateof6 = self._pybullet_client.getJointState(self.gripperarm, 6)[0]
+        joint_idx = 6 
+        stateof6 = self.get_joint_state(joint_idx)
         print("how much twisted:", stateof6)
         
         self._is_grasped = True

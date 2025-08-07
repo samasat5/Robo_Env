@@ -309,7 +309,7 @@ class BlockPick(gym.Env):
         gripper_translation_left=robot_pose.translation_left[0:3]
         effector_translation = gripper_translation_left + self.offset
         
-        head_gripper_orientation = self._robot._pybullet_client.getJointState(self.gripperarm, 6)[0]
+        head_gripper_orientation = self._robot.get_joint_state(joint_idx=6) # translation of the head of the gripepr, from -2.9 to 2.9
         
         
         
@@ -317,9 +317,8 @@ class BlockPick(gym.Env):
             block_translation=block_pose.translation[0:3],
             block_orientation=_yaw_from_pose(block_pose),
             
-            effector_translation =effector_translation,
-            effector_orientation_left =_yaw_from_pose_robot(robot_pose)[0],
-            effector_orientation_right =_yaw_from_pose_robot(robot_pose)[1],
+            effector_translation = effector_translation,
+            effector_orientation = head_gripper_orientation, # translation of the head of the gripper == the orientation of th fingers 
             
             effector_target_translation=_target_effector_pose_translation,
             
@@ -494,13 +493,11 @@ class BlockPick(gym.Env):
             block_translation = state["block_translation"]
             print("\n\neffector_translation", effector_translation)
             print("block_translation", block_translation)
-            
-            effector_orientation_left  = state["effector_orientation_left"]
-            effector_orientation_right  = state["effector_orientation_right"]
+
+            effector_orientation  = state["effector_orientation"]
             block_orientation = state["block_orientation"]
-            print("effector_orientation_left", effector_orientation_left)
-            print("effector_orientation_right", effector_orientation_right)
-            print("block_orientation", block_orientation)
+            print("effector_orientation", effector_orientation)
+            print("block_orientation\n\n", block_orientation)
 
 
         # Case 2: Move toward the target to place
