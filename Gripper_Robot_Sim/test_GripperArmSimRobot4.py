@@ -33,7 +33,7 @@ p.resetDebugVisualizerCamera(
 )
 # Load plane
 plane_id = p.loadURDF("plane.urdf")
-robot = GripperArmSimRobot(p,INITIAL_JOINT_POSITIONS)
+robot =  p.loadURDF("franka_panda/panda.urdf",[0,0,0], [0,0,0,1], useFixedBase = True ) # each urdf is basivally a set of links . # fix base for objects so it doesnt move
 time.sleep(2)
 
 movable_joints = []
