@@ -334,7 +334,7 @@ class GripperArmSimRobot:
         print("how much twisted:", stateof6)
 
 
-        block_position = np.r_[block_position[0:2], 0] # decrease the height to reach the block
+        block_position = np.r_[block_position[0:2], 0.001] # decrease the height to reach the block
         self.move_gripper_to_target (block_position, force)
         for _ in range(200):
             time.sleep(1 / 50)
