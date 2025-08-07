@@ -384,7 +384,8 @@ class BlockPick(gym.Env):
             block_translation = np.array([block_x, block_y, 0])
             self.block_translation = block_translation
             block_sampled_angle = self._rng.uniform(math.pi)
-            block_rotation = transform.Rotation.from_rotvec([0, 0, block_sampled_angle])
+            angle_rad = (math.pi / 4 ) # manual degree
+            block_rotation = transform.Rotation.from_rotvec([0, 0, angle_rad])
             angle_deg = math.degrees(block_sampled_angle)
             print("block_rotation in radian",block_sampled_angle, "\n", "in degree",angle_deg )
             self._pybullet_client.resetBasePositionAndOrientation(
