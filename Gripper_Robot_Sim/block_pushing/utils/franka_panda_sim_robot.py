@@ -309,7 +309,20 @@ class GripperArmSimRobot:
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
             
-            
+
+        force = 15
+        self._pybullet_client.setJointMotorControlArray(
+        self.gripperarm, 
+        [6],
+        pybullet.POSITION_CONTROL,
+        targetPositions=[1.99],
+        forces=[force * 240.0] ,
+        )
+        for _ in range(200):
+            self._pybullet_client.stepSimulation()
+            time.sleep(1 / 240.0)
+        state = self._pybullet_client.getJointState(self.gripperarm, 6)[0]
+        print("twisted", state)
 
         
         
