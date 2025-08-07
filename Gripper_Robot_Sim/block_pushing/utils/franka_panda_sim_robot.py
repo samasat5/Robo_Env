@@ -348,7 +348,7 @@ class GripperArmSimRobot:
         print("Close")
         self.set_the_fingers_open_close(closing_width,force)
         for _ in range(200):
-            time.sleep(1 / 100.0)
+            time.sleep(1 / 50.0)
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
         time.sleep(1 / 100.0)
