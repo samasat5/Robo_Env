@@ -492,7 +492,11 @@ class BlockPick(gym.Env):
                 self._pybullet_client.stepSimulation()
                 time.sleep(1 / 240.0)
 
-
+        info = {}
+        info["block_translation"] = p_state["block_translation"]
+        info["grasped"] = self._is_grasped
+        info["distance_to_target"] = np.linalg.norm(p_state["block_translation"][:2] - p_state["target_translation"][:2])
+        
         state = self._compute_state()
         goal_distance = self._compute_goal_distance(state)
         fraction_reduced_goal_distance = 1.0 - (goal_distance / self._init_goal_distance)
