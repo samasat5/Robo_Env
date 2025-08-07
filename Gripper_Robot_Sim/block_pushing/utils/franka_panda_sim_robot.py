@@ -307,6 +307,7 @@ class GripperArmSimRobot:
         targetPositions=[2.0],
         forces=[force * 240.0] ,
         )
+        inf = self._pybullet_client.getJointInfo(self.gripperarm, [6])
         print("twisted")
         time.sleep(1)
         force = 7
