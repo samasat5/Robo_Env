@@ -111,7 +111,7 @@ class BlockPick(gym.Env):
     
         self.action_space = spaces.Box(low=-0.1, high=0.1, shape=(3,))  
         self.observation_space = self._create_observation_space(image_size)
-        
+        pybullet.startStateLogging(pybullet.STATE_LOGGING_VIDEO_MP4, "simulation_video.mp4")
         # self.reset()
 
 
