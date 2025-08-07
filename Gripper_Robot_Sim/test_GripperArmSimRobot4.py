@@ -17,7 +17,7 @@ obs = env.reset()
 done = False
 step = 0
 
-trajectory = {}
+trajectory = []
 z_height = env.effector_height 
 
 block_pos = obs['block_translation']
