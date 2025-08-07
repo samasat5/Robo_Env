@@ -318,7 +318,7 @@ class GripperArmSimRobot:
         self.gripperarm, 
         [6],
         pybullet.POSITION_CONTROL,
-        targetPositions=[0.99],
+        targetPositions=[1.48355],
         forces=[force * 240.0] ,
         )
         for _ in range(200):
