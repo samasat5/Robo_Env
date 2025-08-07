@@ -343,7 +343,7 @@ class GripperArmSimRobot:
 
         self._is_grasped = True
         
-        force = 0.8
+        force = 2
         closing_width = self.closing_width
         print("Close")
         self.set_the_fingers_open_close(closing_width,force)
