@@ -1,5 +1,4 @@
 import enum
-import math
 import collections
 from gym import spaces
 from gym.envs import registration
@@ -15,8 +14,10 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
 import pybullet
-import gym
 import time
+import math
+import gym
+import pdb
 import os
 
 
@@ -475,7 +476,7 @@ class BlockPick(gym.Env):
         move_to_position = np.array(action)
         target_block_pos = np.r_[p_state["block_translation"][:2], self.effector_height]
         target_place_pos = np.r_[p_state["target_translation"][:2], self.effector_height]
-
+        pdb.set_trace()
         # Case 1: Move toward the block to pick
         if np.allclose(move_to_position, target_block_pos):
             self._robot.set_target_pick_the_block(target_block_pos)
