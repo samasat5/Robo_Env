@@ -505,6 +505,9 @@ class BlockPick(gym.Env):
             block_orientation = state["block_orientation"]
             print("effector_orientation", effector_orientation)
             print("block_orientation\n\n", block_orientation)
+            
+
+            self.set_target_place_the_block (p_state["target_translation"])
 
 
         # Case 2: Move toward the target to place
