@@ -310,11 +310,15 @@ class BlockPick(gym.Env):
         effector_translation = gripper_translation_left + self.offset
         
         
+        
+        
         obs = collections.OrderedDict(
             block_translation=block_pose.translation[0:3],
             block_orientation=_yaw_from_pose(block_pose),
             
             effector_translation =effector_translation,
+            effector_orientation_left =_yaw_from_pose_robot(robot_pose)[0],
+            effector_orientation_right =_yaw_from_pose_robot(robot_pose)[1],
             
             effector_target_translation=_target_effector_pose_translation,
             
@@ -483,10 +487,19 @@ class BlockPick(gym.Env):
         if np.allclose(move_to_position, target_block_pos):
             target_block_pos = np.array(p_state["block_translation"])
             self._robot.set_target_pick_the_block(target_block_pos)
+            
             state = self._compute_state()
-            effector_translation  = state["effector_translation"]
-            print("effector_translation", effector_translation)
-            print("target_block_pos", target_block_pos)
+            effector_translation  = state["effector_translation"] 
+            block_translation = state["block_translation"]
+            print("\n\neffector_translation", effector_translation)
+            print("block_translation", block_translation)
+            
+            effector_orientation_left  = state["effector_orientation_left"]
+            effector_orientation_right  = state["effector_orientation_right"]
+            block_orientation = state["block_orientation"]
+            print("effector_orientation_left", effector_orientation_left)
+            print("effector_orientation_right", effector_orientation_right)
+            print("block_orientation", block_orientation)
 
 
         # Case 2: Move toward the target to place
