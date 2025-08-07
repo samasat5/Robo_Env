@@ -317,8 +317,7 @@ class GripperArmSimRobot:
         force = 7
         print("move gripper")
         
-        block_position = np.r_[block_position[0:2], 0.1]
-
+        block_position = np.r_[block_position[0:2], 0.1] # increase the height to avoid collision
         self.move_gripper_to_target (block_position, force)
         for _ in range(200):
             time.sleep(1 / 50)
@@ -333,7 +332,16 @@ class GripperArmSimRobot:
         joint_idx = 6 
         stateof6 = self.get_joint_state(joint_idx)
         print("how much twisted:", stateof6)
-        
+
+
+        block_position = np.r_[block_position[0:2], -0.1] # decrease the height to reach the block
+        self.move_gripper_to_target (block_position, force)
+        for _ in range(200):
+            time.sleep(1 / 50)
+            self._pybullet_client.stepSimulation()
+            time.sleep(1 / 240.0)
+
+
         self._is_grasped = True
         
         force = 0.8
