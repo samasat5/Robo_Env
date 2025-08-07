@@ -63,7 +63,7 @@ class BlockPick(gym.Env):
     control_frequency=10.0,
     image_size=np.array([320, 240]),
     shared_memory=False, 
-    seed=41,
+    seed=42,
     goal_dist_tolerance=0.01,
     effector_height=None,
     visuals_mode="default",
@@ -507,7 +507,7 @@ class BlockPick(gym.Env):
             print("block_orientation\n\n", block_orientation)
             
 
-            self.set_target_place_the_block (p_state["target_translation"])
+            self._robot.set_target_place_the_block (p_state["target_translation"])
 
 
         # Case 2: Move toward the target to place
