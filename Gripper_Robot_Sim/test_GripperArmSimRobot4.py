@@ -8,25 +8,32 @@ from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
 from block_pushing.block_picking3 import BlockPick
 from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
 import block_pushing.block_picking3
+from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot 
 
-
-
-
+import pybullet_data
 INITIAL_JOINT_POSITIONS = np.array(
     [
         0.0, 
         -0.5235987755982988, 
-        0.0, 
-        -1.0471975511965976, 
-        0.0, 
-        1.5707963267948966, 
+        0.0, -1.0471975511965976, 
+        0.0, 1.5707963267948966, 
         0.0, 
         0.0, 
-        0.0
-    ])
-GripperArmSimRobot(  
-            p,
-            initial_joint_positions=INITIAL_JOINT_POSITIONS, )
+        0.0])
+physics_client = p.connect(p.GUI)  # Use GUI for visualization
+p.setAdditionalSearchPath(pybullet_data.getDataPath())
+p.setGravity(0, 0, -9.81)
+p.setTimeStep(1. / 240.)
+p.resetDebugVisualizerCamera(
+    cameraDistance=1.3,
+    cameraYaw=100,
+    cameraPitch=-30,
+    cameraTargetPosition=[0, 0, 0.1],
+)
+# Load plane
+plane_id = p.loadURDF("plane.urdf")
+robot = GripperArmSimRobot(p,INITIAL_JOINT_POSITIONS)
+time.sleep(2)
 
 
 # # env = gym.make("BlockPick-v0")
