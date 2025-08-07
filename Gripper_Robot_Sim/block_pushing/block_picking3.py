@@ -385,6 +385,7 @@ class BlockPick(gym.Env):
             self.block_translation = block_translation
             block_sampled_angle = self._rng.uniform(math.pi)
             block_rotation = transform.Rotation.from_rotvec([0, 0, block_sampled_angle])
+            pdb.set_trace()
             self._pybullet_client.resetBasePositionAndOrientation(
                 self._block_id,
                 block_translation.tolist(),
