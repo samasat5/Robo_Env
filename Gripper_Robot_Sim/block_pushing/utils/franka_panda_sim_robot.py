@@ -308,7 +308,7 @@ class GripperArmSimRobot:
         targetPositions=[2.0],
         forces=[force * 240.0] ,
         )
-        
+        time.sleep(1)
         force = 7
         print("move gripper")
         self.move_gripper_to_target (block_position, force)
