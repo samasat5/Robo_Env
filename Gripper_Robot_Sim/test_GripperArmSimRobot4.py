@@ -18,14 +18,15 @@ done = False
 step = 0
 
 trajectory = {}
+z_height = env.effector_height 
 
 block_pos = obs['block_translation']
 target_pos = obs['target_translation']
 actions = [
-    block_pos,
-    target_pos
+    np.r_[block_pos[:2], env.effector_height],  
+    np.r_[target_pos[:2], env.effector_height],  
 ]
-# dataset = 
+
 
 for i, action in enumerate(actions):
     # action = env.action_space.sample()  # random action
