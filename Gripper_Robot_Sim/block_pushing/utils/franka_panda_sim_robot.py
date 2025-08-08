@@ -330,7 +330,7 @@ class GripperArmSimRobot:
             time.sleep(1 / 240.0)
         joint_idx = 6 
         stateof6 = self.get_joint_state(joint_idx)
-        print("how much twisted:", stateof6)
+        print("state of joint 6:", stateof6)
 
 
         block_position = np.r_[block_position[0:2], 0.01] # decrease the height to reach the block
