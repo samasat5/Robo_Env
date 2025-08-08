@@ -306,7 +306,7 @@ class BlockPick(gym.Env):
         _target_pose_trans_left=self._target_pose.translation_left[0:3]
         _target_pose_translation = _target_pose_trans_left + self.offset
         
-        _target_pose_orientation = self._target_pose.orientation
+        _target_pose_orientation = self._target_pose.orientation.as_euler("xyz", degrees=False)[-1]
         
         gripper_translation_left=robot_pose.translation_left[0:3]
         effector_translation = gripper_translation_left + self.offset
