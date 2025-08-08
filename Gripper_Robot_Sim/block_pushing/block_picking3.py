@@ -291,6 +291,13 @@ class BlockPick(gym.Env):
             rotation=transform.Rotation.from_quat(block_orientation),
             translation=block_position,)
         
+        target_position = self._pybullet_client.getBasePositionAndOrientation(self._block_id)[0]
+        target_orientation = self._pybullet_client.getBasePositionAndOrientation(self._block_id)[1]
+        target_pose = Pose3d(
+            rotation=transform.Rotation.from_quat(target_orientation),
+            translation=target_position,)
+        
+        
         def _yaw_from_pose(pose): # special for  block
             return np.array([pose.rotation.as_euler("xyz", degrees=False)[-1]])
         
@@ -325,7 +332,7 @@ class BlockPick(gym.Env):
             effector_target_translation=_target_effector_pose_translation,
             
             target_translation=_target_pose_translation,
-            target_orientation = _target_pose_orientation
+            target_orientation = _yaw_from_pose(target_pose),
         )
         if self._image_size is not None:
             obs["rgb"] = self.show_camera_img(self._image_size)
