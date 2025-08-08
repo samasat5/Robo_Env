@@ -306,6 +306,8 @@ class BlockPick(gym.Env):
         _target_pose_trans_left=self._target_pose.translation_left[0:3]
         _target_pose_translation = _target_pose_trans_left + self.offset
         
+        _target_pose_orientation = self._target_pose.orientation
+        
         gripper_translation_left=robot_pose.translation_left[0:3]
         effector_translation = gripper_translation_left + self.offset
         
@@ -323,6 +325,7 @@ class BlockPick(gym.Env):
             effector_target_translation=_target_effector_pose_translation,
             
             target_translation=_target_pose_translation,
+            target_orientation = _target_pose_orientation
         )
         if self._image_size is not None:
             obs["rgb"] = self.show_camera_img(self._image_size)
@@ -343,6 +346,11 @@ class BlockPick(gym.Env):
                                self.workspace_bounds[1, 1] + 0.1, 0.2]),
             ),
 
+            effector_orientation = spaces.Box(
+                low=-pi2,
+                high=pi2,
+                shape=(1,),
+            ),
             
             effector_target_translation=spaces.Box(   
               low=np.array([self.workspace_bounds[0, 0] - 0.1, 
@@ -351,7 +359,11 @@ class BlockPick(gym.Env):
                                self.workspace_bounds[1, 1] + 0.1, 0.2]),
             ),
             target_translation=spaces.Box(low=-5, high=5, shape=(3,)),  # x,y,z
-            
+            target_orientation=spaces.Box(
+                low=-pi2,
+                high=pi2,
+                shape=(1,),
+            ),
         )
         if image_size is not None:
             obs_dict["rgb"] = spaces.Box(
@@ -366,15 +378,13 @@ class BlockPick(gym.Env):
             
             # Reset the _target_effector_pose
             # (The pose the robot is trying to reach to) :
-            orientation_left = transform.Rotation.from_rotvec([0, math.pi, 0])
-            orientation_right = transform.Rotation.from_rotvec([0, math.pi, 0])
+            orientation = transform.Rotation.from_rotvec([0, math.pi, 0])
             target_center = np.array([0.3, 0.4, 0.5])
             new_translation_left = target_center - self.offset
             new_translation_right = target_center + self.offset
             starting_pose = Pose3d_gripper(translation_left=new_translation_left,
                                     translation_right=new_translation_right,
-                                    orientation_left=orientation_left, 
-                                    orientation_right=orientation_right) 
+                                    orientation=orientation) 
             force = 7
             self._set_robot_target_effector_pose(starting_pose, force)
             
@@ -424,8 +434,7 @@ class BlockPick(gym.Env):
         new_translation_right = target_translation + self.offset
         self._target_pose = Pose3d_gripper(translation_left=new_translation_left,
                                 translation_right=new_translation_right,
-                                orientation_left=target_rotation, 
-                                orientation_right=target_rotation) 
+                                orientation=target_rotation) 
         
         if reset_poses:
             self.step_Simulation_func()
@@ -489,39 +498,24 @@ class BlockPick(gym.Env):
         # Case 1: Move toward the block to pick
         if np.allclose(move_to_position, target_block_pos):
             target_block_pos = np.array(p_state["block_translation"])
-            twist_amount = p_state["block_orientation"][0]
-
-            
-            print("\n\n\n\n")
-            print("before twist :_robot.get_joint_state(6)",self._robot.get_joint_state(6))
-            self._robot.set_target_pick_the_block(target_block_pos,twist_amount)
-            print("after twist: _robot.get_joint_state(6)",self._robot.get_joint_state(6))
-            print("\n\n\n\n")
-            # state = self._compute_state()
-            # effector_translation  = state["effector_translation"] 
-            # block_translation = state["block_translation"]
-            # print("\n\neffector_translation", effector_translation)
-            # print("block_translation", block_translation)
-
-            # effector_orientation  = state["effector_orientation"]
-            # block_orientation = state["block_orientation"]
-            # print("effector_orientation", effector_orientation)
-            # print("block_orientation\n\n", block_orientation)
-            
-
-            self._robot.set_target_place_the_block (p_state["target_translation"])
+            target_block_ori = p_state["block_orientation"] # in radian
+            target_place_pos = np.array(p_state["target_translation"])
+            target_place_ori = p_state["target_orientation"]# in radian
+            self._robot.set_target_pick_the_block(target_block_pos, target_block_ori)
+            self._robot.set_target_place_the_block (target_place_pos, target_place_ori)
 
 
         # Case 2: Move toward the target to place
         elif np.allclose(move_to_position, target_place_pos) and self._is_grasped:
             target_place_pos = np.array([p_state["target_translation"]])
-            twist_amount = p_state["block_orientation"][0]
-            self._robot.set_target_pick_the_block(target_place_pos,twist_amount)
+            target_place_ori = p_state["target_orientation"]
+            self._robot.set_target_place_the_block(target_place_pos, target_place_ori)
 
         # Case 3: General movement 
         else:
             force = 7
-            self._robot.move_gripper_to_target(move_to_position, force)
+            orientation_target = p_state["block_orientation"]
+            self._robot.move_gripper_to_target(move_to_position,orientation_target, force)
             for _ in range(200):
                 time.sleep(1 / 50)
                 self._pybullet_client.stepSimulation()

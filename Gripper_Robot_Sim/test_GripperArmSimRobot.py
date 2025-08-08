@@ -27,10 +27,10 @@ import pybullet_data
 import time
 import numpy as np
 from scipy.spatial.transform import Rotation
+import math
 
 
-
-client = p.connect(p.GUI)
+p.connect(p.GUI)
 p.setGravity(0, 0, -9.81)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
 p.loadURDF("plane.urdf",[0, 0, -0.001])
@@ -42,7 +42,19 @@ p.resetDebugVisualizerCamera(
     cameraTargetPosition=[0, 0, 0.1],
 )
 
-block = p.loadURDF("block2.urdf",[0.2, 0.5, 0.01]  , useFixedBase = False ) # size="0.04 0.04 0.04
+block = p.loadURDF("block2.urdf",[0.7, 0, 0.01]  , useFixedBase = False ) # size="0.04 0.04 0.04
+
+block_translation = np.array([0.4, 0.2, 0])
+angle_rad = (math.pi / 4 )
+angle_deg = math.degrees(angle_rad)
+block_rotation = transform.Rotation.from_rotvec([0, 0, angle_rad])
+block_orientation = block_rotation.as_quat()
+print("block_rotation in radian",angle_rad, "\n", "in degree",angle_deg )
+p.resetBasePositionAndOrientation(
+    block,
+    block_translation.tolist(),
+    block_orientation.tolist(),)
+
 workspace = p.loadURDF("workspace.urdf",[0.35, 0, 0.0]  , useFixedBase = True )
 zone = p.loadURDF("zone.urdf",[0.4, 0.4, 0.1]  , useFixedBase = False ) # scale="0.006 0.006 0.00005" : the size is 0.006 x 20 = 0.12, origin "-0.01 0 0.02"
 # Fixing the zone on the workspace
@@ -92,7 +104,7 @@ print("Torques:", torques)
 print("\n[TEST] forward_kinematics")## uses getLinkState
 pose = robot.forward_kinematics()  # computes the current 3D pose (position + orientation) of the robot's end effector in  
 print("FK pose translation left:", pose.translation_left) # x,y,z
-print("FK pose rotation left (quat):", pose.orientation_left.as_quat()) #quaternion [x, y, z, w]
+print("FK pose rotation left (quat):", pose.orientation.as_quat()) #quaternion [x, y, z, w]
 
 print("robot current state",robot._get_current_gripper_translation())
 print("robot current state",robot._get_current_gripper_orientation())
@@ -101,34 +113,36 @@ print("robot current state",robot._get_current_gripper_orientation())
 print("\n[TEST] inverse_kinematics")
 # new_translation_left = pose.translation_left + np.array([0, 0, -1]) 
 # new_translation_right = pose.translation_right + np.array([0, 0, -1])  
-target_center = np.array([0.2, 0.5, 0.01 + 0.015])
+target_center = np.array([0.4, 0.2, 0.03])
 offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
 new_translation_left = target_center - offset
 new_translation_right = target_center + offset
- 
+orientation = transform.Rotation.from_euler("xyz", [0, np.pi, angle_rad])
 new_pose = Pose3d_gripper(translation_left=new_translation_left,
                           translation_right=new_translation_right,
-                          orientation_left=pose.orientation_left, 
-                          orientation_right=pose.orientation_left) #Create a new Pose3d with same orientation but new position
+                          orientation=orientation) #Create a new Pose3d with same orientation but new position
 ik_solution = robot.inverse_kinematics(new_pose) #Solve Inverse Kinematics to find joint angles to reach new_pose
 print("IK Joint Angles (target_joint_positions):", ik_solution)
 
 
-
-
-
-# Apply pose via IK (going toward the block and grasping it)
-print("\n[TEST] pick and place")
-size_of_the_block = 0.04
-opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
 force = 2
+target_center = np.array([0.4, 0.2, 0.1])
+robot.move_gripper_to_target ( target_center, angle_rad, force)
+for _ in range(50):
+    time.sleep(1 / 240.0)
+    p.stepSimulation()
+    time.sleep(1 / 240.0)
+size_of_the_block = 0.05
+opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
+force = 7
 robot.set_the_fingers_open_close(opening_width,force)
 for _ in range(50):
     p.stepSimulation()
     time.sleep(1 / 240.0)
-force = 7
-robot.set_target_effector_pose(new_pose,force)
-for _ in range(100):
+target_center = np.array([0.4, 0.2, 0.01])
+robot.move_gripper_to_target ( target_center, angle_rad, force)
+for _ in range(50):
+    time.sleep(1 / 240.0)
     p.stepSimulation()
     time.sleep(1 / 240.0)
 closing_width = -0.0001
@@ -137,90 +151,122 @@ robot.set_the_fingers_open_close(closing_width,force)
 for _ in range(50):
     p.stepSimulation()
     time.sleep(1 / 240.0) 
+target_center = np.array([0.4, 0.4, 0.1])
+robot.move_gripper_to_target ( target_center, angle_rad, force)
+for _ in range(50):
+    time.sleep(1 / 240.0)
+    p.stepSimulation()
+    time.sleep(1 / 240.0)
+
+
+
+
+
+
+# # Apply pose via IK (going toward the block and grasping it)
+# print("\n[TEST] pick and place")
+# size_of_the_block = 0.05
+# opening_width = size_of_the_block + 0.0001 # grabbing size to grasp the block
+# force = 7
+# robot.set_the_fingers_open_close(opening_width,force)
+# for _ in range(50):
+#     p.stepSimulation()
+#     time.sleep(1 / 240.0)
+# force = 7
+# robot.set_target_effector_pose(new_pose,force)
+# for _ in range(100):
+#     p.stepSimulation()
+#     time.sleep(1 / 240.0)
+# closing_width = -0.0001
+# force = 1
+# robot.set_the_fingers_open_close(closing_width,force)
+# for _ in range(50):
+#     p.stepSimulation()
+#     time.sleep(1 / 240.0) 
     
 
-print("robot current state",robot._get_current_gripper_translation())
+# print("robot current state",robot._get_current_gripper_translation())
 
     
-time.sleep(3)
+# time.sleep(3)
     
-# # moving the block upward so that it does colide
-# target_center = np.array([0.2, 0.4, 0.4])
+# # # moving the block upward so that it does colide
+# # target_center = np.array([0.2, 0.4, 0.4])
+# # offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
+# # new_translation_left = target_center - offset
+# # new_translation_right = target_center + offset
+# # new_pose = Pose3d_gripper(translation_left=new_translation_left,
+# #                           translation_right=new_translation_right,
+# #                           orientation_left=pose.orientation_left, 
+# #                           orientation_right=pose.orientation_left) #Create a new Pose3d with same orientation but new position
+# # ik_solution = robot.inverse_kinematics(new_pose)
+# # force = 0.1 #lowering the speed to prevent the block from falling
+# # robot.set_target_effector_pose(new_pose,force)
+# # for _ in range(100):
+# #     p.stepSimulation()
+# #     time.sleep(1 / 240.0)
+
+# # time.sleep(3)
+
+
+# # moving the block to another place
+# target_center = np.array([0.35, 0, 0.15])
 # offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
 # new_translation_left = target_center - offset
 # new_translation_right = target_center + offset
+# orientation = 
+# new_pose = Pose3d_gripper(translation_left=new_translation_left,
+#                           translation_right=new_translation_right, 
+#                           orientation=pose.orientation) #Create a new Pose3d with same orientation but new position
+# ik_solution = robot.inverse_kinematics(new_pose)
+# force = 0.2 #lowering the speed to prevent the block from falling
+# robot.set_target_effector_pose(new_pose,force)
+# for _ in range(100):
+#     p.stepSimulation()
+#     time.sleep(1 / 240.0)
+    
+
+
+
+# time.sleep(3)
+
+# # plaing the block to another place
+# target_center = np.array([0.35, 0, -0.001])
+# offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
+# new_translation_left = target_center - offset
+# new_translation_right = target_center + offset
+# orientation = 
 # new_pose = Pose3d_gripper(translation_left=new_translation_left,
 #                           translation_right=new_translation_right,
-#                           orientation_left=pose.orientation_left, 
-#                           orientation_right=pose.orientation_left) #Create a new Pose3d with same orientation but new position
+#                           orientation=pose.orientation) #Create a new Pose3d with same orientation but new position
 # ik_solution = robot.inverse_kinematics(new_pose)
-# force = 0.1 #lowering the speed to prevent the block from falling
+# force = 1 #lowering the speed to prevent the block from falling
 # robot.set_target_effector_pose(new_pose,force)
 # for _ in range(100):
 #     p.stepSimulation()
 #     time.sleep(1 / 240.0)
 
-# time.sleep(3)
 
-
-# moving the block to another place
-target_center = np.array([0.35, 0, 0.15])
-offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
-new_translation_left = target_center - offset
-new_translation_right = target_center + offset
-new_pose = Pose3d_gripper(translation_left=new_translation_left,
-                          translation_right=new_translation_right,
-                          orientation_left=pose.orientation_left, 
-                          orientation_right=pose.orientation_left) #Create a new Pose3d with same orientation but new position
-ik_solution = robot.inverse_kinematics(new_pose)
-force = 0.2 #lowering the speed to prevent the block from falling
-robot.set_target_effector_pose(new_pose,force)
-for _ in range(100):
-    p.stepSimulation()
-    time.sleep(1 / 240.0)
+# # closing_width =  0.5
+# # robot.set_the_fingers_open_close(closing_width)
+# # for _ in range(50):
+# #     p.stepSimulation()
+# #     time.sleep(1 / 240.0)
     
-
-
-
-time.sleep(3)
-
-# plaing the block to another place
-target_center = np.array([0.35, 0, -0.001])
-offset = np.array([0.03, 0, 0])  # assume fingers are 6cm apart
-new_translation_left = target_center - offset
-new_translation_right = target_center + offset
-new_pose = Pose3d_gripper(translation_left=new_translation_left,
-                          translation_right=new_translation_right,
-                          orientation_left=pose.orientation_left, 
-                          orientation_right=pose.orientation_left) #Create a new Pose3d with same orientation but new position
-ik_solution = robot.inverse_kinematics(new_pose)
-force = 1 #lowering the speed to prevent the block from falling
-robot.set_target_effector_pose(new_pose,force)
-for _ in range(100):
-    p.stepSimulation()
-    time.sleep(1 / 240.0)
-
-
-# closing_width =  0.5
-# robot.set_the_fingers_open_close(closing_width)
-# for _ in range(50):
-#     p.stepSimulation()
-#     time.sleep(1 / 240.0)
-    
-print("___________________testing if the location of end effector==the point it want to go_____________")
-left_finger_pos, _ = p.getLinkState(robot.gripperarm, robot.left_finger)[:2]
-right_finger_pos, _ = p.getLinkState(robot.gripperarm, robot.right_finger)[:2]
-print("\n[RESULT] Finger locations after IK:")
-print("Left finger position after the block reachout :", np.round(left_finger_pos, 4))
-print("Right finger position after the block reachout :", np.round(right_finger_pos, 4))
-print("block location :",[0.2, 0.5, 0.01] )
-center = (pose.translation_left + pose.translation_left) /2
-print(pose.translation_left)
-# print(pose.translation_right)
-# print(center)
-position = robot.forward_kinematics().translation_left
-print("here is the robot.forward_kinematics:",robot.forward_kinematics() )
-print("End-effector position:", position)
+# print("___________________testing if the location of end effector==the point it want to go_____________")
+# left_finger_pos, _ = p.getLinkState(robot.gripperarm, robot.left_finger)[:2]
+# right_finger_pos, _ = p.getLinkState(robot.gripperarm, robot.right_finger)[:2]
+# print("\n[RESULT] Finger locations after IK:")
+# print("Left finger position after the block reachout :", np.round(left_finger_pos, 4))
+# print("Right finger position after the block reachout :", np.round(right_finger_pos, 4))
+# print("block location :",[0.2, 0.5, 0.01] )
+# center = (pose.translation_left + pose.translation_left) /2
+# print(pose.translation_left)
+# # print(pose.translation_right)
+# # print(center)
+# position = robot.forward_kinematics().translation_left
+# print("here is the robot.forward_kinematics:",robot.forward_kinematics() )
+# print("End-effector position:", position)
 
 
 # print("testing thevelocity")

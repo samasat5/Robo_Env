@@ -27,8 +27,7 @@ class NoCopyAsDict(object):
 class Pose3d_gripper(NoCopyAsDict):
     """Container for left and right finger 6DoF poses."""
 
-    orientation_left: transform.Rotation
-    orientation_right: transform.Rotation
+    orientation: transform.Rotation
     translation_left: np.ndarray
     translation_right: np.ndarray
 
@@ -38,15 +37,13 @@ class Pose3d_gripper(NoCopyAsDict):
         return np.concatenate([
         self.translation_left,
         self.translation_right,
-        self.orientation_left.as_quat(),
-        self.orientation_right.as_quat()
+        self.orientation_left.as_quat()
     ])  # this gives [xL, yL, zL, xR, yR, zR, qxL, qyL, qzL, qwL, qxR, qyR, qzR, qwR]
 
 
     def serialize(self):
         return {
-            "orientation_left": self.orientation_left.as_quat().tolist(),
-            "orientation_right": self.orientation_right.as_quat().tolist(),
+            "orientation": self.orientation.as_quat().tolist(),
             "translation_left": self.translation_left.tolist(),
             "translation_right": self.translation_right.tolist(),
         }
@@ -54,15 +51,13 @@ class Pose3d_gripper(NoCopyAsDict):
     @staticmethod
     def deserialize(data):
         return Pose3d_gripper(
-            orientation_left=transform.Rotation.from_quat(data["orientation_left"]),
-            orientation_right=transform.Rotation.from_quat(data["orientation_right"]),
+            orientation=transform.Rotation.from_quat(data["orientation"]),
             translation_left=np.array(data["translation_left"]),
             translation_right=np.array(data["translation_right"]),
         )
 
     def __eq__(self, other):
-        return np.array_equal(self.orientation_left.as_quat(), other.orientation_left.as_quat()
-        ) and np.array_equal(self.orientation_right.as_quat(), other.orientation_right.as_quat()
+        return np.array_equal(self.orientation.as_quat(), other.orientation.as_quat()
         ) and np.array_equal(self.translation_left, other.translation_left
         ) and np.array_equal(self.translation_right, other.translation_right)
 

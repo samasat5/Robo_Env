@@ -5,8 +5,10 @@ testing the pick and place function
 import pybullet as p
 import pybullet_data
 import time
+import math
 import numpy as np
-
+from scipy.spatial.transform import Rotation
+from scipy.spatial import transform
 from block_pushing.utils import utils_pybullet
 from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot 
 from block_pushing.utils.pose3d_gripper import Pose3d_gripper  
@@ -63,8 +65,17 @@ place_position = np.array([0.4999, -0.36, 0]) # place on other side
 block_position = np.array([0.4, 0.47, 0.01])
 opening_width =0.04+0.0001
 
-# robot.set_target_pick_the_block(block_position)
-robot.set_target_pick_n_place_the_block (place_position, block_position)
+block_translation = np.array([0.4, 0, 0])
+angle_rad = (math.pi / 4 )
+block_rotation = transform.Rotation.from_rotvec([0, 0, angle_rad])
+angle_deg = math.degrees(angle_rad)
+print("block_rotation in radian",angle_rad, "\n", "in degree",angle_deg )
+p.resetBasePositionAndOrientation(
+    block_id,
+    block_translation.tolist(),
+    block_rotation.as_quat().tolist(),)
+block_orientation = block_rotation
+robot.set_target_pick_the_block (block_position,block_orientation)
 force = 2
 # size_of_the_block = 0.04
 # opening_width = size_of_the_block + 0.01 # grabbing size to grasp the block

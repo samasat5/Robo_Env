@@ -80,9 +80,10 @@ class GripperArmSimRobot:
         # Move robot to home joint configuration
         self.reset_joints(self.initial_joint_positions)
         self.effector_link = 6
-        self.gripper_target = 11  # Khodam
-        self.right_finger = 9   # Khodam
-        self.left_finger = 10   # Khodam
+        self.gripper_target = 11 
+        self.right_finger = 9  
+        self.left_finger = 10 
+        self.gripper_head = 6 
         self.grabbing_size_for_block = 0.01
         self.block_size = 0.04
         self.closing_width = -0.01
@@ -105,12 +106,9 @@ class GripperArmSimRobot:
         return [translation_left,
                 translation_right]
     def _get_current_gripper_orientation(self):
-        state_right_finger = self._pybullet_client.getLinkState(self.gripperarm, self.right_finger)
-        state_left_finger = self._pybullet_client.getLinkState(self.gripperarm, self.left_finger)
-        orientation_left = state_left_finger[1]
-        orientation_right = state_right_finger[1]
-        return [orientation_left,
-                orientation_right]
+        return [self._pybullet_client.getLinkState(self.gripperarm, 
+                                                   self.right_finger)]
+
         
 
     def reset_joints(self, joint_values):
@@ -129,7 +127,7 @@ class GripperArmSimRobot:
             )
 
     def get_joints_measured(self):
-        joint_states = self._pybullet_client.getJointStates(   #Khodam
+        joint_states = self._pybullet_client.getJointStates(   
             self.gripperarm, self._joint_indices
         )
         joint_positions = np.array([state[0] for state in joint_states])
@@ -140,52 +138,37 @@ class GripperArmSimRobot:
 
     def forward_kinematics(self):
         """Forward kinematics."""
-        # effector_state = self._pybullet_client.getLinkState(
-        #     self.xarm, self.effector_link
-        # )
-        right_finger_state = self._pybullet_client.getLinkState(    # khodam
+        right_finger_state = self._pybullet_client.getLinkState(    
             self.gripperarm, self.right_finger
         )
-        left_finger_state = self._pybullet_client.getLinkState(    # khodam
+        left_finger_state = self._pybullet_client.getLinkState(    
             self.gripperarm, self.left_finger
         )
-        # return Pose3d(
-        #     translation=np.array(effector_state[0]),
-        #     rotation=transform.Rotation.from_quat(effector_state[1]),
-        # )
-        return Pose3d_gripper(            # Khodam
+        gripper_head_state = self._pybullet_client.getLinkState(    
+            self.gripperarm, self.gripper_head
+        )
+
+        return Pose3d_gripper(            
             translation_left=np.array(left_finger_state[0]),
             translation_right=np.array(right_finger_state[0]),
-            orientation_left=transform.Rotation.from_quat(left_finger_state[1]),
-            orientation_right=transform.Rotation.from_quat(right_finger_state[1]),
+            orientation=transform.Rotation.from_quat(gripper_head_state[1]), #quaternion
         )
-    def get_center_translation(self,translation_left,translation_right):   # Khodam
+        """ 
+        twist_angle = p.getJointState(robot.gripperarm, 6)[0]  # → in radians
+        quat = p.getLinkState(robot.gripperarm, gripper_head_link_index)[1]  # → quaternion
+        rotation = Rotation.from_quat(quat)
+        """
+    def get_center_translation(self,translation_left,translation_right):   
         """Compute midpoint between left and right finger poses."""
         center_translation = (translation_left + translation_right) / 2
         return center_translation
     
-    def get_center_rotation(self,translation_left,translation_right):     # Khodam
-        """ building a "default" rotation for the center of the gripper """
+    # def get_center_rotation(self):     
+    #     """ compute the radian state of the gripper head (joint 6) as the rotation 
+    #     element of the gripper"""
         
-        x_axis = (translation_right - translation_left) # there r two fingers=> the line between them tells us the direction of the gripper’s opening
-        x_axis /= np.linalg.norm(x_axis)
-
-        # You need a grasping direction — either from a previous reference or default.
-        z_axis = np.array([0, 0, -1])  # Let's say it's "downward" in world coordinates:
-
-        # Recompute z to be orthogonal to x
-        z_axis = z_axis - np.dot(z_axis, x_axis) * x_axis
-        z_axis /= np.linalg.norm(z_axis)
-
-        # Then y is x × z
-        y_axis = np.cross(z_axis, x_axis)
-
-        # Rotation matrix
-        rot_matrix = np.column_stack([x_axis, y_axis, z_axis])
-
-        # Convert to Rotation object
-        center_rotation = transform.Rotation.from_matrix(rot_matrix)
-        return center_rotation
+    #     return self._pybullet_client.getLinkState(    
+    #         self.gripperarm, self.gripper_head) 
 
 
     def inverse_kinematics(
@@ -208,7 +191,7 @@ class GripperArmSimRobot:
         translation_left = new_pose.translation_left
         translation_right = new_pose.translation_right
         center_translation = self.get_center_translation(translation_left,translation_right)
-        center_rotation = self.get_center_rotation(translation_left,translation_right)
+        center_rotation = new_pose.orientation
         return np.array( # 
             self._pybullet_client.calculateInverseKinematics(
             bodyUniqueId=self.gripperarm,
@@ -274,18 +257,16 @@ class GripperArmSimRobot:
             )
             
 
-
-
-    def move_gripper_to_target (self,target_center,force):
+    def move_gripper_to_target (self, translation_target, block_rotation_in_rad, force):
         pose = self.forward_kinematics()
         
-        new_translation_left = target_center - self.offset
-        new_translation_right = target_center + self.offset
-        center_rotation = self.get_center_rotation(new_translation_left, new_translation_right)
+        new_translation_left = translation_target - self.offset
+        new_translation_right = translation_target + self.offset
+        orientation_in_quaternion = transform.Rotation.from_euler("xyz", [0, np.pi, block_rotation_in_rad])
+        
         new_pose = Pose3d_gripper(translation_left=new_translation_left,
                                 translation_right=new_translation_right,
-                                orientation_left=center_rotation, 
-                                orientation_right=center_rotation) 
+                                orientation=orientation_in_quaternion) 
         
         self.set_target_effector_pose(new_pose,force)
 
@@ -304,7 +285,7 @@ class GripperArmSimRobot:
         return self._pybullet_client.getJointState(self.gripperarm, joint_idx)[0]
 
         
-    def set_target_pick_the_block(self, block_position,twist_amount):
+    def set_target_pick_the_block(self, block_position, block_orientation_in_rad):
         force = 2
         opening_width = self.opening_width
         print("Open the gripper")
@@ -317,25 +298,15 @@ class GripperArmSimRobot:
         print("move gripper")
         
         block_position = np.r_[block_position[0:2], 0.1] # increase the height to avoid collision
-        self.move_gripper_to_target (block_position, force)
+        self.move_gripper_to_target (block_position, block_orientation_in_rad, force)
         for _ in range(200):
             time.sleep(1 / 50)
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
 
 
-        self.set_adjust_the_head(twist_amount)
-        for _ in range(200):
-            time.sleep(1 / 100.0)
-            self._pybullet_client.stepSimulation()
-            time.sleep(1 / 240.0)
-        joint_idx = 6 
-        stateof6 = self.get_joint_state(joint_idx)
-        print("state of joint 6:", stateof6)
-
-
         block_position = np.r_[block_position[0:2], 0.01] # decrease the height to reach the block
-        self.move_gripper_to_target (block_position, force)
+        self.move_gripper_to_target (block_position, block_orientation_in_rad, force)
         for _ in range(200):
             time.sleep(1 / 50)
             self._pybullet_client.stepSimulation()
@@ -356,11 +327,11 @@ class GripperArmSimRobot:
         
         
         
-    def set_target_place_the_block (self, place_position):
+    def set_target_place_the_block (self, place_position, block_orientation_in_rad):
         # Move above the placement target
         force = 1
         feasible_place_position = place_position + np.array([0.0, 0, 0.1])
-        self.move_gripper_to_target(feasible_place_position,force)
+        self.move_gripper_to_target(feasible_place_position,block_orientation_in_rad, force)
         for _ in range(500):
             time.sleep(1 / 100)
             self._pybullet_client.stepSimulation()
@@ -368,7 +339,7 @@ class GripperArmSimRobot:
         # Move down to place
         place_position_z = place_position +np.array([0, 0, 0.02])
         force = 0.4
-        self.move_gripper_to_target(place_position_z,force)
+        self.move_gripper_to_target(place_position_z,block_orientation_in_rad,force)
         for _ in range(80):
             time.sleep(1 / 100)
             self._pybullet_client.stepSimulation()
@@ -382,7 +353,7 @@ class GripperArmSimRobot:
     
     
     
-    def set_target_pick_n_place_the_block (self, place_position, block_position,twist_amount):
-        self.set_target_pick_the_block(block_position,twist_amount)
+    def set_target_pick_n_place_the_block (self, place_position, block_position,block_orientation):
+        self.set_target_pick_the_block(block_position,block_orientation)
         self.set_target_place_the_block (place_position)
     
