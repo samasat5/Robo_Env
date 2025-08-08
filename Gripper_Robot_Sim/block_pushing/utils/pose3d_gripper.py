@@ -1,5 +1,5 @@
 
-"""A simple 6DOF pose container.
+"""A simple 9DOF pose container.
 """
 
 import dataclasses
