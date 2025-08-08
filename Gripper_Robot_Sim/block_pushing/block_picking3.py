@@ -510,7 +510,7 @@ class BlockPick(gym.Env):
             target_place_ori = p_state["target_orientation"]# in radian
 
             self._robot.set_target_pick_the_block(target_block_pos, target_block_ori)
-            self._robot.set_target_place_the_block (target_place_pos, target_place_ori)
+            self._robot.set_target_place_the_block (target_place_pos, target_block_ori)
 
 
         # Case 2: Move toward the target to place
