@@ -498,16 +498,16 @@ class BlockPick(gym.Env):
             print("after twist: _robot.get_joint_state(6)",self._robot.get_joint_state(6))
             print("\n\n\n\n")
             
-            state = self._compute_state()
-            effector_translation  = state["effector_translation"] 
-            block_translation = state["block_translation"]
-            print("\n\neffector_translation", effector_translation)
-            print("block_translation", block_translation)
+            # state = self._compute_state()
+            # effector_translation  = state["effector_translation"] 
+            # block_translation = state["block_translation"]
+            # print("\n\neffector_translation", effector_translation)
+            # print("block_translation", block_translation)
 
-            effector_orientation  = state["effector_orientation"]
-            block_orientation = state["block_orientation"]
-            print("effector_orientation", effector_orientation)
-            print("block_orientation\n\n", block_orientation)
+            # effector_orientation  = state["effector_orientation"]
+            # block_orientation = state["block_orientation"]
+            # print("effector_orientation", effector_orientation)
+            # print("block_orientation\n\n", block_orientation)
             
 
             self._robot.set_target_place_the_block (p_state["target_translation"])
