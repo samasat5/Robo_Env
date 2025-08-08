@@ -291,8 +291,8 @@ class BlockPick(gym.Env):
             rotation=transform.Rotation.from_quat(block_orientation),
             translation=block_position,)
         
-        target_position = self._pybullet_client.getBasePositionAndOrientation(self._block_id)[0]
-        target_orientation = self._pybullet_client.getBasePositionAndOrientation(self._block_id)[1]
+        target_position = self._pybullet_client.getBasePositionAndOrientation(self._target_id)[0]
+        target_orientation = self._pybullet_client.getBasePositionAndOrientation(self._target_id)[1]
         target_pose = Pose3d(
             rotation=transform.Rotation.from_quat(target_orientation),
             translation=target_position,)
@@ -508,7 +508,7 @@ class BlockPick(gym.Env):
             target_block_ori = p_state["block_orientation"] # in radian
             target_place_pos = np.array(p_state["target_translation"])
             target_place_ori = p_state["target_orientation"]# in radian
-            pdb.set_trace()
+
             self._robot.set_target_pick_the_block(target_block_pos, target_block_ori)
             self._robot.set_target_place_the_block (target_place_pos, target_place_ori)
 
