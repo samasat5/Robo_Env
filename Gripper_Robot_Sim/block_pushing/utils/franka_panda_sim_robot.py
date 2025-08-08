@@ -327,11 +327,11 @@ class GripperArmSimRobot:
         
         
         
-    def set_target_place_the_block (self, place_position, block_orientation_in_rad):
+    def set_target_place_the_block (self, place_position, target_orientation_in_rad):
         # Move above the placement target
         force = 1
         feasible_place_position = place_position + np.array([0.0, 0, 0.1])
-        self.move_gripper_to_target(feasible_place_position,block_orientation_in_rad, force)
+        self.move_gripper_to_target(feasible_place_position,target_orientation_in_rad, force)
         for _ in range(500):
             time.sleep(1 / 100)
             self._pybullet_client.stepSimulation()
@@ -339,7 +339,7 @@ class GripperArmSimRobot:
         # Move down to place
         place_position_z = place_position +np.array([0, 0, 0.02])
         force = 0.4
-        self.move_gripper_to_target(place_position_z,block_orientation_in_rad,force)
+        self.move_gripper_to_target(place_position_z,target_orientation_in_rad,force)
         for _ in range(80):
             time.sleep(1 / 100)
             self._pybullet_client.stepSimulation()
