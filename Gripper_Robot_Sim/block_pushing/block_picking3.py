@@ -497,7 +497,6 @@ class BlockPick(gym.Env):
             self._robot.set_target_pick_the_block(target_block_pos,twist_amount)
             print("after twist: _robot.get_joint_state(6)",self._robot.get_joint_state(6))
             print("\n\n\n\n")
-            pdb.set_trace()
             # state = self._compute_state()
             # effector_translation  = state["effector_translation"] 
             # block_translation = state["block_translation"]
