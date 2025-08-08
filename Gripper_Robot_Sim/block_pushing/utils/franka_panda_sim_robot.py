@@ -326,6 +326,7 @@ class GripperArmSimRobot:
 
         self.set_adjust_the_head(twist_amount)
         for _ in range(200):
+            time.sleep(1 / 100.0)
             self._pybullet_client.stepSimulation()
             time.sleep(1 / 240.0)
         joint_idx = 6 
