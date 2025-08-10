@@ -16,8 +16,9 @@ Create the conda environment with the required dependencies
 conda env create -f environment.yaml
 conda activate <newenv_robot>
 ```
+Run the 
 ```
-python examples/run_env_sample_actions.py
+(newenv_robot) [Gripper_Robot_Sim] python test_GripperArmSimRobot4.py
 ```
 
 
