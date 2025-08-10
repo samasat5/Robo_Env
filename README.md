@@ -4,4 +4,5 @@
 ## This environment introduces a new manipulation task and a new robot model compared to the original block_pushing environment from the Diffusion Policy paper.
 
 
-![Demo](./media/demo.gif)
+
+![Demo](.Gripper_Robot_Sim/media/demo.gif)
