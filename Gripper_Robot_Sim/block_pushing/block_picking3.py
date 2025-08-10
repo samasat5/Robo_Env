@@ -63,7 +63,7 @@ class BlockPick(gym.Env):
     control_frequency=10.0,
     image_size=np.array([320, 240]),
     shared_memory=False, 
-    seed=44,
+    seed=45,
     goal_dist_tolerance=0.01,
     effector_height=None,
     visuals_mode="default",
@@ -511,7 +511,7 @@ class BlockPick(gym.Env):
             print("effector_translation", np.array(p_state["effector_translation"]))
             
             force = 2
-            f_target_block = target_block_pos + np.array([0, 0, 0.1])
+            f_target_block = target_block_pos + np.array([0, 0, 0.01])
             self._robot.move_gripper_to_target( f_target_block, target_block_ori, force)
             for _ in range(50):
                 time.sleep(1 / 240.0)
