@@ -12,13 +12,13 @@ import numpy as np
 import pdb
 from scipy.spatial import transform
 
-from block_pushing.utils.xarm_sim_robot import XArmSimRobot
-from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
+from block_picking.utils.xarm_sim_robot import XArmSimRobot
+from block_picking.utils.franka_panda_sim_robot import GripperArmSimRobot
 
-from block_pushing.utils.pose3d import Pose3d
-from block_pushing.utils.pose3d_gripper import Pose3d_gripper
+from block_picking.utils.pose3d import Pose3d
+from block_picking.utils.pose3d_gripper import Pose3d_gripper
 
-from block_pushing.utils import utils_pybullet
+from block_picking.utils import utils_pybullet
 from scipy.spatial.transform import Rotation
 
 # Start PyBullet in GUI mode
@@ -139,7 +139,7 @@ robot.set_the_fingers_open_close(opening_width,force)
 for _ in range(50):
     p.stepSimulation()
     time.sleep(1 / 240.0)
-target_ = np.array([0.4, 0.2, 0.01])
+target_center = np.array([0.4, 0.2, 0.01])
 robot.move_gripper_to_target ( target_center, angle_rad, force)
 for _ in range(50):
     time.sleep(1 / 240.0)

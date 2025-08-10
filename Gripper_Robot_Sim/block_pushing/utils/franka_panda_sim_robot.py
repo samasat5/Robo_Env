@@ -14,8 +14,8 @@
 # limitations under the License.
 
 """XArm Robot Kinematics."""
-from block_pushing.utils import utils_pybullet
-from block_pushing.utils.pose3d_gripper import Pose3d_gripper
+from block_picking.utils import utils_pybullet
+from block_picking.utils.pose3d_gripper import Pose3d_gripper
 import numpy as np
 from scipy.spatial import transform
 import pybullet

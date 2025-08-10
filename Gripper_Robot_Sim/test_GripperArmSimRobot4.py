@@ -4,11 +4,11 @@ import numpy as np
 import pybullet as p
 import gym
 import matplotlib.pyplot as plt
-from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
-from block_pushing.block_picking3 import BlockPick
-from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
-import block_pushing.block_picking3
-from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot 
+from block_picking.utils.franka_panda_sim_robot import GripperArmSimRobot
+from block_picking.block_picking3 import BlockPick
+from block_picking.utils.franka_panda_sim_robot import GripperArmSimRobot
+import block_picking.block_picking3
+from block_picking.utils.franka_panda_sim_robot import GripperArmSimRobot 
 
 # import pybullet_data
 # import math
