@@ -3,11 +3,11 @@ import collections
 from gym import spaces
 from gym.envs import registration
 from typing import Dict, List, Optional, Tuple, Union
-from block_pushing.utils.pose3d_gripper import Pose3d_gripper
-from block_pushing.utils.pose3d import Pose3d
-from block_pushing.utils.franka_panda_sim_robot import GripperArmSimRobot
-from block_pushing.utils import utils_pybullet, franka_panda_sim_robot
-from block_pushing.utils.utils_pybullet import ObjState, XarmState
+from block_picking.utils.pose3d_gripper import Pose3d_gripper
+from block_picking.utils.pose3d import Pose3d
+from block_picking.utils.franka_panda_sim_robot import GripperArmSimRobot
+from block_picking.utils import utils_pybullet, franka_panda_sim_robot
+from block_picking.utils.utils_pybullet import ObjState, XarmState
 import pybullet_utils.bullet_client as bullet_client
 from scipy.spatial import transform
 import matplotlib.pyplot as plt
