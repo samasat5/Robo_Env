@@ -7,5 +7,10 @@ This environment introduces a new manipulation task and a new robot model compar
 
 ![Demo](./Gripper_Robot_Sim/media/demo.gif)
 
+\\
 
 **Run the Environmnt**
+```
+conda env create -f environment.yaml
+conda activate <newenv_robot>
+```
