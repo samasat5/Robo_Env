@@ -5,13 +5,20 @@ This environment introduces a new manipulation task and a new robot model compar
 
 
 
-![Demo](./Gripper_Robot_Sim/media/demo.gif)
 
 \\
 
 **Run the Environmnt**
 Run the block_picking3.py environment on sample actions:
+
+Create the conda environment with the required dependencies 
 ```
 conda env create -f environment.yaml
 conda activate <newenv_robot>
 ```
+```
+python examples/run_env_sample_actions.py
+```
+
+
+![Demo](./Gripper_Robot_Sim/media/demo.gif)
