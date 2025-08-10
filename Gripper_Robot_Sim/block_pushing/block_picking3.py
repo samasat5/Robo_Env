@@ -63,7 +63,7 @@ class BlockPick(gym.Env):
     control_frequency=10.0,
     image_size=np.array([320, 240]),
     shared_memory=False, 
-    seed=45,
+    seed=46,
     goal_dist_tolerance=0.01,
     effector_height=None,
     visuals_mode="default",
@@ -512,16 +512,16 @@ class BlockPick(gym.Env):
             
             force = 2
             f_target_block = target_block_pos + np.array([0, 0, 0.01])
-            self._robot.move_gripper_to_target( f_target_block, target_block_ori, force)
-            for _ in range(50):
-                time.sleep(1 / 240.0)
-                self._pybullet_client.stepSimulation()
-                time.sleep(1 / 240.0)
+            # self._robot.move_gripper_to_target( f_target_block, target_block_ori, force)
+            # for _ in range(50):
+            #     time.sleep(1 / 240.0)
+            #     self._pybullet_client.stepSimulation()
+            #     time.sleep(1 / 240.0)
             n_state = self._compute_state()
             print(" 2effector_translation", np.array(n_state["effector_translation"]))
             print("\n\n Difference in Positions", f_target_block - np.array(n_state["effector_translation"]), "\n\n")
             
-            # self._robot.set_target_pick_the_block_2(target_block_pos, target_block_ori)
+            self._robot.set_target_pick_the_block_2(target_block_pos, target_block_ori)
             # self._robot.set_target_place_the_block (target_place_pos, target_block_ori)
 
 
