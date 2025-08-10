@@ -5,4 +5,4 @@
 
 
 
-![Demo](.Gripper_Robot_Sim/media/demo.gif)
+![Demo](./Gripper_Robot_Sim/media/demo.gif)
