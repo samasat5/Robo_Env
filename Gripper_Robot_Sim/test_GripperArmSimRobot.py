@@ -139,7 +139,7 @@ robot.set_the_fingers_open_close(opening_width,force)
 for _ in range(50):
     p.stepSimulation()
     time.sleep(1 / 240.0)
-target_center = np.array([0.4, 0.2, 0.01])
+target_ = np.array([0.4, 0.2, 0.01])
 robot.move_gripper_to_target ( target_center, angle_rad, force)
 for _ in range(50):
     time.sleep(1 / 240.0)

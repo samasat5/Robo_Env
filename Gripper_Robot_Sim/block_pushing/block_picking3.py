@@ -39,7 +39,7 @@ IMAGE_HEIGHT_REAL = 180
 CAMERA_POSE_REAL = (0.75, 0, 0.5)
 CAMERA_ORIENTATION_REAL = (np.pi / 5, np.pi, -np.pi / 2)
 CAMERA_INTRINSICS_REAL = (0.803 * IMAGE_WIDTH_REAL,0,IMAGE_WIDTH_REAL / 2.0,0,0.803 * IMAGE_WIDTH_REAL,IMAGE_HEIGHT_REAL / 2.0,0,0,1,)
-BLOCK_URDF_PATH = "third_party/py/envs/assets/block.urdf"
+BLOCK_URDF_PATH = "third_party/py/envs/assets/block2.urdf"
 PLANE_URDF_PATH = "third_party/bullet/examples/pybullet/gym/pybullet_data/" "plane.urdf"
 WORKSPACE_URDF_PATH = "third_party/py/envs/assets/workspace.urdf"
 ZONE_URDF_PATH = "third_party/py/envs/assets/zone.urdf"
@@ -63,7 +63,7 @@ class BlockPick(gym.Env):
     control_frequency=10.0,
     image_size=np.array([320, 240]),
     shared_memory=False, 
-    seed=56,
+    seed=44,
     goal_dist_tolerance=0.01,
     effector_height=None,
     visuals_mode="default",
@@ -312,9 +312,7 @@ class BlockPick(gym.Env):
 
         _target_pose_trans_left=self._target_pose.translation_left[0:3]
         _target_pose_translation = _target_pose_trans_left + self.offset
-        
-        _target_pose_orientation = self._target_pose.orientation.as_euler("xyz", degrees=False)[-1]
-        
+                
         gripper_translation_left=robot_pose.translation_left[0:3]
         effector_translation = gripper_translation_left + self.offset
         
@@ -508,9 +506,23 @@ class BlockPick(gym.Env):
             target_block_ori = p_state["block_orientation"] # in radian
             target_place_pos = np.array(p_state["target_translation"])
             target_place_ori = p_state["target_orientation"]# in radian
-
-            self._robot.set_target_pick_the_block(target_block_pos, target_block_ori)
-            self._robot.set_target_place_the_block (target_place_pos, target_block_ori)
+            
+            print("\ 1block_translation", p_state["block_translation"])
+            print("effector_translation", np.array(p_state["effector_translation"]))
+            
+            force = 2
+            f_target_block = target_block_pos + np.array([0, 0, 0.1])
+            self._robot.move_gripper_to_target( f_target_block, target_block_ori, force)
+            for _ in range(50):
+                time.sleep(1 / 240.0)
+                self._pybullet_client.stepSimulation()
+                time.sleep(1 / 240.0)
+            n_state = self._compute_state()
+            print(" 2effector_translation", np.array(n_state["effector_translation"]))
+            print("\n\n Difference in Positions", f_target_block - np.array(n_state["effector_translation"]), "\n\n")
+            
+            # self._robot.set_target_pick_the_block_2(target_block_pos, target_block_ori)
+            # self._robot.set_target_place_the_block (target_place_pos, target_block_ori)
 
 
         # Case 2: Move toward the target to place
