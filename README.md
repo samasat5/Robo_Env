@@ -10,6 +10,7 @@ This environment introduces a new manipulation task and a new robot model compar
 \\
 
 **Run the Environmnt**
+Run the block_picking3.py environment on sample actions:
 ```
 conda env create -f environment.yaml
 conda activate <newenv_robot>
