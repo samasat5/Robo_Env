@@ -11,7 +11,7 @@ import block_picking.block_picking3
 from block_picking.utils.franka_panda_sim_robot import GripperArmSimRobot 
 
 
-env = BlockPick(image_size=None)
+env = BlockPick(image_size=None,seed=30)
 
 obs = env.reset()
 done = False

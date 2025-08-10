@@ -63,7 +63,7 @@ class BlockPick(gym.Env):
     control_frequency=10.0,
     image_size=np.array([320, 240]),
     shared_memory=False, 
-    seed=30,
+    seed=None,
     goal_dist_tolerance=0.01,
     effector_height=None,
     visuals_mode="default",
