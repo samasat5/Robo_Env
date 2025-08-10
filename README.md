@@ -6,3 +6,4 @@ This environment introduces a new manipulation task and a new robot model compar
 
 
 ![Demo](./Gripper_Robot_Sim/media/demo.gif)
+
