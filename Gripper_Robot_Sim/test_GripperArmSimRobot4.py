@@ -10,67 +10,7 @@ from block_picking.utils.franka_panda_sim_robot import GripperArmSimRobot
 import block_picking.block_picking3
 from block_picking.utils.franka_panda_sim_robot import GripperArmSimRobot 
 
-# import pybullet_data
-# import math
-# INITIAL_JOINT_POSITIONS = np.array(
-#     [
-#         0.0, 
-#         -0.5235987755982988, 
-#         0.0, -1.0471975511965976, 
-#         0.0, 1.5707963267948966, 
-#         0.0, 
-#         0.0, 
-#         0.0])
-# physics_client = p.connect(p.GUI)  # Use GUI for visualization
-# p.setAdditionalSearchPath(pybullet_data.getDataPath())
-# p.setGravity(0, 0, -9.81)
-# p.setTimeStep(1. / 240.)
-# p.resetDebugVisualizerCamera(
-#     cameraDistance=1.3,
-#     cameraYaw=100,
-#     cameraPitch=-30,
-#     cameraTargetPosition=[0, 0, 0.1],
-# )
-# # Load plane
-# plane_id = p.loadURDF("plane.urdf")
-# robot =  p.loadURDF("franka_panda/panda.urdf",[0,0,0], [0,0,0,1], useFixedBase = True ) # each urdf is basivally a set of links . # fix base for objects so it doesnt move
-# time.sleep(2)
 
-# movable_joints = []
-# for i in range(p.getNumJoints(robot)):
-#     joint_info = p.getJointInfo(robot, i)
-#     joint_type = joint_info[2]
-#     joint_name = joint_info[1].decode("utf-8")
-#     if joint_type in [p.JOINT_REVOLUTE, p.JOINT_PRISMATIC]: # only the joints that move 
-#         movable_joints.append(i)
-#         p.addUserDebugText(
-#             f"{i}: {joint_name}",
-#             [0, 0, 0.1],
-#             parentObjectUniqueId=robot,
-#             parentLinkIndex=i,
-#             textColorRGB=[1, 0, 0],
-#             textSize=1.0,)
-
-# # move the joints one by one
-# for joint_index in movable_joints:
-#     print(f"Moving joint {joint_index}")
-#     for t in range(240):  
-#         angle = 0.5 * math.sin(t*0.05) # using sin to have a oscillating movement 
-#         p.setJointMotorControl2(
-#             robot,
-#             joint_index,
-#             controlMode=p.POSITION_CONTROL,
-#             targetPosition=angle,
-#             force=100,)
-#         p.stepSimulation()
-#         time.sleep(1 / 240)
-
-
-# while True:
-#     p.stepSimulation()
-#     time.sleep(1)
-
-# env = gym.make("BlockPick-v0")
 env = BlockPick(image_size=None)
 
 # obs = env.reset(seed=42)
